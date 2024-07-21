@@ -1,6 +1,192 @@
 import {faker} from "@faker-js/faker";
 const bedTypes = ['King', 'Double', 'Single', 'Sofa']
 
+function getRandomSubarray(arr: Array<any>, size: number) {
+    let shuffled = arr.slice(0), i = arr.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(0, size);
+}
+
+
+const hotelAmenitiesAll = [
+    'Air Conditioning/Heating',
+    'Wi-Fi/Internet Access',
+    'Television with Cable/Satellite Channels',
+    'Telephone',
+    'Mini-Bar',
+    'Coffee/Tea Maker',
+    'In-Room Safe',
+    'Work Desk',
+    'Iron and Ironing Board',
+    'Hairdryer',
+    'Room Service',
+    'Alarm Clock/Radio',
+    'Bathrobes and Slippers',
+    'Toiletries',
+    'Closet/Wardrobe',
+    'On-Site Restaurant(s)',
+    'Bar/Lounge',
+    'Coffee Shop',
+    'Breakfast Buffet',
+    '24-Hour Room Service',
+    'Fitness Center/Gym',
+    'Swimming Pool (Indoor/Outdoor)',
+    'Spa and Wellness Center',
+    'Sauna/Steam Room',
+    'Massage Services',
+    'Hot Tub/Jacuzzi',
+    'Yoga/Pilates Classes',
+    'Tennis Court',
+    'Golf Course',
+    'Bicycle Rentals',
+    'Business Center',
+    'Meeting Rooms',
+    'Conference Facilities',
+    'Banquet Halls',
+    'Audio/Visual Equipment Rental',
+    'Fax/Photocopying Services',
+    'Secretarial Services',
+    '24-Hour Front Desk',
+    'Concierge Services',
+    'Luggage Storage',
+    'Laundry/Dry Cleaning Services',
+    'Valet Parking',
+    'Shuttle Service',
+    'Car Rental Desk',
+    'Tour Desk',
+    'ATM/Cash Machine',
+    'Currency Exchange',
+    'Accessible Rooms',
+    'Wheelchair Accessibility',
+    'Elevator/Lift',
+    'Accessible Parking',
+    'Hearing-Impaired Services',
+    'Babysitting/Child Services',
+    'Kids\' Club',
+    'Children\'s Play Area',
+    'Family Rooms',
+    'Cribs/Infant Beds',
+    'Children’s Menu',
+    'Gift Shop',
+    'Beauty Salon',
+    'Garden/Terrace',
+    'Library',
+    'Pet-Friendly Services',
+    'Smoking/Non-Smoking Rooms',
+    'Fireplace in Lobby',
+    'BBQ Facilities'
+];
+
+const hotelFacilities = [
+    {
+        'Guest Room Amenities': [
+            'Air Conditioning/Heating',
+            'Wi-Fi/Internet Access',
+            'Television with Cable/Satellite Channels',
+            'Telephone',
+            'Mini-Bar',
+            'Coffee/Tea Maker',
+            'In-Room Safe',
+            'Work Desk',
+            'Iron and Ironing Board',
+            'Hairdryer',
+            'Room Service',
+            'Alarm Clock/Radio',
+            'Bathrobes and Slippers',
+            'Toiletries',
+            'Closet/Wardrobe'
+        ]
+    },
+    {
+        'Dining Facilities': [
+            'On-Site Restaurant(s)',
+            'Bar/Lounge',
+            'Coffee Shop',
+            'Breakfast Buffet',
+            '24-Hour Room Service'
+        ]
+    },
+    {
+        'Wellness and Recreation': [
+            'Fitness Center/Gym',
+            'Swimming Pool (Indoor/Outdoor)',
+            'Spa and Wellness Center',
+            'Sauna/Steam Room',
+            'Massage Services',
+            'Hot Tub/Jacuzzi',
+            'Yoga/Pilates Classes',
+            'Tennis Court',
+            'Golf Course',
+            'Bicycle Rentals'
+        ]
+    },
+    {
+        'Business and Event Facilities': [
+            'Business Center',
+            'Meeting Rooms',
+            'Conference Facilities',
+            'Banquet Halls',
+            'Audio/Visual Equipment Rental',
+            'Fax/Photocopying Services',
+            'Secretarial Services'
+        ]
+    },
+    {
+        'General Services': [
+            '24-Hour Front Desk',
+            'Concierge Services',
+            'Luggage Storage',
+            'Laundry/Dry Cleaning Services',
+            'Valet Parking',
+            'Shuttle Service',
+            'Car Rental Desk',
+            'Tour Desk',
+            'ATM/Cash Machine',
+            'Currency Exchange'
+        ]
+    },
+    {
+        'Accessibility': [
+            'Accessible Rooms',
+            'Wheelchair Accessibility',
+            'Elevator/Lift',
+            'Accessible Parking',
+            'Hearing-Impaired Services'
+        ]
+    },
+    {
+        'Family and Kid-Friendly Services': [
+            'Babysitting/Child Services',
+            'Kids\' Club',
+            'Children\'s Play Area',
+            'Family Rooms',
+            'Cribs/Infant Beds',
+            'Children’s Menu'
+        ]
+    },
+    {
+        'Additional Facilities': [
+            'Gift Shop',
+            'Beauty Salon',
+            'Garden/Terrace',
+            'Library',
+            'Pet-Friendly Services',
+            'Smoking/Non-Smoking Rooms',
+            'Fireplace in Lobby',
+            'BBQ Facilities'
+        ]
+    }
+];
+
+
+
+
+
 function hotelsDataGenerator(){
     let hotels = [];
     for(let i = 0; i < 3; i++){
@@ -13,7 +199,8 @@ function hotelsDataGenerator(){
                 poster: faker.image.urlLoremFlickr({category: 'hotel'}),
                 maxGuests: faker.number.int({max: 7}),
                 beds: bedsDataGenerator(),
-                amenities: ['pool', 'beach', 'Air Conditioning','wifi'],
+                description: faker.lorem.paragraph(),
+                amenities: getRandomSubarray(hotelAmenitiesAll, 10),
                 price: faker.number.int({max: 1000}),
                 discounted: false,
                 discount: {
@@ -38,6 +225,7 @@ function hotelsDataGenerator(){
             bed: faker.number.int({max: 10}),
             maxGuests: faker.number.int({max: 10}),
             description: faker.lorem.paragraphs(),
+            facilities: getRandomSubarray(hotelAmenitiesAll,20),
             type: 'hotel',
             rooms: rooms,
             location: {
