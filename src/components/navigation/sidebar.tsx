@@ -82,9 +82,9 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
 
     console.log(pathname.split('/'));
     return <Layout.Sider className={'h-full sticky left-0 top-64'} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
-        <Link href={'/'} className={`flex items-center gap-2 px-2 py-2 ${collapsed && 'justify-center'}`}>
+        <Link href={'/'} className={`flex items-center gap-2 px-2 py-2 text-white ${collapsed && 'justify-center'}`}>
             <div className={`p-1 h-12 aspect-square bg-white bg-opacity-10 rounded-lg`}><LogoIcon className={'fill-primary'}/></div>
-            <div className={`font-semibold text-lg ${collapsed? 'hidden':''}`}>LexStayz</div>
+            <div className={`font-semibold text-lg  ${collapsed? 'hidden':''}`}>LexStayz</div>
         </Link>
         <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[1]]} defaultSelectedKeys={['dashboard']} items={
             menuItems.map(item => renderMenuItem(item))
