@@ -19,7 +19,7 @@ export default function NotificationsPanel() {
                             <StarFilled className={'text-primary'}/>
                             <StarFilled className={'text-primary'}/>
                             <StarFilled className={'text-primary'}/>
-                            <StarOutlined className={'text-primary'}/>
+                            <StarFilled className={'text-primary'}/>
                             <StarOutlined className={'text-primary'}/>
                         </div>
                         <Button className={'text-primary'} type={'text'}>View</Button>

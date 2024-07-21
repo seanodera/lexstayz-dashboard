@@ -13,23 +13,23 @@ export default function Home() {
         {
             Icon: BookFilled,
             name: "Confirmed Bookings",
-            value: 8
+            value: 24
         },
         {
             Icon: BookOutlined,
             name: "Pending Bookings",
-            value: 8
+            value: 3
         },
         {
             Icon: WalletOutlined,
             name: "Pending Balance",
-            value: 4500,
+            value: 43632.56,
             prefix: '$',
         },
         {
             Icon: WalletFilled,
             name: "Available Balance",
-            value: 10000,
+            value: 68898.45,
             prefix: '$',
         }
 
@@ -45,8 +45,8 @@ export default function Home() {
                                 <item.Icon/>
                             </div>
                             <div>
-                                <CountUp className={'font-semibold h2'} end={item.value} prefix={item.prefix}
-                                         formattingFn={(value: number) => toMoneyFormat(value, {fractionDigits: (item.prefix) ? 2 : 0})}/>
+                                <CountUp className={'font-semibold h1'} end={item.value} prefix={item.prefix}
+                                         formattingFn={(value: number) => (item.prefix ? '$ ' + toMoneyFormat(value, {fractionDigits: (item.prefix) ? 2 : 0}) :value.toString())}/>
                                 <Typography className={'text-gray-500'}>{item.name}</Typography>
                             </div>
                         </Flex>

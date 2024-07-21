@@ -1,6 +1,6 @@
 import {faker} from "@faker-js/faker";
 
-export const statuses = ['Pending', 'Confirmed', 'Past', 'Canceled', 'Rejected']
+export const statuses = ['Pending', 'Confirmed', 'Canceled', 'Rejected']
 
 
 function bookingsData({stay}: {
