@@ -19,6 +19,6 @@ export default function Page(){
 
     const stay = useAppSelector(selectCurrentStay);
     return <div>
-        
+
     </div>
 }

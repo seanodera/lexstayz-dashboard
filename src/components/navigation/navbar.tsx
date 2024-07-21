@@ -7,13 +7,13 @@ import FocusSelector from "@/components/navigation/focusSelector";
 
 export default function Navbar() {
 
-    return <Layout.Header  className="bg-white border-b border-[#f1f1f1] shadow-md flex items-center justify-between sticky top-0 z-10">
-        <div className={'flex items-center justify-between'}>
+    return <Layout.Header  className="bg-white border-b border-[#f1f1f1] shadow-md flex items-center justify-between sticky top-0 z-10 leading-none">
+        <div className={'flex items-center justify-between w-full'}>
             <div className="flex items-center gap-2">
                 <div className={'font-semibold text-xl'}>LexStayz</div>
             </div>
             <div className="flex">
-                {/*<FocusSelector/>*/}
+                <FocusSelector/>
             </div>
         </div>
     </Layout.Header>
