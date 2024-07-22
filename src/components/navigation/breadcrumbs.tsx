@@ -18,9 +18,9 @@ const Breadcrumbs: React.FC = () => {
         let path = snippet;
         if (index > 0){
             let prevSnippet = pathSnippets[index - 1];
-            if (prevSnippet === 'accommodation'){
+            if (prevSnippet === 'accommodations' && snippet !== 'create'){
                 path = currentStay.name;
-            } else if (prevSnippet === 'rooms'){
+            } else if (prevSnippet === 'rooms' && snippet !== 'create'){
                 path = currentStay.rooms.find((room:any) => room.id.toString() === snippet).name;
             }
         }
