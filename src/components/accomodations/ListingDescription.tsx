@@ -13,7 +13,7 @@ export default function ListingDescription({stay}: {stay: any}) {
             <Col span={19}>
                 <h3 className={'font-bold'}>Detail Room Images</h3>
                 <div className={'grid grid-cols-4 gap-4'}>
-                    {stay.images.slice(0,3).map((image: string, index: number) => <Image className={'rounded-xl'} key={index} src={image} alt={'Other Images ' + index}/>)}
+                    {stay.images?.slice(0,3).map((image: string, index: number) => <Image className={'rounded-xl'} key={index} src={image} alt={'Other Images ' + index}/>)}
                     <div className={'flex items-center justify-center border border-dashed border-primary rounded-xl'}>
 
                     </div>

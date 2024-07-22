@@ -25,18 +25,22 @@ export default function Page(){
     }, [currentId, dispatch, params]);
 
     const stay = useAppSelector(selectCurrentStay);
+    if (!stay || stay.id === undefined) {
+        return <div></div>;
+    } else {
     return <div className={'px-4 py-4'}>
         <div className={'flex justify-between mb-4'}>
-            <h2 className={'font-bold'}>{stay.name}</h2>
+            <h1 className={'font-bold'}>{stay.name}</h1>
             <div className={'space-x-2'}>
                 <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
                 <Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button>
             </div>
         </div>
         <ListingDescription stay={stay}/>
-        <h2 className={'font-bold my-4'}>Rooms</h2>
+        <h1 className={'font-bold my-4'}>Rooms</h1>
         <div className={'grid grid-cols-3 gap-8'}>
-            {stay.rooms.map((item: any, index: number) => <RoomComponent key={index} room={item}/>)}
+            {stay.rooms?.map((item: any, index: number) => <RoomComponent key={index} room={item}/>)}
         </div>
     </div>
+    }
 }

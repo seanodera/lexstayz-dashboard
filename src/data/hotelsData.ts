@@ -192,9 +192,10 @@ function hotelsDataGenerator(){
     for(let i = 0; i < 3; i++){
         let rooms = [];
         let price = 0;
-        for(let i = 0; i < faker.number.int({max: 6, min: 1}); i++){
+        for(let j = 0; j < faker.number.int({max: 6, min: 1}); j++){
             let room = {
-                id: i,
+                id: j,
+                accommodationId: i,
                 name:  faker.word.sample() + ' Room',
                 poster: faker.image.urlLoremFlickr({category: 'hotel'}),
                 maxGuests: faker.number.int({max: 7}),

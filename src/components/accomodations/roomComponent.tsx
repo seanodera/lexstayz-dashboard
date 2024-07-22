@@ -2,11 +2,12 @@ import {Image, Tag} from "antd";
 import {toMoneyFormat} from "@/lib/utils";
 import {LuBedSingle} from "react-icons/lu";
 import {IoBedOutline} from "react-icons/io5";
+import Link from "next/link";
 
 
 export default function RoomComponent({room}:{room: any}){
 
-    return <div className={'rounded-xl '}>
+    return <Link href={`/accommodations/${room.accommodationId}/room/${room.id}`} className={'rounded-xl text-dark block'}>
         <Image className={'rounded-xl'} src={room.poster} alt="poster"/>
         <h3 className={'font-semibold text-lg'}>{room.name}</h3>
         <p className={'line-clamp-2'}>{room.description}</p>
@@ -37,5 +38,5 @@ export default function RoomComponent({room}:{room: any}){
                 <p className={'text-primary font-semibold'}>$ {toMoneyFormat(room.price, {})}/night</p>
             </div>
         </div>
-    </div>
+    </Link>
 }
