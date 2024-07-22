@@ -1,5 +1,5 @@
 'use client'
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Card,
@@ -19,14 +19,14 @@ import {
 import {toMoneyFormat} from "@/lib/utils";
 import {IoBedOutline} from "react-icons/io5";
 import {LuBedSingle} from "react-icons/lu";
-import {DeleteOutlined, PlusOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteFilled, DeleteOutlined, PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import {UploadChangeParam} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
 import {bedTypes, hotelFacilities} from "@/data/hotelsData";
 
 const {TextArea} = Input;
 
-export default function RoomEditComponent() {
+export default function RoomEditComponent({room}: {room?: any}) {
     const [name, setName] = useState('');
     const [poster, setPoster] = useState<any>('');
     const [images, setImages] = useState<Array<any>>([]);
@@ -38,6 +38,21 @@ export default function RoomEditComponent() {
     const [discounted, setDiscounted] = useState(false);
     const [discount, setDiscount] = useState({});
     const [available, setAvailable] = useState<number | null>(10);
+
+    useEffect(() => {
+        if (room){
+            setName(room.name);
+            setPoster(room.poster);
+            setDescription(room.description);
+            setImages(room.images);
+            setMaxGuests(room.maxGuests);
+            setBeds(room.beds);
+            setAmenities(room.amenities);
+            setPrice(room.price);
+            setDiscount(room.discounted);
+            setAvailable(room.available);
+        }
+    }, [room]);
 
     const handleChange = (info: UploadChangeParam<UploadFile<any>>) => {
         const reader = new FileReader();
@@ -140,11 +155,12 @@ export default function RoomEditComponent() {
                 {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4'}>
                     {
                         beds.map((bed: any, index: number) => <div key={index}
-                                                                   className={' p-3 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap'}>
+                                                                   className={'p-3 hover:p-5 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap group'}>
+                            <span className={'hidden group-hover:block mx-auto aspect-square h-full text-2xl text-danger'} onClick={() => setBeds(beds.toSpliced(index,1))}><DeleteOutlined/></span>
                     <span
-                        className={'mx-auto block'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
+                        className={'mx-auto block group-hover:hidden'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
                         <IoBedOutline size={28}/> : <LuBedSingle size={28}/>}</span>
-                            {bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}
+                            <span className={'group-hover:hidden'}>{bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}</span>
                         </div>)
                     }
                 </div> : <Empty className={'mt-4'}/>}

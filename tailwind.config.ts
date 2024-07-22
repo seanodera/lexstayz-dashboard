@@ -28,9 +28,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ...colors,
         primary: primaryColor,
         dark: primaryColor[950],
+        danger: '#FF4D4F'
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -1,5 +1,5 @@
 'use client'
-import {useParams} from "next/navigation";
+import {useParams, usePathname} from "next/navigation";
 import {Button} from "antd";
 import {EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
 import React, {useEffect} from "react";
@@ -10,7 +10,8 @@ import Link from "next/link";
 
 
 export default function Page() {
-    const {id,roomId} = useParams()
+    const pathname = usePathname();
+    const {id,roomId} = useParams();
     const dispatch = useAppDispatch();
     const currentId = useAppSelector(selectCurrentId);
 
@@ -33,7 +34,7 @@ export default function Page() {
                 <h1 className={'font-bold capitalize my-0'}>{stay.rooms.find((value: any) => value.id === parseInt(roomId.toString())).name}</h1>
             </div>
             <div className={'space-x-2'}>
-                <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
+                <Link href={`${pathname}/edit`}> <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button></Link>
                 <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
             </div>
         </div>
