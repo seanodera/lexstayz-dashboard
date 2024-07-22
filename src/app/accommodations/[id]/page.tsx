@@ -10,6 +10,7 @@ import { Image } from "antd";
 import ListingDescription from "@/components/accomodations/ListingDescription";
 import RoomComponent from "@/components/accomodations/roomComponent";
 import {EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import Link from "next/link";
 
 
 export default function Page(){
@@ -33,7 +34,7 @@ export default function Page(){
             <h1 className={'font-bold'}>{stay.name}</h1>
             <div className={'space-x-2'}>
                 <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
-                <Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button>
+                <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
             </div>
         </div>
         <ListingDescription stay={stay}/>

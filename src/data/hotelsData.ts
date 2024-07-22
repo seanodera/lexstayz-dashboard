@@ -1,6 +1,6 @@
 import {faker} from "@faker-js/faker";
 
-const bedTypes = ['King', 'Double', 'Single', 'Sofa']
+export const bedTypes = ['King', 'Double', 'Single', 'Sofa']
 
 function getRandomSubarray(arr: Array<any>, size: number) {
     let shuffled = arr.slice(0), i = arr.length, temp, index;
@@ -83,7 +83,7 @@ const hotelAmenitiesAll = [
     'BBQ Facilities'
 ];
 
-const hotelFacilities = [
+export const hotelFacilities = [
     {
         'Guest Room Amenities': [
             'Air Conditioning/Heating',
