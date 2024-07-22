@@ -7,9 +7,9 @@ import Link from "next/link";
 
 export default function RoomComponent({room}:{room: any}){
 
-    return <Link href={`/accommodations/${room.accommodationId}/room/${room.id}`} className={'rounded-xl text-dark block'}>
+    return <Link href={`/accommodations/${room.accommodationId}/rooms/${room.id}`} className={'rounded-xl text-dark block'}>
         <Image className={'rounded-xl'} src={room.poster} alt="poster"/>
-        <h3 className={'font-semibold text-lg'}>{room.name}</h3>
+        <h3 className={'font-semibold text-lg capitalize'}>{room.name}</h3>
         <p className={'line-clamp-2'}>{room.description}</p>
         <div className={'flex flex-wrap gap-2 my-4'}>{room.amenities.slice(0,4).map((amenity: string, index: number) =>
             <Tag
@@ -19,9 +19,9 @@ export default function RoomComponent({room}:{room: any}){
         <div className={'flex items-center gap-2 mb-4 overflow-x-scroll'}>
             {
                 room.beds.map((bed: any, index: number) => <div key={index}
-                                                                className={'p-3 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap'}>
+                                                                className={' p-3 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap'}>
                     <span
-                        className={'mx-auto'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
+                        className={'mx-auto block'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
                         <IoBedOutline size={28}/> : <LuBedSingle size={28}/>}</span>
                     {bed.type} Bed x {bed.number}
                 </div>)
