@@ -1,6 +1,21 @@
 'use client'
 import React, {useState} from "react";
-import {Button, Card, Checkbox, Col, Form, Image, Input, InputNumber, Modal, Row, Select, Tag, Upload} from "antd";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Col,
+    Empty,
+    Form,
+    Image,
+    Input,
+    InputNumber,
+    Modal,
+    Row,
+    Select,
+    Tag,
+    Upload
+} from "antd";
 import {toMoneyFormat} from "@/lib/utils";
 import {IoBedOutline} from "react-icons/io5";
 import {LuBedSingle} from "react-icons/lu";
@@ -45,6 +60,12 @@ export default function RoomEditComponent() {
     };
     const [isModalOpen, setIsModalOpen] = useState(false)
     return <Card className={'rounded-2xl'}>
+        <div className={'flex justify-between items-center my-2'}>
+            <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>} className={'font-bold h3 text-xl'}>
+                <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'} />
+            </Form.Item>
+            <Button type={"primary"} size={'large'}>Confirm</Button>
+        </div>
         <Row gutter={[16, 16]}>
             <Col span={5}>
                 <div className={'flex justify-between items-center mb-1'}>
@@ -97,7 +118,7 @@ export default function RoomEditComponent() {
             <div>
                 <h3 className={'font-bold'}>Details</h3>
                 <Form className={'w-full'} layout={'vertical'} labelAlign={'left'}
-                      rootClassName={'font-semibold text-lg'}>
+                      rootClassName={'font-semibold text-lg w-full'}>
                     <Form.Item label={'Nightly Rate'}>
                         <InputNumber prefix={'$'} min={0} value={price}
                                      onChange={(value: number | null) => setPrice(value)}/>
@@ -116,7 +137,7 @@ export default function RoomEditComponent() {
                 <div className={'flex justify-between items-center'}><h3 className={'font-bold mb-0'}>Beds</h3>
                     <Button type={'primary'} onClick={() => setIsModalOpen(true)}>Add Bed Configuration</Button>
                 </div>
-                <div className={'flex items-center gap-2 mb-4'}>
+                {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4'}>
                     {
                         beds.map((bed: any, index: number) => <div key={index}
                                                                    className={' p-3 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap'}>
@@ -126,7 +147,7 @@ export default function RoomEditComponent() {
                             {bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}
                         </div>)
                     }
-                </div>
+                </div> : <Empty className={'mt-4'}/>}
                 <BedDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} beds={beds} setBeds={setBeds}/>
             </div>
         </div>

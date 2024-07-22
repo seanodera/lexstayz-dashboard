@@ -6,6 +6,7 @@ import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {resetBooking, selectCurrentId, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
 import RoomDescription from "@/components/accomodations/RoomDescription";
+import Link from "next/link";
 
 
 export default function Page() {
@@ -33,7 +34,7 @@ export default function Page() {
             </div>
             <div className={'space-x-2'}>
                 <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
-                <Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button>
+                <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
             </div>
         </div>
         <RoomDescription room={stay.rooms.find((value: any) => value.id === parseInt(roomId.toString()))}/>

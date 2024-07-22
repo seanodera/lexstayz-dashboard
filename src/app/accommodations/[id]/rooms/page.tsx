@@ -6,8 +6,8 @@ import React, {useEffect} from "react";
 import {useParams} from "next/navigation";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {resetBooking, selectCurrentId, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
-import ListingItem from "@/components/accomodations/ListingItem";
 import RoomComponent from "@/components/accomodations/roomComponent";
+import Link from "next/link";
 
 export default function Page() {
     const params = useParams()[ 'id' ];
@@ -30,7 +30,7 @@ export default function Page() {
             </div>
 
             <div className={'space-x-2'}>
-                <Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button>
+                <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
             </div>
         </div>
         <div className={'grid grid-cols-3 gap-8'}>
