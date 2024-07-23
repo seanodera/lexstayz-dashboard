@@ -11,6 +11,7 @@ const bookingSlice = createSlice({
         stays: [],
         cartTotal: 0,
         bookings: [],
+        currentBooking: {},
         dates: {
             startDate: new Date(),
             endDate: addDays(new Date(), 1),
@@ -45,6 +46,10 @@ const bookingSlice = createSlice({
         },
         setBookings: (state, action) => {
             state.bookings = action.payload;
+        },
+        setCurrentBookingById: (state, action) => {
+            let currentBooking = state.bookings.find((booking: any) => booking.bookingId.toString() === action.payload.toString());
+            state.currentBooking = currentBooking ? currentBooking : {};
         }
     }
 })
@@ -55,6 +60,7 @@ export const selectCurrentId = (state: any) => state.booking.currentId;
 export const selectAllStays = (state: any) => state.booking.stays;
 export const selectDates = (state: any) => state.booking.dates;
 export const selectBookings = (state: any) => state.booking.bookings;
+export const selectCurrentBooking = (state: any) => state.booking.currentBooking;
 export const {
     resetBooking,
     setCurrentStay,
@@ -62,6 +68,7 @@ export const {
     setAllStays,
     setCurrentStayFromId,
     updateDates,
-    setBookings
+    setBookings,
+    setCurrentBookingById
 } = bookingSlice.actions
 export default bookingSlice.reducer;

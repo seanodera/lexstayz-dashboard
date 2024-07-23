@@ -13,13 +13,11 @@ import {
     Modal,
     Row,
     Select,
-    Tag,
     Upload
 } from "antd";
-import {toMoneyFormat} from "@/lib/utils";
 import {IoBedOutline} from "react-icons/io5";
 import {LuBedSingle} from "react-icons/lu";
-import {DeleteFilled, DeleteOutlined, PlusOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import {UploadChangeParam} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
 import {bedTypes, hotelFacilities} from "@/data/hotelsData";
@@ -79,7 +77,7 @@ export default function RoomEditComponent({room}: {room?: any}) {
             <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>} className={'font-bold h3 text-xl'}>
                 <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'} />
             </Form.Item>
-            <Button type={"primary"} size={'large'}>Confirm</Button>
+            {room? false : <Button type={"primary"} size={'large'}>Confirm</Button>}
         </div>
         <Row gutter={[16, 16]}>
             <Col span={5}>
@@ -152,7 +150,7 @@ export default function RoomEditComponent({room}: {room?: any}) {
                 <div className={'flex justify-between items-center'}><h3 className={'font-bold mb-0'}>Beds</h3>
                     <Button type={'primary'} onClick={() => setIsModalOpen(true)}>Add Bed Configuration</Button>
                 </div>
-                {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4'}>
+                {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4 mt-3'}>
                     {
                         beds.map((bed: any, index: number) => <div key={index}
                                                                    className={'p-3 hover:p-5 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap group'}>

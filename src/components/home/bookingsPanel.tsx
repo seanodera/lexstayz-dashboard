@@ -1,42 +1,16 @@
-import {Card, Dropdown, Space, Table, Tag} from "antd";
+import {Card, Dropdown, Table} from "antd";
 import {useSelector} from "react-redux";
 import {selectAllStays, selectBookings, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
 import {dateReader, toMoneyFormat} from "@/lib/utils";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
-import {ArrowDownOutlined} from "@ant-design/icons";
 import {BsChevronDown} from "react-icons/bs";
+import {getRooms, getTag} from "@/components/common";
 
 
 const {Column, ColumnGroup} = Table;
 export default function BookingsPanel() {
     const bookings = useSelector(selectBookings);
 
-
-    function getTag(value: string) {
-        switch (value) {
-            case 'Pending':
-                return <Tag color={'warning'}>{value}</Tag>
-            case 'Confirmed':
-                return <Tag color={'success'}>{value}</Tag>
-            case 'Rejected':
-                return <Tag color={'error'}>{value}</Tag>
-            case 'Canceled':
-                return <Tag color={'error'}>{value}</Tag>
-            case 'Past' :
-                return <Tag color={'processing'}>{value}</Tag>
-            default:
-                return <Tag color={'default'}>{value}</Tag>
-        }
-
-    }
-
-    function getRooms(value: Array<any>) {
-        let numRooms = 0
-        value.forEach((room) => {
-            numRooms += room.numRooms;
-        })
-        return numRooms;
-    }
     const dispatch = useAppDispatch();
     const stays = useAppSelector(selectAllStays)
     const currentStay = useAppSelector(selectCurrentStay)

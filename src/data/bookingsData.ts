@@ -27,6 +27,7 @@ function bookingsData({stay}: {
         let booking = {
             bookingId: i,
             accountId: i,
+            bookingCode: faker.string.alphanumeric(7).toUpperCase(),
             user: {
                 firstName: faker.person.firstName(),
                 lastName: faker.person.lastName(),
@@ -42,7 +43,8 @@ function bookingsData({stay}: {
             numGuests: faker.number.int({max: 10}),
             rooms: rooms,
             totalPrice: totalPrice,
-            isConfirmed: false
+            isConfirmed: false,
+            specialRequest: faker.lorem.paragraph(),
         }
         bookings.push(booking);
     }
