@@ -49,6 +49,7 @@ const bookingSlice = createSlice({
         },
         setCurrentBookingById: (state, action) => {
             let currentBooking = state.bookings.find((booking: any) => booking.bookingId.toString() === action.payload.toString());
+            console.log(currentBooking);
             state.currentBooking = currentBooking ? currentBooking : {};
         }
     }

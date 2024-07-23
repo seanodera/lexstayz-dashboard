@@ -1,3 +1,4 @@
+'use client'
 import {Image} from "antd";
 import {toMoneyFormat} from "@/lib/utils";
 

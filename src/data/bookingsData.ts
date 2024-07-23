@@ -1,4 +1,5 @@
 import {faker} from "@faker-js/faker";
+import {differenceInDays} from "date-fns";
 
 export const statuses = ['Pending', 'Confirmed', 'Canceled', 'Rejected']
 
@@ -11,15 +12,20 @@ function bookingsData({stay}: {
     let bookings = [];
     for (let i = 0; i < 100; i++) {
         let checkInDate = faker.date.soon({days: 30});
+        let checkOutDate = faker.date.soon({days:14, refDate: checkInDate});
+        let lengthOfStay  = differenceInDays(checkOutDate,checkInDate);
         let rooms = [];
         let totalPrice = 0;
+
         for (let j = 0; j < faker.number.int({max: stay.rooms.length, min: 1}); j++) {
             let room = {
                 stayId: stay.id,
                 roomId: stay.rooms[ j ].id,
+                name: stay.rooms[ j ].name,
                 numRooms: faker.number.int({max: 10, min: 1}),
+                price: stay.rooms[ j ].price,
             }
-            totalPrice += stay.rooms[j].price * room.numRooms;
+            totalPrice += stay.rooms[j].price * room.numRooms * lengthOfStay;
             rooms.push(room)
         }
 
@@ -38,7 +44,8 @@ function bookingsData({stay}: {
             },
             accommodationId: stay.id,
             checkInDate: checkInDate,
-            checkOutDate: faker.date.soon({days:14, refDate: checkInDate}),
+            checkOutDate: checkOutDate,
+            lengthOfStay: lengthOfStay,
             status: statuses[ faker.number.int({max: statuses.length -1}) ],
             numGuests: faker.number.int({max: 10}),
             rooms: rooms,

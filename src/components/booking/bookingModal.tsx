@@ -1,3 +1,4 @@
+'use client'
 import {Modal} from "antd";
 import {useAppSelector} from "@/hooks/hooks";
 import {selectAllStays} from "@/slices/bookingSlice";

@@ -13,6 +13,7 @@ import ContactCard from "@/components/booking/contactCard";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import BookedRooms from "@/components/booking/bookedRooms";
 import PriceSummary from "@/components/booking/priceSummary";
+import {getTag} from "@/components/common";
 
 export default function Page() {
     const params = useParams();
@@ -31,14 +32,17 @@ export default function Page() {
     }, [booking.accommodationId, dispatch, stay.id]);
     const guest = booking.user;
 
-    if (!booking || booking.id === undefined) {
+    if (!booking || booking.bookingId === undefined) {
         return <div></div>;
     } else {
     return <div className={'px-4 py-4'}>
         <div className={'flex justify-between items-center'}>
-            <div className={''}>
-                <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
-                <h1 className={'font-bold'}>{booking.bookingCode}</h1>
+            <div className={'flex items-center gap-4'}>
+                <div>
+                    <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
+                    <h1 className={'font-bold items-center'}>{booking.bookingCode}</h1>
+                </div>
+                {getTag(booking.status)}
             </div>
             <div className={'flex gap-2'}>
                 <Button ghost danger icon={<CloseOutlined/>} onClick={() => {

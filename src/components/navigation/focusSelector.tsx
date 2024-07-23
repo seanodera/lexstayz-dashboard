@@ -35,17 +35,17 @@ export default function FocusSelector() {
         }))
         setItems(list)
     }, [stays]);
-    console.log(currentStay, stays)
+
     return (
         <Dropdown className={''} menu={{items}} placement={'bottom'}>
             <div className={'flex gap-1 text-dark px-2 py-2 items-center'}>
                 <Avatar shape={'square'}
                         className={' bg-primary '}>
-                    {currentStay.name?.split(' ').slice(1).map((value: string, index: number) => value.charAt(0).toUpperCase())}
+                    {currentStay?.name?.split(' ').slice(1).map((value: string, index: number) => value.charAt(0).toUpperCase())}
                 </Avatar>
                 <div>
-                    <div className={'font-medium py-0'}>{currentStay.name}</div>
-                    <div className={'text-gray-500 text-xs font-medium'}>{currentStay.location?.city}</div>
+                    <div className={'font-medium py-0'}>{currentStay?.name}</div>
+                    <div className={'text-gray-500 text-xs font-medium'}>{currentStay?.location?.city}</div>
                     {/*<div className={'text-gray-500 text-xs'}>{currentStay.location?.country}</div>*/}
                 </div>
                 <span className={'text-end ms-2'}><BsChevronDown/></span>

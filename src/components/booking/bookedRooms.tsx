@@ -1,3 +1,4 @@
+'use client'
 import {Card} from "antd";
 import RoomWidget from "@/components/booking/roomWidget";
 
