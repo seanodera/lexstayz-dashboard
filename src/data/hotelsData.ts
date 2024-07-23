@@ -219,6 +219,9 @@ function hotelsDataGenerator() {
 
         const stay = {
             id: i,
+            published: true,
+            checkInTime: '14:00',
+            checkOutTime: '12:00',
             name: 'The ' + faker.person.lastName() + ' Inn',
             price: price,
             rating: faker.number.int({max: 1000}) / 100,
