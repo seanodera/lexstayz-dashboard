@@ -1,7 +1,7 @@
 'use client'
 
 import {Button, Card} from "antd";
-import {EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
+import {PlusCircleOutlined} from "@ant-design/icons";
 import React, {useEffect} from "react";
 import {useParams} from "next/navigation";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
@@ -22,7 +22,7 @@ export default function Page() {
     }, [currentId, dispatch, params]);
 
     const stay = useAppSelector(selectCurrentStay);
-    return <div className={'px-4 py-4'}>
+    return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between items-center'}>
             <div className={''}>
                 <h3 className={'text-gray-500 font-bold mb-0'}>Rooms</h3>

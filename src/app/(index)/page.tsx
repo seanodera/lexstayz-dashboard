@@ -1,5 +1,4 @@
 'use client'
-import Image from "next/image";
 import {Card, Col, Flex, Row, Typography} from "antd";
 import {BookFilled, BookOutlined, WalletFilled, WalletOutlined} from "@ant-design/icons";
 import {toMoneyFormat} from "@/lib/utils";
@@ -7,8 +6,12 @@ import CountUp from "react-countup";
 import NotificationsPanel from "@/components/home/NotificationsPanel";
 import BookingsPanel from "@/components/home/bookingsPanel";
 import CheckInPanel from "@/components/home/checkInPanel";
+import ReviewsPanel from "@/components/home/ReviewsPanel";
+import {useAppSelector} from "@/hooks/hooks";
+import {selectBalance} from "@/slices/bookingSlice";
 
 export default function Home() {
+    const balances = useAppSelector(selectBalance)
     const items = [
         {
             Icon: BookFilled,
@@ -23,18 +26,18 @@ export default function Home() {
         {
             Icon: WalletOutlined,
             name: "Pending Balance",
-            value: 43632.56,
+            value: balances.pending,
             prefix: '$',
         },
         {
             Icon: WalletFilled,
             name: "Available Balance",
-            value: 68898.45,
+            value: balances.available,
             prefix: '$',
         }
 
     ]
-    return <div className={'overflow-y-scroll overflow-x-hidden px-4 py-4'}>
+    return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10'}>
         <Row gutter={[16, 16]} className={''}>
             <Col span={24}>
                 <div className={'grid grid-cols-4 gap-4 w-full'}>
@@ -55,13 +58,15 @@ export default function Home() {
             </Col>
             <Col span={18}>
                 <BookingsPanel/>
-
             </Col>
             <Col span={6}>
                 <NotificationsPanel/>
             </Col>
             <Col span={18}>
                 <CheckInPanel/>
+            </Col>
+            <Col span={6}>
+                <ReviewsPanel/>
             </Col>
         </Row>
     </div>;

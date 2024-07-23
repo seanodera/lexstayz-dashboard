@@ -7,7 +7,7 @@ import {BsChevronDown} from "react-icons/bs";
 import {getRooms, getTag} from "@/components/common";
 
 
-const {Column, ColumnGroup} = Table;
+const {Column} = Table;
 export default function BookingsPanel() {
     const bookings = useSelector(selectBookings);
 

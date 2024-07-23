@@ -1,7 +1,7 @@
 'use client'
 
 import {usePathname} from "next/navigation";
-import React, {SetStateAction, useEffect, useState} from "react";
+import React from "react";
 import Link from "next/link";
 import {Layout, Menu} from "antd";
 import {
@@ -12,9 +12,8 @@ import {
     BarChartOutlined,
     SettingOutlined,
     QuestionCircleOutlined,
-    LogoutOutlined
+    LogoutOutlined, WalletOutlined
 } from '@ant-design/icons';
-import {MdOutlineLocalHotel} from "react-icons/md";
 import LogoIcon from "@/components/LogoIcon";
 
 const menuItems = [
@@ -35,6 +34,12 @@ const menuItems = [
         icon: <BookOutlined />,
         label: "Reservations",
         href: "/reservations"
+    },
+    {
+        key: "Cashier",
+        icon: <WalletOutlined />,
+        label: "Cashier",
+        href: "/cashier"
     },
     {
         key: "guests",

@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import colors from "tailwindcss/colors";
 
 
 const primaryColor = {
@@ -30,7 +29,8 @@ const config: Config = {
       colors: {
         primary: primaryColor,
         dark: primaryColor[950],
-        danger: '#FF4D4F'
+        danger: '#FF4D4F',
+        warning: '#faad14',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

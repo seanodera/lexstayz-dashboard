@@ -13,6 +13,8 @@ export function getTag(value: string) {
             return <Tag color={'error'}>{value}</Tag>
         case 'Past' :
             return <Tag color={'processing'}>{value}</Tag>
+        case 'Completed':
+            return <Tag color={'success'}>{value}</Tag>
         default:
             return <Tag color={'default'}>{value}</Tag>
     }

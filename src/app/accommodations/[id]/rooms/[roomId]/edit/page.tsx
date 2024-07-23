@@ -25,7 +25,7 @@ export default function Page() {
     } else {
         const room = stay.rooms.find((value: any) => value.id.toString() === roomId.toString())
 
-        return <div className={'px-4 py-4'}>
+        return <div className={'pt-4 pb-10 px-10'}>
             <div className={'flex justify-between mb-4 items-center'}>
                 <div className={''}>
                     <h3 className={'text-gray-500 font-bold mb-0'}>Edit Room</h3>

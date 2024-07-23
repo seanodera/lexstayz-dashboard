@@ -3,10 +3,7 @@ import {resetBooking, selectCurrentId, selectCurrentStay, setCurrentStayFromId} 
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import React, {useEffect} from "react";
 import {useParams} from "next/navigation";
-import {Description} from "@headlessui/react";
-import {Button, Descriptions} from "antd";
-import DescriptionsItem from "antd/es/descriptions/Item";
-import { Image } from "antd";
+import {Button} from "antd";
 import ListingDescription from "@/components/accomodations/ListingDescription";
 import RoomComponent from "@/components/accomodations/roomComponent";
 import {EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
@@ -29,7 +26,7 @@ export default function Page(){
     if (!stay || stay.id === undefined) {
         return <div></div>;
     } else {
-    return <div className={'px-4 py-4'}>
+    return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between mb-4'}>
             <h1 className={'font-bold'}>{stay.name}</h1>
             <div className={'space-x-2'}>
