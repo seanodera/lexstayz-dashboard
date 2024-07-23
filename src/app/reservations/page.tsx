@@ -19,7 +19,7 @@ export default function BookingPage() {
             <Table dataSource={bookings} pagination={{
             }} onRow={(record, rowIndex) => {
                 return {
-                    onClick: event => router.push(`reservations/${record.bookingId}`),
+                    onClick: event => {},
                 };
             }} >
                 <Column className={'text-nowrap'} title={'First Name'} dataIndex={['user', 'firstName']}/>

@@ -24,11 +24,13 @@ export default function Page() {
     useEffect(() => {
         dispatch(setCurrentBookingById(bookingId));
     }, [bookingId, dispatch]);
-    useEffect(() => {
-        if (stay.id !== booking.accommodationId) {
 
-            dispatch(setCurrentStayFromId(booking.accommodationId));
-        }
+    useEffect(() => {
+       if (stay){
+           if (stay.id !== booking.accommodationId) {
+               dispatch(setCurrentStayFromId(booking.accommodationId));
+           }
+       }
     }, [booking, dispatch, stay]);
     const guest = booking.user;
 
