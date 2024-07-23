@@ -33,7 +33,8 @@ const bookingSlice = createSlice({
         },
         setCurrentStayFromId: (state, action) => {
             state.currentId = action.payload;
-            state.currentStay = state.stays[ action.payload ];
+            let currentStay = state.stays.find((value:any) => value.id.toString() === action.payload.toString());
+            state.currentStay = currentStay? currentStay : {};
             console.log(state)
         },
         updateCart: (state, action) => {
@@ -50,7 +51,7 @@ const bookingSlice = createSlice({
         setCurrentBookingById: (state, action) => {
             let currentBooking = state.bookings.find((booking: any) => booking.bookingId.toString() === action.payload.toString());
             console.log(currentBooking);
-            state.currentBooking = currentBooking ? currentBooking : {};
+            state.currentBooking = currentBooking? currentBooking : {};
         }
     }
 })

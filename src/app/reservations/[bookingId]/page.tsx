@@ -26,43 +26,43 @@ export default function Page() {
     }, [bookingId, dispatch]);
 
     useEffect(() => {
-       if (stay){
-           if (stay.id !== booking.accommodationId) {
-               dispatch(setCurrentStayFromId(booking.accommodationId));
-           }
-       }
-    }, [booking, dispatch, stay]);
+
+        if (booking.accommodationId){
+            dispatch(setCurrentStayFromId(booking.accommodationId));
+        }
+
+    }, [booking, dispatch]);
     const guest = booking.user;
 
     if (!booking || booking.bookingId === undefined || !stay || stay.id === undefined) {
         return <div className={'p-4'}><Skeleton active/></div>;
     } else {
-    return <div className={'px-4 py-4'}>
-        <div className={'flex justify-between items-center'}>
-            <div className={'flex items-center gap-4'}>
-                <div>
-                    <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
-                    <h1 className={'font-bold items-center'}>{booking.bookingCode}</h1>
+        return <div className={'px-4 py-4'}>
+            <div className={'flex justify-between items-center'}>
+                <div className={'flex items-center gap-4'}>
+                    <div>
+                        <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
+                        <h1 className={'font-bold items-center'}>{booking.bookingCode}</h1>
+                    </div>
+                    {getTag(booking.status)}
                 </div>
-                {getTag(booking.status)}
+                <div className={'flex gap-2'}>
+                    <Button ghost danger icon={<CloseOutlined/>} onClick={() => {
+                    }}>Reject</Button>
+                    <Button type={'primary'} ghost icon={<CheckOutlined/>}>Confirm</Button>
+                </div>
             </div>
-            <div className={'flex gap-2'}>
-                <Button ghost danger icon={<CloseOutlined/>} onClick={() => {
-                }}>Reject</Button>
-                <Button type={'primary'} ghost icon={<CheckOutlined/>}>Confirm</Button>
-            </div>
-        </div>
-        <Row gutter={[16, 16]}>
-            <Col span={16} className={'space-y-4'}>
-                <BookingDescription booking={booking} stay={stay}/>
-                <BookedRooms
-                    booking={booking}
-                    stay={stay}/></Col>
-            <Col span={8} className={'space-y-4'}>
-                <ContactCard guest={guest}/>
-                <PriceSummary booking={booking} stay={stay}/>
-            </Col>
-        </Row>
-    </div>;
+            <Row gutter={[16, 16]}>
+                <Col span={16} className={'space-y-4'}>
+                    <BookingDescription booking={booking} stay={stay}/>
+                    <BookedRooms
+                        booking={booking}
+                        stay={stay}/></Col>
+                <Col span={8} className={'space-y-4'}>
+                    <ContactCard guest={guest}/>
+                    <PriceSummary booking={booking} stay={stay}/>
+                </Col>
+            </Row>
+        </div>;
     }
 }
