@@ -230,7 +230,8 @@ function hotelsDataGenerator() {
             type: 'hotel',
             rooms: rooms,
             location: {
-                city: faker.location.city(),
+                street: faker.location.street(),
+                district: faker.location.city(),
                 country: faker.location.country(),
             },
             poster: faker.image.urlLoremFlickr({category: 'HotelRoom'}),

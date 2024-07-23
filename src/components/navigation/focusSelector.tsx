@@ -28,13 +28,13 @@ export default function FocusSelector() {
                     </Avatar>
                     <div>
                         <div className={'font-medium'}>{item.name}</div>
-                        <div className={'text-gray-500 text-sm'}>{item.location.city}, {item.location.country}</div>
+                        <div className={'text-gray-500 text-sm'}>{item.location.district}, {item.location.country}</div>
                     </div>
                 </div>
             </div>)
         }))
         setItems(list)
-    }, [stays]);
+    }, [dispatch, stays]);
 
     return (
         <Dropdown className={''} menu={{items}} placement={'bottom'}>
@@ -45,7 +45,7 @@ export default function FocusSelector() {
                 </Avatar>
                 <div>
                     <div className={'font-medium py-0'}>{currentStay?.name}</div>
-                    <div className={'text-gray-500 text-xs font-medium'}>{currentStay?.location?.city}</div>
+                    <div className={'text-gray-500 text-xs font-medium'}>{currentStay?.location?.district}</div>
                     {/*<div className={'text-gray-500 text-xs'}>{currentStay.location?.country}</div>*/}
                 </div>
                 <span className={'text-end ms-2'}><BsChevronDown/></span>

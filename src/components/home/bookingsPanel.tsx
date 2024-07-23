@@ -20,7 +20,7 @@ export default function BookingsPanel() {
             key: index,
             label: <div onClick={() => dispatch(setCurrentStayFromId(index))} className={''}>
                 <div className={'font-semibold'}>{item.name}</div>
-                <div className={'text-gray-500 '}>{item.location.city}, {item.location.country}</div>
+                <div className={'text-gray-500 '}>{item.location.district}, {item.location.country}</div>
                 </div>,
         }
     })

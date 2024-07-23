@@ -8,7 +8,7 @@ import {useParams} from "next/navigation";
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import BookingDescription from "@/components/booking/bookingDescription";
-import {Button, Col, Row} from "antd";
+import {Button, Col, Row, Skeleton} from "antd";
 import ContactCard from "@/components/booking/contactCard";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import BookedRooms from "@/components/booking/bookedRooms";
@@ -29,11 +29,11 @@ export default function Page() {
 
             dispatch(setCurrentStayFromId(booking.accommodationId));
         }
-    }, [booking.accommodationId, dispatch, stay.id]);
+    }, [booking, dispatch, stay]);
     const guest = booking.user;
 
-    if (!booking || booking.bookingId === undefined) {
-        return <div></div>;
+    if (!booking || booking.bookingId === undefined || !stay || stay.id === undefined) {
+        return <div className={'p-4'}><Skeleton active/></div>;
     } else {
     return <div className={'px-4 py-4'}>
         <div className={'flex justify-between items-center'}>
