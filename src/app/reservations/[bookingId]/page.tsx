@@ -30,6 +30,10 @@ export default function Page() {
         }
     }, [booking.accommodationId, dispatch, stay.id]);
     const guest = booking.user;
+
+    if (!booking || booking.id === undefined) {
+        return <div></div>;
+    } else {
     return <div className={'px-4 py-4'}>
         <div className={'flex justify-between items-center'}>
             <div className={''}>
@@ -54,4 +58,5 @@ export default function Page() {
             </Col>
         </Row>
     </div>;
+    }
 }

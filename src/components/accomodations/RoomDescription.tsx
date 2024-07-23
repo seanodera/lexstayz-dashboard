@@ -11,12 +11,12 @@ export default function RoomDescription({room}: any){
         <Row gutter={[16, 16]}>
             <Col span={5}>
                 <h3 className={'font-bold'}>Main Image</h3>
-                <Image src={room.poster} alt={'Main Image'} className={'rounded-xl'}/>
+                <Image src={room.poster} alt={'Main Image'} className={'rounded-xl aspect-video object-cover'}/>
             </Col>
             <Col span={19}>
                 <h3 className={'font-bold'}>Detailed Room Images</h3>
                 <div className={'grid grid-cols-4 gap-4'}>
-                    {room.images?.slice(0, 3).map((image: string, index: number) => <Image className={'rounded-xl'}
+                    {room.images?.slice(0, 3).map((image: string, index: number) => <Image className={'rounded-xl aspect-video object-cover'}
                                                                                            key={index} src={image}
                                                                                            alt={'Other Images ' + index}/>)}
                     <div className={'flex items-center justify-center border border-dashed border-primary rounded-xl'}>

@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function RoomComponent({room}:{room: any}){
 
     return <Link href={`/accommodations/${room.accommodationId}/rooms/${room.id}`} className={'rounded-xl text-dark block'}>
-        <Image className={'rounded-xl'} src={room.poster} alt="poster"/>
+        <Image className={'rounded-xl aspect-video object-cover'} src={room.poster} alt="poster"/>
         <h3 className={'font-semibold text-lg capitalize'}>{room.name}</h3>
         <p className={'line-clamp-2'}>{room.description}</p>
         <div className={'flex flex-wrap gap-2 my-4'}>{room.amenities.slice(0,4).map((amenity: string, index: number) =>
