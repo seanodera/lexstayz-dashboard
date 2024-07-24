@@ -11,11 +11,11 @@ export default function withdrawData(){
             account: account,
             amount: faker.number.int({max: 8000, min: 200}),
             status: 'Completed',
-            timeStamp: faker.date.recent(),
+            timeStamp: faker.date.recent().toDateString(),
 
         });
     }
-    withdrawals.sort((a,b) => a.timeStamp.getSeconds() - b.timeStamp.getSeconds())
+    withdrawals.sort((a,b) => new Date(a.timeStamp).getSeconds() - new Date(b.timeStamp).getSeconds())
     return {
         account: {
             method: 'Pryzapay',

@@ -31,15 +31,12 @@ export default function BookingsPanel() {
                      </div>
                  </Dropdown>}>
         <Table scroll={{x: true}} dataSource={bookings.slice(0,5)} pagination={false}>
-            <Column title={'Guest'} dataIndex={['user']} render={value => <div className={'flex'}>
-                <div>
-
-                </div>
-                <div>
+            <Column title={'Guest'} dataIndex={['user']} render={(value, record, index) =>
+                <div key={index}>
                     <div className={'font-medium'}>{value.firstName} {value.lastName}</div>
                     <div className={'text-gray-500 '}>{value.email}</div>
                 </div>
-            </div> }/>
+            }/>
             <Column className={'text-nowrap'} title={'Check-In'} dataIndex={'checkInDate'}
                     render={value => dateReader({date: value})}/>
             <Column className={'text-nowrap'} title={'Check-Out'} dataIndex={'checkOutDate'}

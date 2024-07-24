@@ -13,8 +13,8 @@ const bookingSlice = createSlice({
         bookings: [],
         currentBooking: {},
         dates: {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 1),
+            startDate: new Date().toDateString(),
+            endDate: addDays(new Date(), 1).toDateString(),
             length: 1,
         },
         balance: {
