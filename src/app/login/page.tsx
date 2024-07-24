@@ -4,7 +4,7 @@ import {Field, Fieldset,Input, Label} from "@headlessui/react";
 import Link from "next/link";
 import LogoIcon from "@/components/LogoIcon";
 import {useState} from "react";
-import {signInWithEmailAndPassword, signOut} from "@firebase/auth";
+import {signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {auth} from "@/lib/firebase";
 import {useAppDispatch} from "@/hooks/hooks";
 import {getUserDetails} from "@/data/usersData";

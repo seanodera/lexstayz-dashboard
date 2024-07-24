@@ -5,7 +5,7 @@ import Link from "next/link";
 import LogoIcon from "@/components/LogoIcon";
 import {useState} from "react";
 import {auth} from "@/lib/firebase";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {createUser} from "@/data/usersData";
 import {useAppDispatch} from "@/hooks/hooks";
 import {loginUser} from "@/slices/authenticationSlice";
