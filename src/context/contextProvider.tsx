@@ -1,7 +1,7 @@
 'use client'
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
-import hotelsData from "@/data/hotelsData";
+import hotelsDataLocal from "@/data/hotelsDataLocal";
 import {setAllStays, setBalance, setBookings, setCurrentStayFromId, setWithdraw} from "@/slices/bookingSlice";
 import 'antd/dist/reset.css';
 import {Layout, theme} from 'antd';
@@ -48,7 +48,7 @@ export default function ContextProvider({children}: { children: React.ReactNode 
         let isAuthRoute = pathname === '/login' || pathname === '/register';
 
         if (isAuthenticated) {
-            const stays = hotelsData;
+            const stays = hotelsDataLocal;
             dispatch(setAllStays(stays));
             dispatch(setCurrentStayFromId(0))
             dispatch(setBookings(bookingsData({stay: stays[ 0 ]})))

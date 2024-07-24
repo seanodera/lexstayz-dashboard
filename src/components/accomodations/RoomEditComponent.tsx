@@ -20,7 +20,7 @@ import {LuBedSingle} from "react-icons/lu";
 import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import {UploadChangeParam} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
-import {bedTypes, hotelFacilities} from "@/data/hotelsData";
+import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
 
 const {TextArea} = Input;
 

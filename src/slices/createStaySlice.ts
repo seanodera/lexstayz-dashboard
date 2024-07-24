@@ -10,6 +10,15 @@ const createStaySlice = createSlice({
         rooms: {}
     },
     reducers: {
-
+        setStayPartial: (state, action) => {
+            state.stay = {
+                id: 'create',
+                ...action.payload
+            };
+        }
     }
 })
+
+export const selectPartialStay = (state: any) => state.createStay.stay;
+export const {setStayPartial} = createStaySlice.actions;
+export default createStaySlice.reducer

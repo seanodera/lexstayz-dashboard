@@ -77,10 +77,16 @@ export const dateReader = ({date = Date.now(), month = true, years = true, weekD
     return dateString;
 }
 
-export async function getCountry() {
-    let data = await fetch('https://api.country.is');
-    let result = await data.json();
-    console.log(data.json());
+export function getCountry() {
+    let result = {
+        country: ''
+    }
+     fetch('https://api.country.is').then((res) => {
+        res.json().then((data) => {
+            result = data;
+        })
+    });
+
     return countries[result.country].name;
 }
 
@@ -89,14 +95,14 @@ export function serviceCountries() {
     return list.map((e) => countries[e])
 }
 
-export async function createFile({url}: { url: string }) {
+export async function createFile({url, name = 'image'}: { url: string, name?: string }) {
     let response = await fetch(url);
     let data = await response.blob();
     let metadata = {
         type: 'image/jpeg'
     };
     // ... do something with the file or return it
-    return new File([data], "picture.jpg", metadata);
+    return new File([data], `${name}.jpg`, metadata);
 }
 
 export function toMoneyFormat(amount: number, {fractionDigits = 2}: {fractionDigits?: number} ) {

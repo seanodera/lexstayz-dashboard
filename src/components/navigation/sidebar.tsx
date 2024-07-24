@@ -88,7 +88,7 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
             <div className={`p-1 h-12 aspect-square bg-white bg-opacity-10 rounded-lg`}><LogoIcon className={'fill-primary'}/></div>
             <div className={`font-semibold text-lg  ${collapsed? 'hidden':''}`}>LexStayz</div>
         </Link>
-        <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[1]]} defaultSelectedKeys={['dashboard']} items={
+        <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[1]]} items={
             menuItems.map(item => renderMenuItem(item))
         }>
 

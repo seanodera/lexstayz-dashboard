@@ -1,5 +1,5 @@
 import {firestore} from "@/lib/firebase";
-import {addDoc, doc, getDoc, getDocs, setDoc} from "@firebase/firestore";
+import {addDoc, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
 
 
 export async function createUser(user: any, id: string) {
