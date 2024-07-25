@@ -13,6 +13,8 @@ import {Field, Fieldset, Label, Select} from "@headlessui/react";
 import {countries} from "country-data";
 
 import UploadImagesComponent from "@/components/accomodations/uploadImagesComponent";
+import {fetchStaysAsync} from "@/slices/bookingSlice";
+import {useAppDispatch} from "@/hooks/hooks";
 
 
 export default function ListingEditComponent({stay, partial}: { stay?: any, partial?: any }) {
@@ -43,6 +45,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     const [cancellationTime,setCancellationTime] = useState<number>(0);
     const [timeSpace,setTimeSpace] = useState<string>('Days');
     const [preDate,setPreDate] = useState<boolean>(true)
+    const dispatch = useAppDispatch()
 
     const handleChange = (info: UploadChangeParam<UploadFile<any>>) => {
         const reader = new FileReader();
@@ -93,6 +96,9 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
         if (partial) {
             uploadStay(newStay, poster, images).then((response) => {
                 console.log('Done')
+
+                // @ts-ignore
+                dispatch(fetchStaysAsync());
                 router.push('/accommodations');
             })
         }

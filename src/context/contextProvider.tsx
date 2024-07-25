@@ -50,6 +50,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         const fetchData = async () => {
             if (!hasRun) {
 
+
                 // @ts-ignore
                 dispatch(fetchStaysAsync());
                 dispatch(setBookings([]));

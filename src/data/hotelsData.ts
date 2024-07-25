@@ -8,7 +8,7 @@ import {
     Timestamp,
     runTransaction
 } from "@firebase/firestore";
-import { auth, storage } from "@/lib/firebase";
+import {auth, firestore, storage} from "@/lib/firebase";
 import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 import { createFile } from "@/lib/utils";
 
@@ -29,7 +29,6 @@ function getCurrentUser() {
 export async function uploadStay(stay: any, poster: string, images: string[]) {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const staysRef = collection(userDocRef, 'stays');
         const docRef = doc(staysRef);

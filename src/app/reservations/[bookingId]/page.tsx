@@ -14,6 +14,7 @@ import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import BookedRooms from "@/components/booking/bookedRooms";
 import PriceSummary from "@/components/booking/priceSummary";
 import {getTag} from "@/components/common";
+import {updateRoomFirebase} from "@/data/hotelsData";
 
 export default function Page() {
     const params = useParams();
@@ -33,6 +34,8 @@ export default function Page() {
 
     }, [booking, dispatch]);
     const guest = booking.user;
+
+    //await updateRoomFirebase(roomData, stayId, room.id, poster, images);
 
     if (!booking || booking.bookingId === undefined || !stay || stay.id === undefined) {
         return <div className={'p-4'}><Skeleton active/></div>;

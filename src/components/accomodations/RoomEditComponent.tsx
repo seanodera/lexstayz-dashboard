@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button,
     Card,
@@ -15,20 +15,19 @@ import {
     Select,
     Upload
 } from "antd";
-import { IoBedOutline } from "react-icons/io5";
-import { LuBedSingle } from "react-icons/lu";
-import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
-import { UploadChangeParam } from "antd/es/upload";
-import { UploadFile } from "antd/lib";
-import { bedTypes, hotelFacilities } from "@/data/hotelsDataLocal";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import {IoBedOutline} from "react-icons/io5";
+import {LuBedSingle} from "react-icons/lu";
+import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
+import {UploadChangeParam} from "antd/es/upload";
+import {UploadFile} from "antd/lib";
+import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
+import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 
-import { selectCurrentStay, setCurrentStayFromId } from "@/slices/bookingSlice";
-import {addRoomFirebase, updateRoomFirebase} from "@/data/hotelsData";
+import {selectCurrentStay, setCurrentStayFromId, addRoomAsync, fetchStaysAsync} from "@/slices/bookingSlice";
 
-const { TextArea } = Input;
+const {TextArea} = Input;
 
-export default function RoomEditComponent({ room, stayId }: { room?: any, stayId: string }) {
+export default function RoomEditComponent({room, stayId}: { room?: any, stayId: string }) {
     const dispatch = useAppDispatch();
     const currentStay = useAppSelector(selectCurrentStay);
 
@@ -61,34 +60,34 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
     };
 
     const handleChangeDetails = (info: UploadChangeParam<UploadFile<any>>) => {
-
         setImages(images.concat(URL.createObjectURL(info.file.originFileObj as File)));
-
     };
 
     const handleSubmit = async () => {
-        const roomData = {
-            name,
-            maxGuests,
-            beds,
-            description,
-            amenities,
-            price,
-            available
-        };
+        if (room){
 
-        console.log(roomData);
-        if (room) {
-            // Update existing room
-            await updateRoomFirebase(roomData, stayId, room.id, poster, images);
         } else {
-            // Add new room
-            await addRoomFirebase(roomData, stayId, poster, images);
-            // window.location.reload()
-        }
+            const roomData = {
+                name,
+                maxGuests,
+                beds,
+                description,
+                amenities,
+                price,
+                available
+            };
 
-        // Refresh current stay to reflect changes
-        //dispatch(setCurrentStayFromId(stayId));
+            console.log(roomData);
+
+            // Add new room
+            // @ts-ignore
+            await dispatch(addRoomAsync({room: roomData, stayId, poster, images}));
+
+            //@ts-ignore
+            dispatch(fetchStaysAsync());
+            // Refresh current stay to reflect changes
+            dispatch(setCurrentStayFromId(stayId));
+        }
     };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,8 +95,9 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
     return (
         <Card className={'rounded-2xl'}>
             <div className={'flex justify-between items-center my-2'}>
-                <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>} className={'font-bold h3 text-xl'}>
-                    <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'} />
+                <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>}
+                           className={'font-bold h3 text-xl'}>
+                    <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'}/>
                 </Form.Item>
                 <Button type={"primary"} size={'large'} onClick={handleSubmit}>Confirm</Button>
             </div>
@@ -107,7 +107,7 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                         <h3 className={'font-bold mb-0'}>Main Image</h3>
                         <Upload className={'mt-4'} multiple={false} onChange={handleChange} maxCount={1}
                                 showUploadList={false}>
-                            <Button icon={<UploadOutlined />}>
+                            <Button icon={<UploadOutlined/>}>
                                 Select Poster
                             </Button>
                         </Upload>
@@ -116,14 +116,15 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                         <div
                             className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
                         </div> :
-                        <Image src={poster} alt={'Main Image'} className={'rounded-xl mb-4 aspect-video object-cover'} />}
+                        <Image src={poster} alt={'Main Image'}
+                               className={'rounded-xl mb-4 aspect-video object-cover'}/>}
                 </Col>
                 <Col span={19}>
                     <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
                         Images</h3>
                         <Upload disabled={images.length >= 4} className={'mt-4'} onChange={handleChangeDetails}
                                 showUploadList={false}>
-                            <Button icon={<UploadOutlined />}>
+                            <Button icon={<UploadOutlined/>}>
                                 Add Image
                             </Button>
                         </Upload>
@@ -132,8 +133,8 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                         {images?.slice(0, 4).map((image: string, index: number) => <div key={index}><Image
                             className={'rounded-xl aspect-video object-cover'}
                             src={image}
-                            alt={'Other Images ' + index} />
-                            <Button className={'mt-1 mx-auto'} type={'default'} danger={true} icon={<DeleteOutlined />}
+                            alt={'Other Images ' + index}/>
+                            <Button className={'mt-1 mx-auto'} type={'default'} danger={true} icon={<DeleteOutlined/>}
                                     onClick={() => setImages(images.toSpliced(index, 1))}>Remove</Button>
                         </div>)}
                         {images.length < 4 ? <div
@@ -146,7 +147,7 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                 <div>
                     <h3 className={'font-bold mb-0'}>Description</h3>
                     <TextArea rows={4} placeholder={'Enter room Description'}
-                              onChange={(e) => setDescription(e.target.value)} value={description} />
+                              onChange={(e) => setDescription(e.target.value)} value={description}/>
                 </div>
                 <div>
                     <h3 className={'font-bold'}>Details</h3>
@@ -154,15 +155,15 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                           rootClassName={'font-semibold text-lg w-full'}>
                         <Form.Item label={'Nightly Rate'}>
                             <InputNumber prefix={'$'} min={0} value={price}
-                                         onChange={(value: number | null) => setPrice(value)} />
+                                         onChange={(value: number | null) => setPrice(value)}/>
                         </Form.Item>
                         <Form.Item label={'Maximum Guests'}>
                             <InputNumber min={0} value={maxGuests}
-                                         onChange={(value: number | null) => setMaxGuests(value)} />
+                                         onChange={(value: number | null) => setMaxGuests(value)}/>
                         </Form.Item>
                         <Form.Item label={'Available rooms'}>
                             <InputNumber min={0} value={available}
-                                         onChange={(value: number | null) => setAvailable(value)} />
+                                         onChange={(value: number | null) => setAvailable(value)}/>
                         </Form.Item>
                     </Form>
                 </div>
@@ -174,73 +175,74 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
                         {
                             beds.map((bed: any, index: number) => <div key={index}
                                                                        className={'p-3 hover:p-5 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap group'}>
-                                <span className={'hidden group-hover:block mx-auto aspect-square h-full text-2xl text-danger'} onClick={() => setBeds(beds.toSpliced(index, 1))}><DeleteOutlined /></span>
+                                <span
+                                    className={'hidden group-hover:block mx-auto aspect-square h-full text-2xl text-danger'}
+                                    onClick={() => setBeds(beds.toSpliced(index, 1))}><DeleteOutlined/></span>
                                 <span
                                     className={'mx-auto block group-hover:hidden'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
-                                    <IoBedOutline size={28} /> : <LuBedSingle size={28} />}</span>
-                                <span className={'group-hover:hidden'}>{bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}</span>
+                                    <IoBedOutline size={28}/> : <LuBedSingle size={28}/>}</span>
+                                <span
+                                    className={'group-hover:hidden'}>{bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}</span>
                             </div>)
                         }
-                    </div> : <Empty className={'mt-4'} />}
-                    <BedDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} beds={beds} setBeds={setBeds} />
+                    </div> : <Empty className={'mt-4'}/>}
+                    <BedDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} beds={beds} setBeds={setBeds}/>
                 </div>
             </div>
-        <div>
-            <h3 className={'font-bold'}>Amenities</h3>
-            <div className={'grid grid-rows-7 grid-cols-2 gap-2'}>
-                {hotelFacilities[ 0 ][ 'Guest Room Amenities' ]?.map((value, index) => <Checkbox key={index}
-                                                                                                 checked={amenities.includes(value)}
-                                                                                                 onChange={(e) => {
-                                                                                                     if (e.target.checked) {
-                                                                                                         if (!amenities.includes(value)) {
-                                                                                                             setAmenities(amenities.concat([value]));
+            <div>
+                <h3 className={'font-bold'}>Amenities</h3>
+                <div className={'grid grid-rows-7 grid-cols-2 gap-2'}>
+                    {hotelFacilities[ 0 ][ 'Guest Room Amenities' ]?.map((value, index) => <Checkbox key={index}
+                                                                                                     checked={amenities.includes(value)}
+                                                                                                     onChange={(e) => {
+                                                                                                         if (e.target.checked) {
+                                                                                                             if (!amenities.includes(value)) {
+                                                                                                                 setAmenities(amenities.concat([value]));
+                                                                                                             }
+                                                                                                         } else {
+                                                                                                             setAmenities(amenities.filter((item) => item !== value));
                                                                                                          }
-                                                                                                     } else {
-                                                                                                         if (amenities.includes(value)) {
-                                                                                                             setAmenities(amenities.toSpliced(amenities.indexOf(value), 1));
-                                                                                                         }
-                                                                                                     }
-                                                                                                     console.log(amenities)
-                                                                                                 }}>{value}</Checkbox>)}
+                                                                                                     }}>{value}</Checkbox>)}
+                </div>
             </div>
-        </div>
-    </Card>)
+        </Card>
+    );
 }
 
-function BedDialog({isModalOpen, setIsModalOpen, beds, setBeds}: {
+const BedDialog = ({
+                       isModalOpen,
+                       setIsModalOpen,
+                       beds,
+                       setBeds
+                   }: {
     isModalOpen: boolean,
     setIsModalOpen: any,
-    beds: any,
+    beds: Array<any>,
     setBeds: any
-}) {
-    const [numBeds, setNumBeds] = useState<number | null>(0);
-    const [bedType, setBedType] = useState('King');
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setBeds(beds.concat({number: numBeds, type: bedType}));
+}) => {
+    const [form] = Form.useForm();
+    const handleAddBed = (values: any) => {
+        setBeds(beds.concat(values));
+        form.resetFields();
         setIsModalOpen(false);
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    return <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={false}>
-        <Form layout={'vertical'}>
-            <Form.Item label={'Number Of Beds'}>
-                <InputNumber min={1} onChange={(value: number | null) => setNumBeds(value)}/>
-            </Form.Item>
-            <Form.Item label={'Bed Type'}>
-                <Select defaultValue={'King'}
-                        onChange={(value) => setBedType(value)}
-                        options={bedTypes.map((value, index) => ({value: value, label: value + ' Bed'}))}/>
-            </Form.Item>
-            <Form.Item>
-                <Button type={'primary'} block onClick={handleOk}>Add</Button>
-            </Form.Item>
-        </Form>
-    </Modal>
-}
+    return (
+        <Modal title="Add Bed" open={isModalOpen} onOk={form.submit} onCancel={() => setIsModalOpen(false)}>
+            <Form form={form} onFinish={handleAddBed}>
+                <Form.Item name="type" label="Bed Type" rules={[{required: true}]}>
+                    <Select>
+                        {bedTypes.map((type: string) => (
+                            <Select.Option key={type} value={type}>
+                                {type}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item name="number" label="Number of Beds" rules={[{required: true}]}>
+                    <InputNumber min={1}/>
+                </Form.Item>
+            </Form>
+        </Modal>
+    );
+};
