@@ -16,7 +16,7 @@ export default function Page() {
 
     useEffect(() => {
         if (currentId !== params) {
-            dispatch(setCurrentStayFromId(params));
+            dispatch(setCurrentStayFromId(params.toString()));
         }
     }, [currentId, dispatch, params]);
 

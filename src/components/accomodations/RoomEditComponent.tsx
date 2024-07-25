@@ -84,7 +84,7 @@ export default function RoomEditComponent({ room, stayId }: { room?: any, stayId
         } else {
             // Add new room
             await addRoomFirebase(roomData, stayId, poster, images);
-            window.location.reload()
+            // window.location.reload()
         }
 
         // Refresh current stay to reflect changes

@@ -15,6 +15,8 @@ export function getTag(value: string) {
             return <Tag color={'processing'}>{value}</Tag>
         case 'Completed':
             return <Tag color={'success'}>{value}</Tag>
+        case 'Published':
+            return <Tag color={'purple'}>{value}</Tag>
         default:
             return <Tag color={'default'}>{value}</Tag>
     }

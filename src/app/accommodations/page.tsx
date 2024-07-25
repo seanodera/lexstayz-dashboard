@@ -12,17 +12,17 @@ export default function ListingsPage() {
     const stays = useAppSelector(selectAllStays)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [firebaseStays, setFirebaseStays] = useState<Array<any>>([])
-    useEffect(()=>{
-        async function getData(){
-            const data = await getStaysFirebase();
-            if (data){
-                setFirebaseStays(data);
-            }
-        }
-       if(firebaseStays.length === 0){
-           getData()
-       }
-    })
+    // useEffect(()=>{
+    //     async function getData(){
+    //         const data = await getStaysFirebase();
+    //         if (data){
+    //             setFirebaseStays(data);
+    //         }
+    //     }
+    //    if(firebaseStays.length === 0){
+    //        getData()
+    //    }
+    // })
     return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between items-center my-2'}>
             <h1 className={'text-2xl font-bold'}>Your Accommodations</h1>
@@ -35,7 +35,7 @@ export default function ListingsPage() {
             <hr/>
             <h3 className={'text-2xl font-bold'}>Drafts</h3>
             <div className={'grid grid-cols-4 gap-8'}>
-                {firebaseStays.map((item: any, index: number) => <ListingItem key={index} stay={item}/>)}
+                {/*{firebaseStays.map((item: any, index: number) => <ListingItem key={index} stay={item}/>)}*/}
             </div>
         </div>
         <CreateDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>

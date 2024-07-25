@@ -14,8 +14,7 @@ export default function Page() {
 
     useEffect(() => {
         if (currentId !== id) {
-            dispatch(resetBooking(0));
-            dispatch(setCurrentStayFromId(id));
+            dispatch(setCurrentStayFromId(id.toString()));
         }
     }, [currentId, dispatch, id]);
 
@@ -33,7 +32,7 @@ export default function Page() {
                 </div>
                 <Button size={'large'} type={'primary'}>Save Changes</Button>
             </div>
-            <RoomEditComponent room={room}/>
+            <RoomEditComponent room={room} stayId={stay.id}/>
         </div>;
     }
 }

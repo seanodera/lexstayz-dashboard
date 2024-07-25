@@ -11,13 +11,13 @@ import Link from "next/link";
 
 export default function Page() {
     const pathname = usePathname();
-    const {id,roomId} = useParams();
+    const {id,roomId}  = useParams();
     const dispatch = useAppDispatch();
     const currentId = useAppSelector(selectCurrentId);
 
     useEffect(() => {
         if (currentId !== id) {
-            dispatch(setCurrentStayFromId(id));
+            dispatch(setCurrentStayFromId(id.toString()));
         }
     }, [currentId, dispatch, id]);
 

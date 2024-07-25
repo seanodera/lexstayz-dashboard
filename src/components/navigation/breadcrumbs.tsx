@@ -25,7 +25,6 @@ const Breadcrumbs: React.FC = () => {
 
         if (index > 0) {
             const prevSnippet = pathSnippets[index - 1];
-
             if (prevSnippet === 'accommodations' && snippet !== 'create') {
                 path = currentStay?.name || 'Stay';
             } else if (prevSnippet === 'rooms' && snippet !== 'create') {

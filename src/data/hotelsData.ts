@@ -1,4 +1,13 @@
-import { collection, doc, setDoc, updateDoc, getDocs, getFirestore } from "@firebase/firestore";
+import {
+    collection,
+    doc,
+    setDoc,
+    updateDoc,
+    getDocs,
+    getFirestore,
+    Timestamp,
+    runTransaction
+} from "@firebase/firestore";
 import { auth, storage } from "@/lib/firebase";
 import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 import { createFile } from "@/lib/utils";
@@ -119,4 +128,29 @@ async function getRoomsFirebase(stayId: string) {
 
 export async function updateRoomFirebase(room:any, stayId:string, roomId:string, poster?:string, images?:string[]){
 
+}
+
+export async function publishStayFirebase(stay:any){
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const publicStays = doc(firestore, 'stays', stay.id)
+        const originStay = doc(firestore, 'hosts', user.uid, 'stays', stay.id)
+        const timestamp = Timestamp.now()
+        await setDoc(publicStays, {...stay,published: true, publishedDate: timestamp, hostId: user.uid});
+        await updateDoc(originStay, {published: true, publishedDate: timestamp});
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const newPublished = await runTransaction(firestore, async (transaction) => {
+            const userDoc = await transaction.get(userDocRef);
+            if (!userDoc.exists()){
+                throw new Error("User doesn't exist");
+            }
+            const newPub: string[] = userDoc.data().published
+            newPub.push(publicStays.id)
+            transaction.update(userDocRef,{published: newPub});
+        })
+
+    } catch (error){
+        console.error('Error updating stay:', error);
+    }
 }

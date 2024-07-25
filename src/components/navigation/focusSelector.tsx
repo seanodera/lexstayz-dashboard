@@ -1,7 +1,7 @@
 import { Avatar, MenuProps, theme, Dropdown } from 'antd';
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay } from "@/slices/bookingSlice";
+import {selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay, Stay} from "@/slices/bookingSlice";
 import { BsChevronDown } from "react-icons/bs";
 
 const { useToken } = theme;
@@ -17,7 +17,7 @@ export default function FocusSelector() {
             {
                 key: 'all',
                 label: (
-                    <div onClick={() => dispatch(setCurrentStay({}))} className="bg-primary-50 border-2 border-black rounded-xl">
+                    <div onClick={() => dispatch(setCurrentStay({} as Stay))} className="bg-primary-50 border-2 border-black rounded-xl">
                         <div className="flex gap-1 text-dark px-2 py-2 items-center">
                             <Avatar shape="square" className="bg-primary">A</Avatar>
                             <div>

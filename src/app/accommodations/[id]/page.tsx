@@ -8,29 +8,38 @@ import ListingDescription from "@/components/accomodations/ListingDescription";
 import RoomComponent from "@/components/accomodations/roomComponent";
 import {EditOutlined, PlusCircleOutlined} from "@ant-design/icons";
 import Link from "next/link";
+import {MdOutlinePublish} from "react-icons/md";
+import {getTag} from "@/components/common";
+import {publishStayFirebase} from "@/data/hotelsData";
 
 
 export default function Page(){
-    const params = useParams()['id'];
+    const {id} = useParams();
     const dispatch = useAppDispatch();
     const currentId = useAppSelector(selectCurrentId);
 
     useEffect(() => {
-        if (currentId !== params) {
-            dispatch(setCurrentStayFromId(params));
+        if (currentId !== id) {
+            dispatch(setCurrentStayFromId(id.toString()));
         }
-    }, [currentId, dispatch, params]);
+        console.log(currentId)
+    }, [currentId, dispatch, id]);
 
     const stay = useAppSelector(selectCurrentStay);
+    console.log(stay);
     if (!stay || stay.id === undefined) {
         return <div></div>;
     } else {
     return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between mb-4'}>
-            <h1 className={'font-bold'}>{stay.name}</h1>
+            <div className={'flex'}>
+                <h1 className={'font-bold'}>{stay.name}</h1>
+                <span>{!stay.published? getTag('Draft'): getTag('Published')}</span>
+            </div>
             <div className={'space-x-2'}>
-                <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
+            <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
                 <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
+                {!stay.published? <Button type={'primary'} danger size={'large'} icon={<MdOutlinePublish/>} onClick={() => publishStayFirebase(stay)}>Publish</Button>: '' }
             </div>
         </div>
         <ListingDescription stay={stay}/>

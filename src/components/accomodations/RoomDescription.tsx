@@ -3,6 +3,7 @@ import React from "react";
 import {toMoneyFormat} from "@/lib/utils";
 import {IoBedOutline} from "react-icons/io5";
 import {LuBedSingle} from "react-icons/lu";
+import {PlusOutlined} from "@ant-design/icons";
 
 
 export default function RoomDescription({room}: any){
@@ -16,11 +17,20 @@ export default function RoomDescription({room}: any){
             <Col span={19}>
                 <h3 className={'font-bold'}>Detailed Room Images</h3>
                 <div className={'grid grid-cols-4 gap-4'}>
-                    {room.images?.slice(0, 3).map((image: string, index: number) => <Image className={'rounded-xl aspect-video object-cover'}
-                                                                                           key={index} src={image}
-                                                                                           alt={'Other Images ' + index}/>)}
-                    <div className={'flex items-center justify-center border border-dashed border-primary rounded-xl'}>
-                    </div>
+                    {room.images?.slice(0, room.images.length >= 3 ? 3 : room.images.length).map((image: string, index: number) =>
+                        <Image className={'rounded-xl aspect-video object-cover'} key={index} src={image}
+                               alt={'Other Images ' + index}/>)}
+                    {(room.images.length > 4 ? <div style={{
+                        backgroundImage: 'url(' + room.images[ 3 ] + ')'
+                    }} className={'bg-cover rounded-xl'}>
+                        <div
+                            className={'flex flex-col items-center justify-center bg-cover rounded-xl gap-2 hover:bg-black bg-opacity-30 hover:bg-opacity-60 h-full w-full text-lg text-white '}>
+                            <PlusOutlined className={'font-bold text-2xl'}/>
+                            <span>See All</span>
+                        </div>
+                    </div> : (room.images.length === 4 ?
+                        <Image className={'rounded-xl aspect-video object-cover'} src={room.images[ 3 ]}
+                               alt={'Other Images 4'}/> : ''))}
                 </div>
             </Col>
         </Row>
