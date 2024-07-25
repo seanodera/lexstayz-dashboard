@@ -1,5 +1,5 @@
 'use client'
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Card,
@@ -15,16 +15,23 @@ import {
     Select,
     Upload
 } from "antd";
-import {IoBedOutline} from "react-icons/io5";
-import {LuBedSingle} from "react-icons/lu";
-import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
-import {UploadChangeParam} from "antd/es/upload";
-import {UploadFile} from "antd/lib";
-import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
+import { IoBedOutline } from "react-icons/io5";
+import { LuBedSingle } from "react-icons/lu";
+import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
+import { UploadChangeParam } from "antd/es/upload";
+import { UploadFile } from "antd/lib";
+import { bedTypes, hotelFacilities } from "@/data/hotelsDataLocal";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 
-const {TextArea} = Input;
+import { selectCurrentStay, setCurrentStayFromId } from "@/slices/bookingSlice";
+import {addRoomFirebase, updateRoomFirebase} from "@/data/hotelsData";
 
-export default function RoomEditComponent({room}: {room?: any}) {
+const { TextArea } = Input;
+
+export default function RoomEditComponent({ room, stayId }: { room?: any, stayId: string }) {
+    const dispatch = useAppDispatch();
+    const currentStay = useAppSelector(selectCurrentStay);
+
     const [name, setName] = useState('');
     const [poster, setPoster] = useState<any>('');
     const [images, setImages] = useState<Array<any>>([]);
@@ -33,12 +40,10 @@ export default function RoomEditComponent({room}: {room?: any}) {
     const [description, setDescription] = useState('');
     const [amenities, setAmenities] = useState<Array<string>>([]);
     const [price, setPrice] = useState<number | null>(0);
-    const [discounted, setDiscounted] = useState(false);
-    const [discount, setDiscount] = useState({});
     const [available, setAvailable] = useState<number | null>(10);
 
     useEffect(() => {
-        if (room){
+        if (room) {
             setName(room.name);
             setPoster(room.poster);
             setDescription(room.description);
@@ -47,124 +52,139 @@ export default function RoomEditComponent({room}: {room?: any}) {
             setBeds(room.beds);
             setAmenities(room.amenities);
             setPrice(room.price);
-            setDiscount(room.discounted);
             setAvailable(room.available);
         }
     }, [room]);
 
     const handleChange = (info: UploadChangeParam<UploadFile<any>>) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            setPoster(e.target?.result);
-            //setFile(info.file.originFileObj);
-        };
-        reader.readAsDataURL(info.file.originFileObj as File);
+        setPoster(URL.createObjectURL(info.file.originFileObj as File));
     };
 
     const handleChangeDetails = (info: UploadChangeParam<UploadFile<any>>) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (!images.includes(e.target?.result)) {
-                setImages(images.concat(e.target?.result));
-            }
-            //setFile(info.file.originFileObj);
-        };
-        reader.readAsDataURL(info.file.originFileObj as File);
+
+        setImages(images.concat(URL.createObjectURL(info.file.originFileObj as File)));
+
     };
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    return <Card className={'rounded-2xl'}>
-        <div className={'flex justify-between items-center my-2'}>
-            <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>} className={'font-bold h3 text-xl'}>
-                <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'} />
-            </Form.Item>
-            {room? false : <Button type={"primary"} size={'large'}>Confirm</Button>}
-        </div>
-        <Row gutter={[16, 16]}>
-            <Col span={5}>
-                <div className={'flex justify-between items-center mb-1'}>
-                    <h3 className={'font-bold mb-0'}>Main Image</h3>
-                    <Upload className={'mt-4'} multiple={false} onChange={handleChange} maxCount={1}
-                            showUploadList={false}>
-                        <Button icon={<UploadOutlined/>}>
-                            Select Poster
-                        </Button>
-                    </Upload>
-                </div>
-                {(poster === '') ?
-                    <div
-                        className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
 
-                    </div> :
-                    <Image src={poster} alt={'Main Image'} className={'rounded-xl mb-4 aspect-video object-cover'}/>}
-            </Col>
-            <Col span={19}>
-                <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
-                    Images</h3>
-                    <Upload disabled={images.length >= 4} className={'mt-4'} onChange={handleChangeDetails}
-                            showUploadList={false}>
-                        <Button icon={<UploadOutlined/>}>
-                            Add Image
-                        </Button>
-                    </Upload>
-                </div>
-                <div className={'grid grid-cols-4 gap-4'}>
-                    {images?.slice(0, 4).map((image: string, index: number) => <div key={index}><Image
-                        className={'rounded-xl aspect-video object-cover'}
-                        src={image}
-                        alt={'Other Images ' + index}/>
-                        <Button className={'mt-1 mx-auto'} type={'default'} danger={true} icon={<DeleteOutlined/>}
-                                onClick={() => setImages(images.toSpliced(index, 1))}>Remove</Button>
-                    </div>)}
-                    {images.length < 4 ? <div
-                        className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
+    const handleSubmit = async () => {
+        const roomData = {
+            name,
+            maxGuests,
+            beds,
+            description,
+            amenities,
+            price,
+            available
+        };
 
-                    </div> : ''}
+        console.log(roomData);
+        if (room) {
+            // Update existing room
+            await updateRoomFirebase(roomData, stayId, room.id, poster, images);
+        } else {
+            // Add new room
+            await addRoomFirebase(roomData, stayId, poster, images);
+            window.location.reload()
+        }
+
+        // Refresh current stay to reflect changes
+        //dispatch(setCurrentStayFromId(stayId));
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    return (
+        <Card className={'rounded-2xl'}>
+            <div className={'flex justify-between items-center my-2'}>
+                <Form.Item layout={'vertical'} label={<h3 className={'font-bold mb-0'}>Room Name</h3>} className={'font-bold h3 text-xl'}>
+                    <Input value={name} onChange={(value) => setName(value.target.value)} placeholder={'Name'} />
+                </Form.Item>
+                <Button type={"primary"} size={'large'} onClick={handleSubmit}>Confirm</Button>
+            </div>
+            <Row gutter={[16, 16]}>
+                <Col span={5}>
+                    <div className={'flex justify-between items-center mb-1'}>
+                        <h3 className={'font-bold mb-0'}>Main Image</h3>
+                        <Upload className={'mt-4'} multiple={false} onChange={handleChange} maxCount={1}
+                                showUploadList={false}>
+                            <Button icon={<UploadOutlined />}>
+                                Select Poster
+                            </Button>
+                        </Upload>
+                    </div>
+                    {(poster === '') ?
+                        <div
+                            className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
+                        </div> :
+                        <Image src={poster} alt={'Main Image'} className={'rounded-xl mb-4 aspect-video object-cover'} />}
+                </Col>
+                <Col span={19}>
+                    <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
+                        Images</h3>
+                        <Upload disabled={images.length >= 4} className={'mt-4'} onChange={handleChangeDetails}
+                                showUploadList={false}>
+                            <Button icon={<UploadOutlined />}>
+                                Add Image
+                            </Button>
+                        </Upload>
+                    </div>
+                    <div className={'grid grid-cols-4 gap-4'}>
+                        {images?.slice(0, 4).map((image: string, index: number) => <div key={index}><Image
+                            className={'rounded-xl aspect-video object-cover'}
+                            src={image}
+                            alt={'Other Images ' + index} />
+                            <Button className={'mt-1 mx-auto'} type={'default'} danger={true} icon={<DeleteOutlined />}
+                                    onClick={() => setImages(images.toSpliced(index, 1))}>Remove</Button>
+                        </div>)}
+                        {images.length < 4 ? <div
+                            className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
+                        </div> : ''}
+                    </div>
+                </Col>
+            </Row>
+            <div className={'grid grid-cols-3 gap-8 my-4'}>
+                <div>
+                    <h3 className={'font-bold mb-0'}>Description</h3>
+                    <TextArea rows={4} placeholder={'Enter room Description'}
+                              onChange={(e) => setDescription(e.target.value)} value={description} />
                 </div>
-            </Col>
-        </Row>
-        <div className={'grid grid-cols-3 gap-8 my-4'}>
-            <div>
-                <h3 className={'font-bold mb-0'}>Description</h3>
-                <TextArea rows={4} placeholder={'Enter room Description'}
-                          onChange={(e) => setDescription(e.target.value)} value={description}/>
-            </div>
-            <div>
-                <h3 className={'font-bold'}>Details</h3>
-                <Form className={'w-full'} layout={'vertical'} labelAlign={'left'}
-                      rootClassName={'font-semibold text-lg w-full'}>
-                    <Form.Item label={'Nightly Rate'}>
-                        <InputNumber prefix={'$'} min={0} value={price}
-                                     onChange={(value: number | null) => setPrice(value)}/>
-                    </Form.Item>
-                    <Form.Item label={'Maximum Guests'}>
-                        <InputNumber min={0} value={maxGuests}
-                                     onChange={(value: number | null) => setMaxGuests(value)}/>
-                    </Form.Item>
-                    <Form.Item label={'Available rooms'}>
-                        <InputNumber min={0} value={available}
-                                     onChange={(value: number | null) => setAvailable(value)}/>
-                    </Form.Item>
-                </Form>
-            </div>
-            <div>
-                <div className={'flex justify-between items-center'}><h3 className={'font-bold mb-0'}>Beds</h3>
-                    <Button type={'primary'} onClick={() => setIsModalOpen(true)}>Add Bed Configuration</Button>
+                <div>
+                    <h3 className={'font-bold'}>Details</h3>
+                    <Form className={'w-full'} layout={'vertical'} labelAlign={'left'}
+                          rootClassName={'font-semibold text-lg w-full'}>
+                        <Form.Item label={'Nightly Rate'}>
+                            <InputNumber prefix={'$'} min={0} value={price}
+                                         onChange={(value: number | null) => setPrice(value)} />
+                        </Form.Item>
+                        <Form.Item label={'Maximum Guests'}>
+                            <InputNumber min={0} value={maxGuests}
+                                         onChange={(value: number | null) => setMaxGuests(value)} />
+                        </Form.Item>
+                        <Form.Item label={'Available rooms'}>
+                            <InputNumber min={0} value={available}
+                                         onChange={(value: number | null) => setAvailable(value)} />
+                        </Form.Item>
+                    </Form>
                 </div>
-                {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4 mt-3'}>
-                    {
-                        beds.map((bed: any, index: number) => <div key={index}
-                                                                   className={'p-3 hover:p-5 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap group'}>
-                            <span className={'hidden group-hover:block mx-auto aspect-square h-full text-2xl text-danger'} onClick={() => setBeds(beds.toSpliced(index,1))}><DeleteOutlined/></span>
-                    <span
-                        className={'mx-auto block group-hover:hidden'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
-                        <IoBedOutline size={28}/> : <LuBedSingle size={28}/>}</span>
-                            <span className={'group-hover:hidden'}>{bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}</span>
-                        </div>)
-                    }
-                </div> : <Empty className={'mt-4'}/>}
-                <BedDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} beds={beds} setBeds={setBeds}/>
+                <div>
+                    <div className={'flex justify-between items-center'}><h3 className={'font-bold mb-0'}>Beds</h3>
+                        <Button type={'primary'} onClick={() => setIsModalOpen(true)}>Add Bed Configuration</Button>
+                    </div>
+                    {beds.length > 0 ? <div className={'flex items-center gap-2 mb-4 mt-3'}>
+                        {
+                            beds.map((bed: any, index: number) => <div key={index}
+                                                                       className={'p-3 hover:p-5 text-center border-solid border border-gray-500 shadow-md rounded text-nowrap group'}>
+                                <span className={'hidden group-hover:block mx-auto aspect-square h-full text-2xl text-danger'} onClick={() => setBeds(beds.toSpliced(index, 1))}><DeleteOutlined /></span>
+                                <span
+                                    className={'mx-auto block group-hover:hidden'}>{(bed.type.toLowerCase() === 'king' || bed.type.toLowerCase() === 'double') ?
+                                    <IoBedOutline size={28} /> : <LuBedSingle size={28} />}</span>
+                                <span className={'group-hover:hidden'}>{bed.number} {bed.type} {bed.number === 1 ? 'Bed' : 'Beds'}</span>
+                            </div>)
+                        }
+                    </div> : <Empty className={'mt-4'} />}
+                    <BedDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} beds={beds} setBeds={setBeds} />
+                </div>
             </div>
-        </div>
         <div>
             <h3 className={'font-bold'}>Amenities</h3>
             <div className={'grid grid-rows-7 grid-cols-2 gap-2'}>
@@ -184,7 +204,7 @@ export default function RoomEditComponent({room}: {room?: any}) {
                                                                                                  }}>{value}</Checkbox>)}
             </div>
         </div>
-    </Card>
+    </Card>)
 }
 
 function BedDialog({isModalOpen, setIsModalOpen, beds, setBeds}: {

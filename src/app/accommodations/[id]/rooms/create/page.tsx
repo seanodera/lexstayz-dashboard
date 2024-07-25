@@ -12,6 +12,6 @@ export default function Page(){
             <h3 className={'text-gray-500 font-bold mb-0'}>Create Room</h3>
             <h1 className={'font-bold'}>{stay.name}</h1>
         </div>
-        <RoomEditComponent/>
+        <RoomEditComponent stayId={stay.id}/>
     </div>
 }

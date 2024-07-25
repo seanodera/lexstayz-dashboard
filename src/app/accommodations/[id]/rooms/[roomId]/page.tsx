@@ -17,7 +17,6 @@ export default function Page() {
 
     useEffect(() => {
         if (currentId !== id) {
-            dispatch(resetBooking(0));
             dispatch(setCurrentStayFromId(id));
         }
     }, [currentId, dispatch, id]);
@@ -31,13 +30,13 @@ export default function Page() {
         <div className={'flex justify-between mb-4 items-center'}>
             <div className={''}>
                 <h3 className={'text-gray-500 font-bold mb-0'}>{stay.name}</h3>
-                <h1 className={'font-bold capitalize my-0'}>{stay.rooms.find((value: any) => value.id === parseInt(roomId.toString())).name}</h1>
+                <h1 className={'font-bold capitalize my-0'}>{stay.rooms.find((value: any) => value.id === roomId).name}</h1>
             </div>
             <div className={'space-x-2'}>
                 <Link href={`${pathname}/edit`}> <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button></Link>
                 <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'} icon={<PlusCircleOutlined/>} size={'large'}> Add Room</Button></Link>
             </div>
         </div>
-        <RoomDescription room={stay.rooms.find((value: any) => value.id === parseInt(roomId.toString()))}/>
+        <RoomDescription room={stay.rooms.find((value: any) => value.id === roomId.toString())}/>
     </div>
 }}

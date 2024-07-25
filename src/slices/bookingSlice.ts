@@ -1,36 +1,37 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {addDays, differenceInDays} from "date-fns";
+import { createSlice } from "@reduxjs/toolkit";
+import { addDays, differenceInDays } from "date-fns";
 
+const initialState = {
+    cart: [],
+    currentStay: {},
+    currentId: -1,
+    stays: [],
+    cartTotal: 0,
+    bookings: [],
+    currentBooking: {},
+    dates: {
+        startDate: new Date().toDateString(),
+        endDate: addDays(new Date(), 1).toDateString(),
+        length: 1,
+    },
+    balance: {
+        available: 65784,
+        pending: 34286,
+    },
+    withdraw: {
+        account: {
+            method: 'Pryzapay',
+            account: ''
+        },
+        withdrawals: []
+    }
+};
 
 const bookingSlice = createSlice({
     name: "booking",
-    initialState: {
-        cart: [],
-        currentStay: {},
-        currentId: -1,
-        stays: [],
-        cartTotal: 0,
-        bookings: [],
-        currentBooking: {},
-        dates: {
-            startDate: new Date().toDateString(),
-            endDate: addDays(new Date(), 1).toDateString(),
-            length: 1,
-        },
-        balance: {
-            available: 65784,
-            pending: 34286,
-        },
-        withdraw: {
-            account: {
-                method: 'Pryzapay',
-                account: ''
-            },
-            withdrawals: []
-        }
-    },
+    initialState,
     reducers: {
-        resetBooking: (state, action) => {
+        resetBooking: (state) => {
             state.cart = [];
             state.currentId = -1;
             state.currentStay = {};
@@ -44,9 +45,8 @@ const bookingSlice = createSlice({
         },
         setCurrentStayFromId: (state, action) => {
             state.currentId = action.payload;
-            let currentStay = state.stays.find((value: any) => value.id.toString() === action.payload.toString());
+            const currentStay = state.stays.find((value: any) => value.id.toString() === action.payload.toString());
             state.currentStay = currentStay ? currentStay : {};
-            console.log(state)
         },
         updateCart: (state, action) => {
             state.cart = action.payload;
@@ -54,14 +54,13 @@ const bookingSlice = createSlice({
         updateDates: (state, action) => {
             state.dates.startDate = action.payload.startDate;
             state.dates.endDate = action.payload.endDate;
-            state.dates.length = differenceInDays(state.dates.endDate, state.dates.startDate);
+            state.dates.length = differenceInDays(new Date(state.dates.endDate), new Date(state.dates.startDate));
         },
         setBookings: (state, action) => {
             state.bookings = action.payload;
         },
         setCurrentBookingById: (state, action) => {
-            let currentBooking = state.bookings.find((booking: any) => booking.bookingId.toString() === action.payload.toString());
-            console.log(currentBooking);
+            const currentBooking = state.bookings.find((booking: any) => booking.bookingId.toString() === action.payload.toString());
             state.currentBooking = currentBooking ? currentBooking : {};
         },
         setWithdraw: (state, action) => {
@@ -71,7 +70,20 @@ const bookingSlice = createSlice({
             state.balance = action.payload;
         }
     }
-})
+});
+
+export const {
+    resetBooking,
+    setAllStays,
+    setCurrentStay,
+    setCurrentStayFromId,
+    updateCart,
+    updateDates,
+    setBookings,
+    setCurrentBookingById,
+    setWithdraw,
+    setBalance
+} = bookingSlice.actions;
 
 export const selectCurrentStay = (state: any) => state.booking.currentStay;
 export const selectCart = (state: any) => state.booking.cart;
@@ -84,15 +96,5 @@ export const selectBalance = (state: any) => state.booking.balance;
 export const selectWithdraw = (state: any) => state.booking.withdraw;
 export const selectWithdrawals = (state: any) => state.booking.withdraw.withdrawals;
 export const selectWithdrawAccount = (state: any) => state.booking.withdraw.account;
-export const {
-    resetBooking,
-    setCurrentStay,
-    updateCart,
-    setAllStays,
-    setCurrentStayFromId,
-    updateDates,
-    setBookings,
-    setCurrentBookingById,
-    setWithdraw, setBalance
-} = bookingSlice.actions
+
 export default bookingSlice.reducer;

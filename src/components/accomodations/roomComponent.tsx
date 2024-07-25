@@ -5,9 +5,9 @@ import {IoBedOutline} from "react-icons/io5";
 import Link from "next/link";
 
 
-export default function RoomComponent({room}:{room: any}){
+export default function RoomComponent({room, stayId}:{room: any, stayId:string}) {
 
-    return <Link href={`/accommodations/${room.accommodationId}/rooms/${room.id}`} className={'rounded-xl text-dark block'}>
+    return <Link href={`/accommodations/${stayId}/rooms/${room.id}`} className={'rounded-xl text-dark block'}>
         <Image className={'rounded-xl aspect-video object-cover'} src={room.poster} alt="poster"/>
         <h3 className={'font-semibold text-lg capitalize'}>{room.name}</h3>
         <p className={'line-clamp-2'}>{room.description}</p>

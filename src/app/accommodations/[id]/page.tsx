@@ -17,7 +17,6 @@ export default function Page(){
 
     useEffect(() => {
         if (currentId !== params) {
-            dispatch(resetBooking(0));
             dispatch(setCurrentStayFromId(params));
         }
     }, [currentId, dispatch, params]);
@@ -36,9 +35,9 @@ export default function Page(){
         </div>
         <ListingDescription stay={stay}/>
         <h1 className={'font-bold my-4'}>Rooms</h1>
-        {/*<div className={'grid grid-cols-3 gap-8'}>*/}
-        {/*    {stay.rooms?.map((item: any, index: number) => <RoomComponent key={index} room={item}/>)}*/}
-        {/*</div>*/}
+        <div className={'grid grid-cols-3 gap-8'}>
+            {stay.rooms?.map((item: any, index: number) => <RoomComponent key={index} room={item} stayId={stay.id}/>)}
+        </div>
     </div>
     }
 }

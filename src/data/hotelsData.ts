@@ -1,130 +1,122 @@
-import { collection, doc, setDoc, updateDoc } from "@firebase/firestore";
+import { collection, doc, setDoc, updateDoc, getDocs, getFirestore } from "@firebase/firestore";
 import { auth, storage } from "@/lib/firebase";
 import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 import { createFile } from "@/lib/utils";
-import {getDocs, getFirestore} from "firebase/firestore";
 
-const user = auth.currentUser;
+async function uploadImage(file: File, path: string) {
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, file);
+    return await getDownloadURL(snapshot.ref);
+}
 
-export async function uploadStay(stay : any, poster: string, images: string[]) {
+function getCurrentUser() {
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error('No user is signed in');
+    }
+    return user;
+}
 
+export async function uploadStay(stay: any, poster: string, images: string[]) {
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const staysRef = collection(userDocRef, 'stays');
+        const docRef = doc(staysRef);
 
+        const processedStay = { ...stay, id: docRef.id };
+        await setDoc(docRef, processedStay);
 
-    if (user) {
-        try {
-            const firestore = getFirestore();
+        const posterFile = await createFile({ url: poster, name: 'poster' });
+        const posterURL = await uploadImage(posterFile, `${docRef.id}/poster`);
+        await updateDoc(docRef, { poster: posterURL });
 
-            const userDocRef = doc(firestore, 'hosts', user.uid)
+        const imageUrls = await Promise.all(images.map(async (image, index) => {
+            const imageFile = await createFile({ url: image, name: `image-${index}` });
+            return await uploadImage(imageFile, `${docRef.id}/image-${index}`);
+        }));
+        await updateDoc(docRef, { images: imageUrls });
 
-            // Create a reference to the 'stays' collection within the user's document
-            const staysRef = collection(userDocRef, 'stays');
-
-            // Generate a new document reference with an auto-generated ID
-            const docRef = doc(staysRef);
-
-            // Create the processed stay object
-            const processedStay = {
-                ...stay,
-                id: docRef.id,
-            };
-
-            // Set the document in Firestore
-            await setDoc(docRef, processedStay);
-
-            // Upload the poster image
-            const posterFile = await createFile({ url: poster, name: 'poster' });
-            const posterStorageRef = ref(storage, `${docRef.id}/poster`);
-            const posterSnapshot = await uploadBytes(posterStorageRef, posterFile);
-            const posterURL = await getDownloadURL(posterSnapshot.ref);
-
-            // Update Firestore document with poster URL
-            await updateDoc(docRef, { poster: posterURL });
-
-            // Upload the other images
-            const imageUrls = await Promise.all(images.map(async (image, index) => {
-                const imageFile = await createFile({ url: image, name: `image-${index}` });
-                const imageStorageRef = ref(storage, `${docRef.id}/image-${index}`);
-                const imageSnapshot = await uploadBytes(imageStorageRef, imageFile);
-                return await getDownloadURL(imageSnapshot.ref);
-            }));
-
-            // Update Firestore document with image URLs
-            await updateDoc(docRef, { images: imageUrls });
-
-            console.log('Document and images uploaded successfully');
-        } catch (error) {
-            console.error('Error uploading stay:', error);
-        }
-    } else {
-        console.error('No user is signed in');
+        console.log('Document and images uploaded successfully');
+    } catch (error) {
+        console.error('Error uploading stay:', error);
     }
 }
 
-export async function addRoomFirebase(room:any,stayId:string, poster:string, images: string[]){
-    if (user){
-        try {
-            const firestore = getFirestore();
+export async function addRoomFirebase(room: any, stayId: string, poster: string, images: string[]) {
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const staysRef = collection(userDocRef, 'stays');
+        console.log('Here', staysRef.path, stayId)
+        const stayRef = doc(staysRef, stayId);
+        console.log('Here', stayRef.id)
+        const roomsRef = collection(stayRef, 'rooms');
 
-            const userDocRef = doc(firestore, 'hosts', user.uid)
 
-            // Create a reference to the 'stays' collection within the user's document
-            const roomsRef = collection(userDocRef, 'stays', stayId, 'rooms');
+        const docRef = doc(roomsRef);
 
-            // Generate a new document reference with an auto-generated ID
-            const docRef = doc(roomsRef);
+        const processedRoom = { ...room, id: docRef.id };
+        await setDoc(docRef, processedRoom);
 
-            const processedRoom = {
-                ...room,
-                id: docRef.id,
-            };
-            await setDoc(docRef, processedRoom);
-            const posterFile = await createFile({ url: poster, name: 'poster' });
-            const posterStorageRef = ref(storage, `${stayId}/${docRef.id}/poster`);
-            const posterSnapshot = await uploadBytes(posterStorageRef, posterFile);
-            const posterURL = await getDownloadURL(posterSnapshot.ref);
+        const posterFile = await createFile({ url: poster, name: 'poster' });
+        const posterURL = await uploadImage(posterFile, `${stayId}/${docRef.id}/poster`);
+        await updateDoc(docRef, { poster: posterURL });
 
-            await updateDoc(docRef, { poster: posterURL });
+        const imageUrls = await Promise.all(images.map(async (image, index) => {
+            const imageFile = await createFile({ url: image, name: `image-${index}` });
+            return await uploadImage(imageFile, `${stayId}/${docRef.id}/image-${index}`);
+        }));
+        await updateDoc(docRef, { images: imageUrls });
 
-            const imageUrls = await Promise.all(images.map(async (image, index) => {
-                const imageFile = await createFile({ url: image, name: `image-${index}` });
-                const imageStorageRef = ref(storage, `${stayId}/${docRef.id}/image-${index}`);
-                const imageSnapshot = await uploadBytes(imageStorageRef, imageFile);
-                return await getDownloadURL(imageSnapshot.ref);
-            }));
-
-            // Update Firestore document with image URLs
-            await updateDoc(docRef, { images: imageUrls });
-            console.log('Document and images uploaded successfully');
-        } catch (error){
-            console.error('Error adding room', error);
-        }
-    }else {
-        console.error('No user is signed in');
+        console.log('Document and images uploaded successfully');
+    } catch (error) {
+        console.error('Error adding room:', error);
     }
 }
 
 export async function getStaysFirebase() {
-    if (user){
-        try {
-            const firestore = getFirestore();
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const staysRef = collection(userDocRef, 'stays');
 
-            const userDocRef = doc(firestore, 'hosts', user.uid)
-
-            // Create a reference to the 'stays' collection within the user's document
-            const staysRef = collection(userDocRef, 'stays');
-            let stays: Array<any> = []
-            const snapshot = await getDocs(staysRef)
-            snapshot.docs.forEach(doc => {
-                stays.push(doc.data())
-            })
-            console.log(stays)
-            return stays;
-        } catch (error){
-            console.error('Error getting stays:', error);
+        const stays: Array<any> = [];
+        const snapshot = await getDocs(staysRef);
+        for (const doc1 of snapshot.docs) {
+            const rooms = await getRoomsFirebase(doc1.id);
+            stays.push({ ...doc1.data(), rooms });
         }
-    } else {
 
+        console.log(stays);
+        return stays;
+    } catch (error) {
+        console.error('Error getting stays:', error);
         return [];
     }
+}
+
+async function getRoomsFirebase(stayId: string) {
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const roomsRef = collection(userDocRef, 'stays', stayId, 'rooms');
+
+        const rooms: Array<any> = [];
+        const snapshot = await getDocs(roomsRef);
+        snapshot.docs.forEach(doc => rooms.push(doc.data()));
+
+        return rooms;
+    } catch (error) {
+        console.error('Error getting rooms:', error);
+        return [];
+    }
+}
+
+export async function updateRoomFirebase(room:any, stayId:string, roomId:string, poster?:string, images?:string[]){
 
 }
