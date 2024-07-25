@@ -22,7 +22,7 @@ export default function Page() {
     const booking = useAppSelector(selectCurrentBooking);
     const stay = useAppSelector(selectCurrentStay);
     useEffect(() => {
-        dispatch(setCurrentBookingById(bookingId));
+        dispatch(setCurrentBookingById(bookingId.toString()));
     }, [bookingId, dispatch]);
 
     useEffect(() => {
