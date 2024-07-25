@@ -24,6 +24,7 @@ import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 
 import {selectCurrentStay, setCurrentStayFromId, addRoomAsync, fetchStaysAsync} from "@/slices/bookingSlice";
+import {useRouter} from "next/navigation";
 
 const {TextArea} = Input;
 
@@ -40,6 +41,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
     const [amenities, setAmenities] = useState<Array<string>>([]);
     const [price, setPrice] = useState<number | null>(0);
     const [available, setAvailable] = useState<number | null>(10);
+    const router = useRouter();
 
     useEffect(() => {
         if (room) {
@@ -87,6 +89,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
             dispatch(fetchStaysAsync());
             // Refresh current stay to reflect changes
             dispatch(setCurrentStayFromId(stayId));
+            router.push(`/accommodation/${stayId}`);
         }
     };
 
