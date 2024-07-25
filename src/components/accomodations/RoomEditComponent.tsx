@@ -18,7 +18,7 @@ import {
 import {IoBedOutline} from "react-icons/io5";
 import {LuBedSingle} from "react-icons/lu";
 import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
-import {UploadChangeParam} from "antd/es/upload";
+import {RcFile, UploadChangeParam} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
 import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
@@ -61,8 +61,8 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
         setPoster(URL.createObjectURL(info.file.originFileObj as File));
     };
 
-    const handleChangeDetails = (info: UploadChangeParam<UploadFile<any>>) => {
-        setImages(images.concat(URL.createObjectURL(info.file.originFileObj as File)));
+    const handleChangeDetails = (file: RcFile) => {
+        setImages(images.concat(URL.createObjectURL(file)));
     };
 
     const handleSubmit = async () => {
@@ -125,7 +125,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                 <Col span={19}>
                     <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
                         Images</h3>
-                        <Upload disabled={images.length >= 4} className={'mt-4'} onChange={handleChangeDetails}
+                        <Upload disabled={images.length >= 4} className={'mt-4'} beforeUpload={(file) => handleChangeDetails(file)}
                                 showUploadList={false}>
                             <Button icon={<UploadOutlined/>}>
                                 Add Image
