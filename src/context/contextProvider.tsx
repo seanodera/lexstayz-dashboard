@@ -83,7 +83,9 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     if (pathname === '/login' || pathname === '/register') {
         return <div>{children}</div>;
     } else if (isLoading){
-        return <LoadingScreen />;
+        return <div className={'h-screen w-screen'}>
+            <LoadingScreen/>
+        </div>;
     } else {
         return (
             <Layout hasSider className="h-screen" style={{ height: '100vh' }}>

@@ -1,5 +1,5 @@
 'use client'
-import {Card} from "antd";
+import {Card, message} from "antd";
 import {Field, Fieldset,Input, Label} from "@headlessui/react";
 import Link from "next/link";
 import LogoIcon from "@/components/LogoIcon";
@@ -30,7 +30,9 @@ export default function Page(){
                 await handleLogout()
             }
         } catch (error) {
-            console.error('Error logging in:', error);
+
+            // @ts-ignore
+            message.error(`Error logging in: ${error.message}`);
         }
     };
 
@@ -39,7 +41,8 @@ export default function Page(){
             await signOut(auth);
             // setUser(null);
         } catch (error) {
-            console.error('Error logging out:', error);
+            // @ts-ignore
+            message.error(`Error logging out: ${error.message}`);
         }
     };
 
