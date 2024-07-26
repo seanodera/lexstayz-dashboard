@@ -1,5 +1,5 @@
 'use client'
-import {Suspense, useEffect, useState} from "react";
+import React, {Suspense, useEffect, useState} from "react";
 import LogoIcon from "@/components/LogoIcon";
 import {Field, Fieldset, Input, Label} from "@headlessui/react";
 import {Card, message} from "antd";
@@ -23,44 +23,48 @@ function ResetPassWordWrappedComponent(){
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-
+    const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
+
         if (oobCode) {
+
             verifyReset(oobCode as string)
                 .then((email) => {
                     setEmail(email);
                 })
                 .catch((error) => {
                     setError("Invalid or expired password reset code.");
-                    message.error('Invalid or expired password reset Link.');
+                    messageApi.error('Invalid or expired password reset Link.');
                 });
         }
     }, [oobCode]);
 
-    const handleSubmit = async (event: React.FormEvent) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
         if (password !== confirmPassword) {
-            message.error('Passwords do not match');
+            messageApi.error('Passwords do not match');
+            console.log('Passwords do not match', password, confirmPassword);
         } else {
             if (oobCode && password) {
                 try {
                     await passwordReset(oobCode as string, password);
-                    message.success("Password reset successfully");
+                    messageApi.success("Password reset successfully");
                     router.push('/login'); // redirect to login after successful reset
                 } catch (error) {
-                    message.error("Failed to reset password. Please try again.");
+                    messageApi.error("Failed to reset password. Please try again.");
                 }
             }
         }
     };
     return <Card className={'text-center md:w-1/3 rounded-xl flex flex-col justify-center px-6 py-12 lg:px-8'}>
+        {contextHolder}
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <LogoIcon className="mx-auto h-20 w-auto"/>
             <div className={'text-3xl'}>LexStayz</div>
             <h2 className="mt-12 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Reset Password
             </h2>
-            <Fieldset className={'text-start space-y-4'} onSubmit={handleSubmit}>
+            <Fieldset as={'form'} className={'text-start space-y-4'} >
                 <Field className={'block'}>
                     <Label className={'block text-sm font-medium leading-6 text-gray-900'}
                            htmlFor="email">Email</Label>
@@ -88,7 +92,7 @@ function ResetPassWordWrappedComponent(){
                            onChange={(e) => setConfirmPassword(e.target.value)}/>
                 </Field>
                 <button className={'flex w-full justify-center border-0 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'}
-                    type="submit">Reset Password</button>
+                    type="button" onClick={handleSubmit}>Reset Password</button>
             </Fieldset>
         </div>
     </Card>

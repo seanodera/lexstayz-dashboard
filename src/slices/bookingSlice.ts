@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addDays, differenceInDays } from "date-fns";
 import { uploadStay, addRoomFirebase, getStaysFirebase } from "@/data/hotelsData";
 
-// Define types for the state
+
 export interface Stay {
     id: string;
     rooms: any[];
@@ -77,7 +77,7 @@ const initialState: BookingState = {
     hasRun: false
 };
 
-// Create async thunks
+
 export const uploadStayAsync = createAsyncThunk(
     'booking/uploadStay',
     async ({ stay, poster, images }: { stay: Stay, poster: string, images: string[] }) => {

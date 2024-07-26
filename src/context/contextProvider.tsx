@@ -27,7 +27,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
-    const authRoutes = ['/login', '/register', '/forgot-password'];
+    const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
     useEffect(() => {
         const isAuthRoute = authRoutes.includes(pathname);
         const initializeAuth = async () => {
@@ -64,10 +64,12 @@ export default function ContextProvider({ children }: { children: React.ReactNod
             }
         };
         const user = auth.currentUser;
-        if (user) {
-            fetchData();
-        } else if (!isAuthRoute) {
+         if (!isAuthRoute) {
+             if (user) {
+                 fetchData();
+             } else{
             router.push('/login');
+             }
         }
 
         return () => {
