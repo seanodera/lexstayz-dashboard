@@ -28,24 +28,26 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
     const authRoutes = ['/login', '/register', '/forgot-password'];
-
     useEffect(() => {
+        const isAuthRoute = authRoutes.includes(pathname);
         const initializeAuth = async () => {
             await setPersistence(auth, browserLocalPersistence);
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     const userDetails = await getUserDetails(user.uid);
                     dispatch(loginUser(userDetails));
-                    //router.push('/');
+                    // router.push('/');
                 } else {
                     dispatch(logoutUser({}));
-                    router.push('/login');
+                    if (!isAuthRoute){
+                        router.push('/login');
+                    }
                 }
             });
         };
         initializeAuth();
 
-        const isAuthRoute = authRoutes.includes(pathname);
+
 
         const fetchData = async () => {
             if (!hasRun) {
