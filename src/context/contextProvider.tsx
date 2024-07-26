@@ -27,7 +27,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
     const [collapsed, setCollapsed] = useState(false);
-
+    const authRoutes = ['/login', '/register', '/forgot-password'];
 
     useEffect(() => {
         const initializeAuth = async () => {
@@ -45,7 +45,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         };
         initializeAuth();
 
-        const isAuthRoute = pathname === '/login' || pathname === '/register';
+        const isAuthRoute = authRoutes.includes(pathname);
 
         const fetchData = async () => {
             if (!hasRun) {
@@ -81,7 +81,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         }
     }, [hasError, errorMessage]);
 
-    if (pathname === '/login' || pathname === '/register') {
+    if (authRoutes.includes(pathname)) {
         return <div>{children}</div>;
     } else if (isLoading){
         return <div className={'h-screen w-screen'}>

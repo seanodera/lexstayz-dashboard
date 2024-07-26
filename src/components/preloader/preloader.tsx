@@ -21,7 +21,7 @@ const Preloader = () => {
     return (
         <>
             {showLoader && (
-                <div className={`preloader ${isLoaded}`} id="preloader"><LoadingScreen/></div>
+                <div className={`preloader ${isLoaded} h-screen w-screen`} id="preloader"><LoadingScreen/></div>
             )}
         </>
     );
