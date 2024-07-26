@@ -36,7 +36,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                 if (user) {
                     const userDetails = await getUserDetails(user.uid);
                     dispatch(loginUser(userDetails));
-                    router.push('/');
+                    //router.push('/');
                 } else {
                     dispatch(logoutUser({}));
                     router.push('/login');
@@ -61,8 +61,8 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                 dispatch(setWithdraw(withdrawData()));
             }
         };
-
-        if (isAuthenticated) {
+        const user = auth.currentUser;
+        if (user) {
             fetchData();
         } else if (!isAuthRoute) {
             router.push('/login');
@@ -73,7 +73,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                 dispatch(resetHasRun());
             }
         };
-    }, [isAuthenticated]);
+    }, [dispatch, hasRun, isAuthenticated, pathname, router]);
 
     useEffect(() => {
         if (hasError) {

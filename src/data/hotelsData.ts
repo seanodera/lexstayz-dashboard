@@ -9,13 +9,18 @@ import {
     runTransaction
 } from "@firebase/firestore";
 import {auth, firestore, storage} from "@/lib/firebase";
-import { getDownloadURL, ref, uploadBytes } from "@firebase/storage";
-import { createFile } from "@/lib/utils";
+import {deleteObject, getDownloadURL, ref, uploadBytes} from "@firebase/storage";
+import {createFile} from "@/lib/utils";
+import {getDoc} from "firebase/firestore";
 
 async function uploadImage(file: File, path: string) {
     const storageRef = ref(storage, path);
     const snapshot = await uploadBytes(storageRef, file);
     return await getDownloadURL(snapshot.ref);
+}
+async function deleteImage(path: string) {
+    const storageRef = ref(storage, path);
+    await deleteObject(storageRef);
 }
 
 function getCurrentUser() {
@@ -33,18 +38,18 @@ export async function uploadStay(stay: any, poster: string, images: string[]) {
         const staysRef = collection(userDocRef, 'stays');
         const docRef = doc(staysRef);
 
-        const processedStay = { ...stay, id: docRef.id };
+        const processedStay = {...stay, id: docRef.id};
         await setDoc(docRef, processedStay);
 
-        const posterFile = await createFile({ url: poster, name: 'poster' });
+        const posterFile = await createFile({url: poster, name: 'poster'});
         const posterURL = await uploadImage(posterFile, `${docRef.id}/poster`);
-        await updateDoc(docRef, { poster: posterURL });
+        await updateDoc(docRef, {poster: posterURL});
 
         const imageUrls = await Promise.all(images.map(async (image, index) => {
-            const imageFile = await createFile({ url: image, name: `image-${index}` });
+            const imageFile = await createFile({url: image, name: `image-${index}`});
             return await uploadImage(imageFile, `${docRef.id}/image-${index}`);
         }));
-        await updateDoc(docRef, { images: imageUrls });
+        await updateDoc(docRef, {images: imageUrls});
 
         console.log('Document and images uploaded successfully');
     } catch (error) {
@@ -66,18 +71,18 @@ export async function addRoomFirebase(room: any, stayId: string, poster: string,
 
         const docRef = doc(roomsRef);
 
-        const processedRoom = { ...room, id: docRef.id };
+        const processedRoom = {...room, id: docRef.id};
         await setDoc(docRef, processedRoom);
 
-        const posterFile = await createFile({ url: poster, name: 'poster' });
+        const posterFile = await createFile({url: poster, name: 'poster'});
         const posterURL = await uploadImage(posterFile, `${stayId}/${docRef.id}/poster`);
-        await updateDoc(docRef, { poster: posterURL });
+        await updateDoc(docRef, {poster: posterURL});
 
         const imageUrls = await Promise.all(images.map(async (image, index) => {
-            const imageFile = await createFile({ url: image, name: `image-${index}` });
+            const imageFile = await createFile({url: image, name: `image-${index}`});
             return await uploadImage(imageFile, `${stayId}/${docRef.id}/image-${index}`);
         }));
-        await updateDoc(docRef, { images: imageUrls });
+        await updateDoc(docRef, {images: imageUrls});
 
         console.log('Document and images uploaded successfully');
     } catch (error) {
@@ -96,7 +101,7 @@ export async function getStaysFirebase() {
         const snapshot = await getDocs(staysRef);
         for (const doc1 of snapshot.docs) {
             const rooms = await getRoomsFirebase(doc1.id);
-            stays.push({ ...doc1.data(), rooms });
+            stays.push({...doc1.data(), rooms});
         }
 
         console.log(stays);
@@ -125,31 +130,91 @@ async function getRoomsFirebase(stayId: string) {
     }
 }
 
-export async function updateRoomFirebase(room:any, stayId:string, roomId:string, poster?:string, images?:string[]){
+export async function updateRoomFirebase(room: any, previousRoom: any, stayId: string, roomId: string, poster?: string, images?: string[]) {
+    try {
+        const user = getCurrentUser();
+        const firestore = getFirestore();
+        const userDocRef = doc(firestore, 'hosts', user.uid);
+        const staysRef = collection(userDocRef, 'stays');
+        const stayRef = doc(staysRef, stayId);
+        const roomsRef = collection(stayRef, 'rooms');
 
+
+        const docRef = doc(roomsRef, roomId);
+
+
+        await updateDoc(docRef, room);
+
+        if (poster && previousRoom.poster !== poster) {
+            const storageRef = ref(storage, new URL(previousRoom.poster).pathname);
+            await deleteObject(storageRef);
+
+            const posterFile = await createFile({url: poster, name: 'poster'});
+            const posterURL = await uploadImage(posterFile, `draft/${stayId}/${docRef.id}/poster`);
+            await updateDoc(docRef, {poster: posterURL});
+        }
+        if (images) {
+            let oldImages: string[] = [];
+            let newImages: string[] = [];
+            let removedImages: string[] = [];
+            images.forEach(image => {
+                if (previousRoom.images.includes(image)) {
+                    oldImages.push(image)
+                } else {
+                    newImages.push(image);
+                }
+            });
+            previousRoom.images.forEach((image: string) => {
+                if (!newImages.includes(image)) {
+                    removedImages.push(image);
+                }
+            });
+
+            for (const image of removedImages) {
+                const oldImagePath = new URL(image).pathname;
+                await deleteImage(oldImagePath);
+            }
+            let newList = []
+
+            const imageUrls = await Promise.all(newImages.map(async (image, index) => {
+                const imageFile = await createFile({url: image, name: `image-${index}`});
+                return await uploadImage(imageFile, `draft/${stayId}/${docRef.id}/image-${index}`);
+            }));
+            await updateDoc(docRef, {images: [...oldImages, ...imageUrls]});
+        }
+
+        console.log('Document and images uploaded successfully');
+    } catch (error) {
+
+    }
 }
 
-export async function publishStayFirebase(stay:any){
+export async function publishStayFirebase(stay: any) {
     try {
         const user = getCurrentUser();
         const firestore = getFirestore();
         const publicStays = doc(firestore, 'stays', stay.id)
         const originStay = doc(firestore, 'hosts', user.uid, 'stays', stay.id)
         const timestamp = Timestamp.now()
-        await setDoc(publicStays, {...stay,published: true, publishedDate: timestamp, hostId: user.uid});
-        await updateDoc(originStay, {published: true, publishedDate: timestamp});
-        const userDocRef = doc(firestore, 'hosts', user.uid);
-        const newPublished = await runTransaction(firestore, async (transaction) => {
-            const userDoc = await transaction.get(userDocRef);
-            if (!userDoc.exists()){
-                throw new Error("User doesn't exist");
-            }
-            const newPub: string[] = userDoc.data().published
-            newPub.push(publicStays.id)
-            transaction.update(userDocRef,{published: newPub});
-        })
+        if (stay.published && stay.modified) {
+            await updateDoc(publicStays, {...stay, published: true, publishedDate: timestamp, hostId: user.uid});
+        } else {
+            await setDoc(publicStays, {...stay, published: true, publishedDate: timestamp, hostId: user.uid});
+            const userDocRef = doc(firestore, 'hosts', user.uid);
 
-    } catch (error){
+            const userDoc = await getDoc(userDocRef);
+            const pub = userDoc.get('published')
+            if (pub) {
+                const newPublished: string[] = [...pub, publicStays.id]
+                await updateDoc(userDocRef, {published: newPublished});
+            } else {
+                await updateDoc(userDocRef, {published: [publicStays.id]});
+            }
+        }
+        await updateDoc(originStay, {published: true, publishedDate: timestamp});
+
+
+    } catch (error) {
         console.error('Error updating stay:', error);
     }
 }

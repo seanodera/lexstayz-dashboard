@@ -1,21 +1,18 @@
 'use client'
-import {Button, Card, Checkbox, Col, Image, Input, InputNumber, Row, TimePicker, Upload} from "antd";
+import {Button, Card, Checkbox, Col, Image, Input, Row, TimePicker, Upload} from "antd";
 import React, {useEffect, useState} from "react";
-import {PlusCircleOutlined, PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import {UploadChangeParam} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
-import {hotelFacilities} from "@/data/hotelsDataLocal";
-import dayjs, {Dayjs} from "dayjs";
-import Link from "next/link";
-import {uploadStay} from "@/data/hotelsData";
+import dayjs from "dayjs";
 import {useRouter} from "next/navigation";
 import {Field, Fieldset, Label, Select} from "@headlessui/react";
 import {countries} from "country-data";
 
 import UploadImagesComponent from "@/components/accomodations/uploadImagesComponent";
-import {fetchStaysAsync} from "@/slices/bookingSlice";
-import {useAppDispatch} from "@/hooks/hooks";
-
+import {fetchStaysAsync, uploadStayAsync} from "@/slices/bookingSlice";
+import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
+import {UploadOutlined} from "@ant-design/icons";
+import {hotelFacilities} from "@/data/hotelsDataLocal";
 
 export default function ListingEditComponent({stay, partial}: { stay?: any, partial?: any }) {
     const [name, setName] = useState<string>('');
@@ -29,40 +26,41 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     const router = useRouter();
 
     const [country, setCountry] = useState<string>('Kenya');
-    const [city,setCity] =   useState<string>('');
-    const [district,setDistrict] =   useState<string>('');
-    const [street,setStreet] =   useState<string>('');
-    const [street2,setStreet2] = useState<string>('');
-    const [zipCode,setZipCode] = useState<string>('');
+    const [city, setCity] = useState<string>('');
+    const [district, setDistrict] = useState<string>('');
+    const [street, setStreet] = useState<string>('');
+    const [street2, setStreet2] = useState<string>('');
+    const [zipCode, setZipCode] = useState<string>('');
 
-    const [minAge,setMinAge] = useState<number>(18);
+    const [minAge, setMinAge] = useState<number>(18);
     const [smoking, setSmoking] = useState<string>('Designated Smoking Areas');
-    const [parties,setParties] = useState<string>('Yes');
-    const [pets,setPets] = useState<string>('No')
+    const [parties, setParties] = useState<string>('Yes');
+    const [pets, setPets] = useState<string>('No')
 
-    const [cancellation,setCancellation] = useState<string>('Free')
-    const [cancellationRate,setCancellationRate] = useState<number>(20);
-    const [cancellationTime,setCancellationTime] = useState<number>(0);
-    const [timeSpace,setTimeSpace] = useState<string>('Days');
-    const [preDate,setPreDate] = useState<boolean>(true)
+    const [cancellation, setCancellation] = useState<string>('Free')
+    const [cancellationRate, setCancellationRate] = useState<number>(20);
+    const [cancellationTime, setCancellationTime] = useState<number>(0);
+    const [timeSpace, setTimeSpace] = useState<string>('Days');
+    const [preDate, setPreDate] = useState<boolean>(true)
     const dispatch = useAppDispatch()
 
+    // Handle Change for poster image
     const handleChange = (info: UploadChangeParam<UploadFile<any>>) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             setPoster(e.target?.result);
-            //setFile(info.file.originFileObj);
         };
         reader.readAsDataURL(info.file.originFileObj as File);
     };
+
     useEffect(() => {
         if (stay) {
-
+            // Populate state with stay details if editing an existing stay
         } else if (partial) {
             setName(partial.name);
             setType(partial.type);
         }
-    });
+    }, [stay, partial]);
 
     async function SaveStay() {
         const newStay = {
@@ -94,13 +92,13 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             pets: pets,
         }
         if (partial) {
-            uploadStay(newStay, poster, images).then((response) => {
-                console.log('Done')
+            // @ts-ignore
+            dispatch(uploadStayAsync({ stay: newStay, poster, images })).then(() => {
 
                 // @ts-ignore
                 dispatch(fetchStaysAsync());
                 router.push('/accommodations');
-            })
+            });
         }
     }
 
@@ -129,9 +127,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                     </div>
                     {(poster === '') ? <div
                         className={'flex items-center justify-center border border-dashed border-primary rounded-xl w-full aspect-video object-cover'}>
-
                     </div> : <Image className={'aspect-video rounded-xl object-cover'} src={poster} alt=""/>}
-
                     <div className={'flex gap-8 mt-4'}>
                         <div>
                             <h3 className={'text-nowrap'}>Check In Time</h3>
@@ -182,7 +178,6 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             </Field>
                         </Fieldset>
                     </div>
-
                     <div>
                         <h3 className={'font-bold mb-0'}>Rules</h3>
                         <Fieldset className={'grid grid-cols-3 gap-8'}>
@@ -193,57 +188,69 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             </Field>
                             <Field>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Smoking</Label>
-                                <Select className={'appearance-none py-1 rounded w-full active:border-primary'}
-                                        value={smoking} onChange={(e) => setSmoking(e.target.value)}>
-                                    <option value={'Designated Smoking Areas'}>Designated Smoking Areas</option>
-                                    <option value={'Yes'}>Yes</option>
-                                    <option value={'No'}>No</option>
+                                <Select value={smoking} onChange={(e) => setSmoking(e.target.value)}
+                                        className={'appearance-none py-1 rounded w-full active:border-primary'}>
+                                    <option value="Designated Smoking Areas">Designated Smoking Areas</option>
+                                    <option value="No Smoking Areas">No Smoking Areas</option>
                                 </Select>
                             </Field>
                             <Field>
-                                <Label className={'text-gray-500 font-bold mb-0'}>Pets allowed</Label>
-                                <Select className={'appearance-none py-1 rounded w-full active:border-primary'}
-                                        value={pets} onChange={(e) => setPets(e.target.value)}>
-                                    <option value={'Yes'}>Yes</option>
-                                    <option value={'No'}>No</option>
+                                <Label className={'text-gray-500 font-bold mb-0'}>Parties</Label>
+                                <Select value={parties} onChange={(e) => setParties(e.target.value)}
+                                        className={'appearance-none py-1 rounded w-full active:border-primary'}>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
                                 </Select>
                             </Field>
                             <Field>
-                                <Label className={'text-gray-500 font-bold mb-0'}>Parties Allowed</Label>
-                                <Select className={'appearance-none py-1 rounded w-full active:border-primary'}
-                                        value={parties} onChange={(e) => setParties(e.target.value)}>
-                                    <option value={'Yes'}>Yes</option>
-                                    <option value={'No'}>No</option>
+                                <Label className={'text-gray-500 font-bold mb-0'}>Pets</Label>
+                                <Select value={pets} onChange={(e) => setPets(e.target.value)}
+                                        className={'appearance-none py-1 rounded w-full active:border-primary'}>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
                                 </Select>
                             </Field>
-                            <Field>
+                        </Fieldset>
+                    </div>
+                    <div>
+                        <h3 className={'font-bold mb-0'}>Cancellation Policy</h3>
+                        <Fieldset className={'grid grid-cols-3 gap-8'}>
+                            <Field className={'col-span-1'}>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Cancellation</Label>
-                                <Select value={cancellation} onChange={(e) => setCancellation(e.target.value)} className={'appearance-none py-1 rounded w-full active:border-primary'}>
-                                    <option value={'Free'}>Free</option>
-                                    <option value={'Flat Rate'}>Flat Rate</option>
-                                    <option value={'Percentage'}>Percentage</option>
+                                <Select value={cancellation} onChange={(e) => setCancellation(e.target.value)}
+                                        className={'appearance-none py-1 rounded w-full active:border-primary'}>
+                                    <option value="Free">Free</option>
+                                    <option value="Non-Refundable">Non-Refundable</option>
+                                    <option value="Other">Other</option>
                                 </Select>
                             </Field>
-                            <Field>
-                                <Label className={'text-gray-500 font-bold mb-0'}>Cancellation Value</Label>
-                                <Input type={'number'} disabled={cancellation === 'Free'} value={cancellationRate} onChange={(e) => setCancellationRate(parseInt(e.target.value))}/>
+                            <Field className={'col-span-1'}>
+                                <Label className={'text-gray-500 font-bold mb-0'}>Cancellation Rate (%)</Label>
+                                <Input disabled={!(cancellation === 'Other')} type={'number'} className={'w-full'} value={cancellationRate}
+                                       onChange={(e) => setCancellationRate(parseInt(e.target.value))}/>
                             </Field>
-                            <Field className={'grid grid-cols-subgrid col-span-3'}>
+                            <Field className={'col-span-1'}>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Cancellation Time</Label>
-                                <Input className={'col-start-1'} disabled={cancellation === 'Free'} type={'number'} value={cancellationTime} onChange={(e) => setCancellationTime(parseInt(e.target.value))}/>
-                                <Select disabled={cancellation === 'Free'} value={timeSpace} onChange={(e) => setTimeSpace(e.target.value)} className={'appearance-none py-1 rounded w-full active:border-primary col-start-2'}>
-                                    <option>Days</option>
-                                    <option>Weeks</option>
-                                    <option>Months</option>
-                                </Select>
-                                <Select disabled={cancellation === 'Free'} value={String(preDate)} onChange={(value) => setPreDate(Boolean(value.target.value))} className={'appearance-none py-1 rounded w-full active:border-primary '}>
+                                <div className={'flex space-x-2 items-center'}>
+                                    <Input disabled={!(cancellation === 'Other')} className={'w-full'} value={cancellationTime}
+                                           onChange={(e) => setCancellationTime(parseInt(e.target.value))}/>
+                                    <Select disabled={!(cancellation === 'Other')} value={timeSpace} onChange={(e) => setTimeSpace(e.target.value)}
+                                            className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
+                                        <option value="Days">Days</option>
+                                        <option value="Hours">Hours</option>
+                                    </Select>
+                                </div>
+                            </Field>
+                            <Field className={'col-span-1'}>
+                                <Label className={'text-gray-500 font-bold mb-0'}>Pre-Date Cancellation</Label>
+                                <Select disabled={!(cancellation === 'Other')} value={String(preDate)} onChange={(value) => setPreDate(Boolean(value.target.value))}
+                                        className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
                                     <option value={String(true)}>Before Check In</option>
                                     <option value={String(false)}>After Booking Date</option>
                                 </Select>
                             </Field>
                         </Fieldset>
                     </div>
-
                     <div>
                         <h3 className={'font-bold mb-0'}>Description</h3>
                         <Input.TextArea rows={4} placeholder={'Enter accommodation Description'}

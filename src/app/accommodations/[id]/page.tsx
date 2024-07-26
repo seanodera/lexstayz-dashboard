@@ -32,7 +32,7 @@ export default function Page(){
     } else {
     return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between mb-4'}>
-            <div className={'flex'}>
+            <div className={'flex items-center gap-2'}>
                 <h1 className={'font-bold'}>{stay.name}</h1>
                 <span>{!stay.published? getTag('Draft'): getTag('Published')}</span>
             </div>
