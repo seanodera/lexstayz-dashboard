@@ -32,6 +32,7 @@ function ResetPassWordWrappedComponent(){
                 })
                 .catch((error) => {
                     setError("Invalid or expired password reset code.");
+                    message.error('Invalid or expired password reset Link.');
                 });
         }
     }, [oobCode]);
@@ -59,7 +60,7 @@ function ResetPassWordWrappedComponent(){
             <h2 className="mt-12 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Reset Password
             </h2>
-            <Fieldset onSubmit={handleSubmit}>
+            <Fieldset className={'text-start space-y-4'} onSubmit={handleSubmit}>
                 <Field className={'block'}>
                     <Label className={'block text-sm font-medium leading-6 text-gray-900'}
                            htmlFor="email">Email</Label>
@@ -86,7 +87,8 @@ function ResetPassWordWrappedComponent(){
                            placeholder="Confirm Password" required value={confirmPassword} invalid={password !== confirmPassword}
                            onChange={(e) => setConfirmPassword(e.target.value)}/>
                 </Field>
-                <button type="submit">Reset Password</button>
+                <button className={'flex w-full justify-center border-0 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'}
+                    type="submit">Reset Password</button>
             </Fieldset>
         </div>
     </Card>
