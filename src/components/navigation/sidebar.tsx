@@ -15,6 +15,8 @@ import {
     LogoutOutlined, WalletOutlined
 } from '@ant-design/icons';
 import LogoIcon from "@/components/LogoIcon";
+import {signOut} from "firebase/auth";
+import {auth} from "@/lib/firebase";
 
 const menuItems = [
     {
@@ -65,12 +67,6 @@ const menuItems = [
         label: "Help",
         href: "/help"
     },
-    {
-        key: "logout",
-        icon: <LogoutOutlined />,
-        label: "Logout",
-        href: "/logout"
-    }
 ];
 const renderMenuItem = (item: any) => (
     {
@@ -83,16 +79,22 @@ const renderMenuItem = (item: any) => (
 
 export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, setCollapsed: any}) {
     const pathname = usePathname();
-    return <Layout.Sider className={'h-full sticky left-0 top-64'} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
-        <Link href={'/'} className={`flex items-center gap-2 px-2 py-2 text-white ${collapsed && 'justify-center'}`}>
+    return <Layout.Sider className={'h-full flex flex-col justify-between flex-1 sticky left-0 top-64'} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
+        <div><Link href={'/'} className={`flex items-center gap-2 px-2 py-2 text-white ${collapsed && 'justify-center'}`}>
             <div className={`p-1 h-12 aspect-square bg-white bg-opacity-10 rounded-lg`}><LogoIcon className={'fill-primary'}/></div>
             <div className={`font-semibold text-lg  ${collapsed? 'hidden':''}`}>LexStayz</div>
         </Link>
-        <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[1]]} items={
-            menuItems.map(item => renderMenuItem(item))
-        }>
-
-        </Menu>
+            <Menu theme="dark" mode="inline" selectedKeys={[pathname.split('/')[1]]} items={
+                menuItems.map(item => renderMenuItem(item))
+            }>
+            </Menu></div>
+        <Menu className={'mt-auto align-bottom'} theme={'dark'} mode="inline" items={
+            [{
+                key: '',
+                icon:<LogoutOutlined />,
+                label: <span onClick={(e) => signOut(auth)}>Logout</span>
+            }]
+        }></Menu>
     </Layout.Sider>
 }
 export {menuItems};

@@ -94,7 +94,7 @@ export const addRoomAsync = createAsyncThunk(
     }
 );
 
-export const fetchStaysAsync = createAsyncThunk(
+export const fetchStaysAsync: any = createAsyncThunk(
     'booking/fetchStays',
     async () => {
         const stays = await getStaysFirebase();
@@ -147,6 +147,9 @@ const bookingSlice = createSlice({
         },
         resetHasRun: (state) => {
             state.hasRun = false;
+        },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -211,7 +214,8 @@ export const {
     setCurrentBookingById,
     setWithdraw,
     setBalance,
-    resetHasRun
+    resetHasRun,
+    setIsLoading,
 } = bookingSlice.actions;
 
 export const selectCurrentStay = (state: any) => state.booking.currentStay;

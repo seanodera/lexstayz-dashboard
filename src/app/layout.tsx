@@ -1,11 +1,10 @@
 import type {Metadata} from "next";
-import {Inter} from "next/font/google";
 import "../styles/globals.css";
 import ContextProvider from "@/context/contextProvider";
 import StoreProvider from "@/context/storeProvider";
 import {AntdRegistry} from "@ant-design/nextjs-registry";
 import {ConfigProvider} from "antd";
-import Preloader from "@/components/preloader/preloader";
+
 
 // antd theme
 const theme = {
@@ -27,7 +26,7 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body><StoreProvider><AntdRegistry>
-            <ConfigProvider theme={theme}><ContextProvider><Preloader/>
+            <ConfigProvider theme={theme}><ContextProvider>
                 <div>{children}</div>
             </ContextProvider></ConfigProvider> </AntdRegistry></StoreProvider>
         </body>
