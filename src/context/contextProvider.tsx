@@ -40,8 +40,8 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                     console.log(userDetails);
                     dispatch(loginUser(userDetails));
                 } else {
-                    dispatch(logoutUser({}));
                     if (!isAuthRoute) {
+                        dispatch(logoutUser({}));
                         router.push('/login');
                     }
                 }
