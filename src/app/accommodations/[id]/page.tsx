@@ -16,16 +16,13 @@ import {publishStayFirebase} from "@/data/hotelsData";
 export default function Page(){
     const {id} = useParams();
     const dispatch = useAppDispatch();
-    const currentId = useAppSelector(selectCurrentId);
-
-    useEffect(() => {
-        if (currentId !== id) {
-            dispatch(setCurrentStayFromId(id.toString()));
-        }
-        console.log(currentId)
-    }, [currentId, dispatch, id]);
-
     const stay = useAppSelector(selectCurrentStay);
+    useEffect(() => {
+
+            dispatch(setCurrentStayFromId(id.toString()));
+
+    }, [id]);
+
     console.log(stay);
     if (!stay || stay.id === undefined) {
         return <div></div>;

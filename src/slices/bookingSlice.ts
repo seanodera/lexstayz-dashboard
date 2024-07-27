@@ -1,12 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { addDays, differenceInDays } from "date-fns";
-import { uploadStay, addRoomFirebase, getStaysFirebase } from "@/data/hotelsData";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {addDays, differenceInDays} from "date-fns";
+import {uploadStay, addRoomFirebase, getStaysFirebase, updateRoomFirebase} from "@/data/hotelsData";
 
 
 export interface Stay {
     id: string;
     rooms: any[];
-    [key: string]: any;
+
+    [ key: string ]: any;
 }
 
 interface Dates {
@@ -80,7 +81,7 @@ const initialState: BookingState = {
 
 export const uploadStayAsync = createAsyncThunk(
     'booking/uploadStay',
-    async ({ stay, poster, images }: { stay: Stay, poster: string, images: string[] }) => {
+    async ({stay, poster, images}: { stay: Stay, poster: string, images: string[] }) => {
         await uploadStay(stay, poster, images);
         return stay;
     }
@@ -88,9 +89,10 @@ export const uploadStayAsync = createAsyncThunk(
 
 export const addRoomAsync = createAsyncThunk(
     'booking/addRoom',
-    async ({ room, stayId, poster, images }: { room: any, stayId: string, poster: string, images: string[] }) => {
-        await addRoomFirebase(room, stayId, poster, images);
-        return { room, stayId };
+    async ({room, stayId, poster, images}: { room: any, stayId: string, poster?: string, images: string[] }) => {
+        console.log(room);
+        const updated = await addRoomFirebase(room, stayId, images , poster);
+        return updated;
     }
 );
 
@@ -101,6 +103,21 @@ export const fetchStaysAsync: any = createAsyncThunk(
         return stays;
     }
 );
+
+export const updateRoomAsync: any = createAsyncThunk(
+    'booking/updateRoom',
+    async ({room, previousRoom, stayId, roomId, poster, images}: {
+        room: any,
+        previousRoom: any,
+        stayId: string,
+        roomId: string,
+        poster?: string,
+        images?: string[]
+    }) => {
+        console.log(stayId, 'update room async')
+        const updated = await updateRoomFirebase(room, previousRoom, stayId, roomId, poster, images);
+        return updated
+    })
 
 const bookingSlice = createSlice({
     name: "booking",
@@ -119,8 +136,9 @@ const bookingSlice = createSlice({
             state.currentId = -1;
         },
         setCurrentStayFromId: (state, action: PayloadAction<string | number>) => {
-            state.currentId = action.payload;
+
             const currentStay = state.stays.find((value) => value.id === action.payload);
+            state.currentId = action.payload;
             console.log(currentStay);
             state.currentStay = currentStay ? currentStay : ({} as Stay);
         },
@@ -172,12 +190,17 @@ const bookingSlice = createSlice({
                 state.isLoading = true;
                 state.hasError = false;
                 state.errorMessage = '';
+
             })
             .addCase(addRoomAsync.fulfilled, (state, action: PayloadAction<{ room: any; stayId: string }>) => {
                 state.isLoading = false;
-                const stay = state.stays.find((stay) => stay.id === action.payload.stayId);
+                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId)
+                const stay = state.stays.at(stayIndex);
+                console.log(stay);
                 if (stay) {
+                    stay.stays.slice(stayIndex, 1)
                     stay.rooms.push(action.payload.room);
+                    state.stays.push(stay)
                 }
             })
             .addCase(addRoomAsync.rejected, (state, action) => {
@@ -199,12 +222,35 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
                 state.hasError = true;
                 state.errorMessage = action.error.message || 'Failed to fetch stays';
-            });
+            })
+            .addCase(updateRoomAsync.pending, (state) => {
+                state.isLoading = true;
+                state.hasError = false;
+                state.errorMessage = '';
+                console.log('update room');
+            })
+            .addCase(updateRoomAsync.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId)
+                const stay = state.stays.at(stayIndex);
+                console.log(stay);
+                if (stay) {
+                    stay.rooms.push(action.payload.room);
+                    stay.stays.slice(stayIndex, 1)
+                    state.stays.push(stay)
+                }
+            })
+            .addCase(updateRoomAsync.rejected, (state, action) => {
+            state.isLoading = false;
+            state.hasError = true;
+            state.errorMessage = action.error.message || 'Failed to fetch stays';
+            })
+        ;
     }
 });
 
 export const {
-        setCurrentStay,
+    setCurrentStay,
     resetBooking,
     setAllStays,
     setCurrentStayFromId,
@@ -233,5 +279,6 @@ export const selectIsLoading = (state: any) => state.booking.isLoading;
 export const selectHasError = (state: any) => state.booking.hasError;
 export const selectErrorMessage = (state: any) => state.booking.errorMessage;
 export const selectHasRun = (state: any) => state.booking.hasRun;
+
 
 export default bookingSlice.reducer;

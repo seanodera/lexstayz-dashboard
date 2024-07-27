@@ -10,17 +10,17 @@ import RoomComponent from "@/components/accomodations/roomComponent";
 import Link from "next/link";
 
 export default function Page() {
-    const params = useParams()[ 'id' ];
+    const {id} = useParams();
     const dispatch = useAppDispatch();
-    const currentId = useAppSelector(selectCurrentId);
-
-    useEffect(() => {
-        if (currentId !== params) {
-            dispatch(setCurrentStayFromId(params.toString()));
-        }
-    }, [currentId, dispatch, params]);
-
     const stay = useAppSelector(selectCurrentStay);
+    useEffect(() => {
+
+        dispatch(setCurrentStayFromId(id.toString()));
+
+    }, [id]);
+
+    console.log(stay);
+
     return <div className={'pt-4 pb-10 px-10'}>
         <div className={'flex justify-between items-center'}>
             <div className={''}>

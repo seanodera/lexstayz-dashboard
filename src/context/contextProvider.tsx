@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import {
     fetchStaysAsync, resetHasRun, selectErrorMessage,
@@ -10,7 +10,7 @@ import { Layout, message } from 'antd';
 import Navbar from "@/components/navigation/navbar";
 import Sidebar from "@/components/navigation/sidebar";
 import { usePathname, useRouter } from "next/navigation";
-import { loginUser, logoutUser, selectIsAuthenticated } from "@/slices/authenticationSlice";
+import {loginUser, logoutUser, selectCurrentUser, selectIsAuthenticated} from "@/slices/authenticationSlice";
 import {browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
 import { getUserDetails } from "@/data/usersData";
 import { auth } from "@/lib/firebase";
@@ -29,16 +29,18 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const errorMessage = useAppSelector(selectErrorMessage);
     const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
-
+    const [userLoaded, setUserLoaded] = useState(false);
+    const currentUser = useAppSelector(selectCurrentUser);
     useEffect(() => {
         const isAuthRoute = authRoutes.includes(pathname);
         const initializeAuth = async () => {
             await setPersistence(auth, browserSessionPersistence);
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    const userDetails = await getUserDetails(user.uid);
-                    console.log(userDetails);
-                    dispatch(loginUser(userDetails));
+                    if (currentUser.uid !== user.uid){
+                        const userDetails = await getUserDetails(user.uid);
+                        dispatch(loginUser(userDetails));
+                    }
                 } else {
                     if (!isAuthRoute) {
                         dispatch(logoutUser({}));
@@ -47,9 +49,10 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                 }
             });
         };
+        if (!userLoaded){
         initializeAuth();
-        console.log(isLoading, 'CP')
-    }, [pathname, dispatch, router]);
+        }
+    });
 
     useEffect(() => {
         if (hasError) {

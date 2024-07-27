@@ -10,15 +10,16 @@ import {Button} from "antd";
 export default function Page() {
     const {id, roomId} = useParams()
     const dispatch = useAppDispatch();
-    const currentId = useAppSelector(selectCurrentId);
-
-    useEffect(() => {
-        if (currentId !== id) {
-            dispatch(setCurrentStayFromId(id.toString()));
-        }
-    }, [currentId, dispatch, id]);
 
     const stay = useAppSelector(selectCurrentStay);
+    useEffect(() => {
+
+        dispatch(setCurrentStayFromId(id.toString()));
+
+    }, [id]);
+
+
+
     if (!stay || stay.id === undefined) {
         return <div></div>;
     } else {

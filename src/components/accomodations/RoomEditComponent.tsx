@@ -23,7 +23,13 @@ import {UploadFile} from "antd/lib";
 import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 
-import {selectCurrentStay, setCurrentStayFromId, addRoomAsync, fetchStaysAsync} from "@/slices/bookingSlice";
+import {
+    selectCurrentStay,
+    setCurrentStayFromId,
+    addRoomAsync,
+    fetchStaysAsync,
+    updateRoomAsync
+} from "@/slices/bookingSlice";
 import {useRouter} from "next/navigation";
 
 const {TextArea} = Input;
@@ -33,7 +39,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
     const currentStay = useAppSelector(selectCurrentStay);
 
     const [name, setName] = useState('');
-    const [poster, setPoster] = useState<any>('');
+    const [poster, setPoster] = useState<any>(undefined);
     const [images, setImages] = useState<Array<any>>([]);
     const [maxGuests, setMaxGuests] = useState<number | null>(2);
     const [beds, setBeds] = useState<Array<any>>([]);
@@ -66,30 +72,44 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
     };
 
     const handleSubmit = async () => {
+        const roomData = {
+            name,
+            maxGuests,
+            beds,
+            description,
+            amenities,
+            price,
+            available
+        };
+        console.log(stayId, 'Room Edit')
         if (room){
 
+            await dispatch(updateRoomAsync({room: roomData, previousRoom: room, stayId,roomId: room.id, poster, images})).then((value:any) => {
+                console.log(value)
+                router.push(`/accommodations/${stayId}/${room.id}`);
+            })
+
         } else {
-            const roomData = {
-                name,
-                maxGuests,
-                beds,
-                description,
-                amenities,
-                price,
-                available
-            };
+            try {
+                console.log('here')
 
-            console.log(roomData);
+                console.log(roomData);
 
-            // Add new room
-            // @ts-ignore
-            await dispatch(addRoomAsync({room: roomData, stayId, poster, images}));
+                // Add new room
+                console.log(stayId);
+                // @ts-ignore
+                await dispatch(addRoomAsync({room: roomData, stayId, poster, images})).then((value) => {
 
-            //@ts-ignore
-            dispatch(fetchStaysAsync());
-            // Refresh current stay to reflect changes
-            dispatch(setCurrentStayFromId(stayId));
-            router.push(`/accommodation/${stayId}`);
+                    router.push(`/accommodations`)
+                });
+                //
+                //@ts-ignore
+                //dispatch(fetchStaysAsync());
+                console.log(stayId)
+
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 

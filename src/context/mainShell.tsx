@@ -32,7 +32,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchData = async () => {
             if (!hasRun) {
-                console.log('Actual Fetch Data', hasRun);
+
                 dispatch(fetchStaysAsync());
                 dispatch(setBookings([]));
                 dispatch(setBalance({
@@ -47,18 +47,13 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
 
         if (user) {
             fetchData();
-            console.log("Fetching data", hasRun);
+
         } else {
-            console.log("Redirecting to login", hasRun);
+
             router.push('/login');
         }
 
-        return () => {
-            // if (hasRun) {
-            //     dispatch(resetHasRun());
-            // }
-        };
-    }, [hasRun, dispatch, router]);
+      });
 
     if (isLoading) {
         return <div><LoadingScreen/></div>;

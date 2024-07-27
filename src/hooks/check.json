@@ -1,0 +1,271 @@
+{
+  "description": "fvdsdsv",
+  "facilities": [
+    "Mini-Bar",
+    "Work Desk",
+    "Room Service",
+    "Bathrobes and Slippers",
+    "Laundry/Dry Cleaning Services",
+    "Shuttle Service",
+    "Bar/Lounge",
+    "Breakfast Buffet",
+    "Sauna/Steam Room",
+    "Hot Tub/Jacuzzi",
+    "Tennis Court",
+    "Banquet Halls",
+    "Fax/Photocopying Services",
+    "Secretarial Services"
+  ],
+  "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fposter?alt=media&token=8ab5fefa-ecfe-4ec0-a05b-44246517d1da",
+  "id": "S5tcnweW9CwSIAmZEw2r",
+  "images": [
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-0?alt=media&token=e2de20d5-9cff-4acb-b954-aa791fdd6e86",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-1?alt=media&token=3f08c488-f161-4d0e-91b7-cdd191c08b70",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-2?alt=media&token=47c0fb5c-4135-49be-9814-44674572205e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-3?alt=media&token=afe06781-2d92-4730-8b18-39a4fd02c16d",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-4?alt=media&token=ed2d0a0c-caeb-4192-bf8e-fa55c95e661a",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-5?alt=media&token=87af94c3-8ba2-4154-8def-567c66072b6e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-6?alt=media&token=09baf14d-5751-4df7-91a5-245b17f0688e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-7?alt=media&token=0a927c0e-78f1-4b37-8d52-a7cc23f75131",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-8?alt=media&token=facf120f-9f1d-407c-b685-28c402be0a5e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-9?alt=media&token=9036716c-b375-4b2c-8adb-1f55457162d4",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-10?alt=media&token=13b1e517-e055-4b1a-98fc-54e5370a24a3",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-11?alt=media&token=78d72cd4-9c12-4cca-86cf-a600bdaed39d",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-12?alt=media&token=2737ed23-3ff7-455a-8508-1ab37fa2971e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-13?alt=media&token=91c2e313-7834-4b1a-9cb6-3bffabdc8b26",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-14?alt=media&token=a81ff779-2f91-44b4-ad2c-ddabaafb42c9",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-15?alt=media&token=9c5013b1-6dd4-4848-9eb8-d5ca33d93126",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-16?alt=media&token=34519d32-8dc5-4025-9543-a4f17e4e787b",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-17?alt=media&token=a0ef5687-c406-48c5-acea-b2290582119a",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-18?alt=media&token=fd293b76-2c1f-4799-9dbd-1e87fe89b6cb",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-19?alt=media&token=c7ad68c8-fd0a-4139-9379-cf5a3ffa40f5",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-20?alt=media&token=1786bbeb-792d-43b5-949d-53502fac7073",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-21?alt=media&token=33c727e2-0561-4315-8007-10a30ab67b2f",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-22?alt=media&token=4c79efd3-94d8-4fb7-971f-acfe9531b050",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-23?alt=media&token=2657bf0e-d2f7-408c-8628-488aac1de5c1",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-24?alt=media&token=aecf4ba0-e331-4874-8c6d-8d9ef75e236e",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-25?alt=media&token=e2dd1ea4-5e75-404d-991a-377e8601cb7b",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-26?alt=media&token=5305233c-b274-439d-b47b-a5fcb5ee35bf",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-27?alt=media&token=4da00f09-7731-478a-aeaf-396898092c95",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-28?alt=media&token=3a1c113e-fd82-4710-a4f9-3d8fec35f1c4",
+    "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2Fimage-29?alt=media&token=8ddc0c4e-0a19-4800-92d2-dd305161e37e"
+  ],
+  "pets": "No",
+  "name": "ggg",
+  "smoking": "Designated Smoking Areas",
+  "type": "Hotel",
+  "minAge": 18,
+  "checkOutTime": "14:00",
+  "published": false,
+  "checkInTime": "12:00",
+  "parties": "Yes",
+  "location": {
+    "street": "tgg",
+    "district": "fav",
+    "city": "dfvvf",
+    "zipCode": "fdfvdf",
+    "street2": "dgg",
+    "country": "Kenya"
+  },
+  "cancellation": {
+    "rate": 20,
+    "preDate": true,
+    "timeSpace": "Days",
+    "time": 0,
+    "cancellation": "Free"
+  },
+  "rooms": [
+    {
+      "beds": [],
+      "id": "5LPjNlsAf4q5uxKTP8vM",
+      "description": "",
+      "amenities": [],
+      "available": 10,
+      "maxGuests": 2,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2F5LPjNlsAf4q5uxKTP8vM%2Fposter?alt=media&token=f1fe47f7-92dc-4dcb-867c-abae4a0213a4",
+      "name": "bmcnx",
+      "images": [],
+      "price": 0
+    },
+    {
+      "beds": [],
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FC9zBbba5zRyoCTiuXR1v%2Fposter?alt=media&token=ff11e5d3-ad71-47d7-a136-d5b8460fa3b6",
+      "name": "cccc",
+      "price": 0,
+      "images": [],
+      "maxGuests": 2,
+      "amenities": [
+        "Mini-Bar",
+        "Iron and Ironing Board"
+      ],
+      "description": "",
+      "available": 10,
+      "id": "C9zBbba5zRyoCTiuXR1v"
+    },
+    {
+      "available": 10,
+      "amenities": [
+        "Iron and Ironing Board",
+        "Mini-Bar",
+        "Coffee/Tea Maker",
+        "Hairdryer"
+      ],
+      "beds": [
+        {
+          "type": "King",
+          "number": 2
+        }
+      ],
+      "name": "fvbvcxc",
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FIgA4ithOhx749AX39nDz%2Fposter?alt=media&token=70fea1b9-8a49-49a8-8ee1-7b2d8ed4580d",
+      "maxGuests": 2,
+      "description": "cd",
+      "images": [
+        "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FIgA4ithOhx749AX39nDz%2Fimage-0?alt=media&token=6f2953e6-0ab0-490d-b426-bb310549d8be",
+        "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FIgA4ithOhx749AX39nDz%2Fimage-1?alt=media&token=c457622a-4494-4711-b2d5-2d9420b5e748",
+        "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FIgA4ithOhx749AX39nDz%2Fimage-2?alt=media&token=548ef4d1-775d-4538-8cc9-ece2329ad76c",
+        "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FIgA4ithOhx749AX39nDz%2Fimage-3?alt=media&token=6cd88bd1-5cc7-431d-a7a2-0b552a3ef5e9"
+      ],
+      "id": "IgA4ithOhx749AX39nDz",
+      "price": 44
+    },
+    {
+      "available": 10,
+      "amenities": [
+        "Mini-Bar",
+        "Iron and Ironing Board",
+        "Coffee/Tea Maker",
+        "Work Desk",
+        "Hairdryer"
+      ],
+      "price": 0,
+      "maxGuests": 2,
+      "name": "cvvvvd",
+      "beds": [],
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FMEQWk5VpgY0vazczVzcN%2Fposter?alt=media&token=5c7fdfb7-4493-49b9-9613-9cb2a16dc095",
+      "id": "MEQWk5VpgY0vazczVzcN",
+      "description": "",
+      "images": []
+    },
+    {
+      "description": "",
+      "images": [],
+      "amenities": [],
+      "name": "nmxcmnbx",
+      "available": 10,
+      "price": 0,
+      "maxGuests": 2,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FMSQLZmdR6OXa3JYsvAMb%2Fposter?alt=media&token=d619fe81-4e03-4205-8438-7bfb6b0ab1e7",
+      "beds": [],
+      "id": "MSQLZmdR6OXa3JYsvAMb"
+    },
+    {
+      "id": "NBGg7rRwie7RnY7ktJHs",
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FNBGg7rRwie7RnY7ktJHs%2Fposter?alt=media&token=1f8fbb43-a84c-469c-96ba-c6de047c955d",
+      "name": "bdchbhdc",
+      "description": "",
+      "price": 0,
+      "amenities": [],
+      "maxGuests": 2,
+      "available": 10,
+      "images": [],
+      "beds": []
+    },
+    {
+      "name": "bnnbx",
+      "maxGuests": 2,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FRvLCN6eyMBWuY3fu7W6o%2Fposter?alt=media&token=1504a9e3-a3cf-48cb-bd71-e4aeb3a3b1aa",
+      "available": 10,
+      "price": 0,
+      "amenities": [],
+      "images": [],
+      "id": "RvLCN6eyMBWuY3fu7W6o",
+      "beds": [],
+      "description": ""
+    },
+    {
+      "description": "",
+      "available": 10,
+      "amenities": [],
+      "id": "VfcnM6WgcHkoHckGjmpB",
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FVfcnM6WgcHkoHckGjmpB%2Fposter?alt=media&token=423bc277-2656-46db-86da-71a8765119e3",
+      "images": [],
+      "name": "bomb",
+      "price": 0,
+      "maxGuests": 2,
+      "beds": []
+    },
+    {
+      "amenities": [],
+      "description": "",
+      "images": [],
+      "maxGuests": 2,
+      "available": 10,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FZR6HBbSu2qV7pwu5ZzLL%2Fposter?alt=media&token=b97daf04-381d-4525-9374-280bd87a9f2d",
+      "id": "ZR6HBbSu2qV7pwu5ZzLL",
+      "beds": [],
+      "price": 0,
+      "name": "nbnb"
+    },
+    {
+      "name": "bnnb",
+      "images": [],
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FbxdARTXkWQO1h1A4y6BJ%2Fposter?alt=media&token=e63de2f4-07f2-4d81-b137-4b255242adf6",
+      "available": 10,
+      "beds": [],
+      "id": "bxdARTXkWQO1h1A4y6BJ",
+      "amenities": [],
+      "description": "",
+      "price": 0,
+      "maxGuests": 2
+    },
+    {
+      "beds": [],
+      "amenities": [],
+      "name": "bib",
+      "description": "",
+      "available": 10,
+      "images": [],
+      "id": "dPop7QPsss2hAdAAawOe",
+      "price": 1,
+      "maxGuests": 2,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FdPop7QPsss2hAdAAawOe%2Fposter?alt=media&token=cd235423-c27c-4e08-8271-61b54188b563"
+    },
+    {
+      "description": "",
+      "name": "vbfdg",
+      "price": 0,
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FdZRrVFJsdp0henSDhDEW%2Fposter?alt=media&token=31bc8941-4be4-4602-a4df-d21f7ebd1a30",
+      "available": 10,
+      "beds": [],
+      "id": "dZRrVFJsdp0henSDhDEW",
+      "images": [],
+      "amenities": [],
+      "maxGuests": 2
+    },
+    {
+      "maxGuests": 2,
+      "beds": [],
+      "available": 10,
+      "amenities": [],
+      "name": "gbfxfx g",
+      "price": 0,
+      "id": "oB255UM5fQUf9eOlGMfA",
+      "images": [],
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FoB255UM5fQUf9eOlGMfA%2Fposter?alt=media&token=ee5e8349-9e1a-4f9b-bb86-e5d0708ab5fd",
+      "description": ""
+    },
+    {
+      "beds": [],
+      "price": 0,
+      "available": 10,
+      "name": "fvcdcv",
+      "id": "tNMU2iVPxSVM3LWjshCk",
+      "images": [],
+      "amenities": [],
+      "poster": "https://firebasestorage.googleapis.com/v0/b/lexstayz.appspot.com/o/S5tcnweW9CwSIAmZEw2r%2FtNMU2iVPxSVM3LWjshCk%2Fposter?alt=media&token=19b53ac8-8fb6-4945-8651-2e1015e66daa",
+      "description": "",
+      "maxGuests": 2
+    }
+  ]
+}

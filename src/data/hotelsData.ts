@@ -13,6 +13,7 @@ import {deleteObject, getDownloadURL, ref, uploadBytes} from "@firebase/storage"
 import {createFile} from "@/lib/utils";
 import {getDoc} from "firebase/firestore";
 
+
 async function uploadImage(file: File, path: string) {
     const storageRef = ref(storage, path);
     const snapshot = await uploadBytes(storageRef, file);
@@ -57,10 +58,9 @@ export async function uploadStay(stay: any, poster: string, images: string[]) {
     }
 }
 
-export async function addRoomFirebase(room: any, stayId: string, poster: string, images: string[]) {
+export async function addRoomFirebase(room: any, stayId: string, images: string[], poster?: string) {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const staysRef = collection(userDocRef, 'stays');
         console.log('Here', staysRef.path, stayId)
@@ -74,17 +74,23 @@ export async function addRoomFirebase(room: any, stayId: string, poster: string,
         const processedRoom = {...room, id: docRef.id};
         await setDoc(docRef, processedRoom);
 
-        const posterFile = await createFile({url: poster, name: 'poster'});
-        const posterURL = await uploadImage(posterFile, `${stayId}/${docRef.id}/poster`);
-        await updateDoc(docRef, {poster: posterURL});
+        let posterURL;
+        if (poster){
+            const posterFile = await createFile({url: poster, name: 'poster'});
+            posterURL = await uploadImage(posterFile, `${stayId}/${docRef.id}/poster`);
+        }
 
         const imageUrls = await Promise.all(images.map(async (image, index) => {
             const imageFile = await createFile({url: image, name: `image-${index}`});
             return await uploadImage(imageFile, `${stayId}/${docRef.id}/image-${index}`);
         }));
-        await updateDoc(docRef, {images: imageUrls});
-
+        await updateDoc(docRef, {poster: posterURL, images: imageUrls});
         console.log('Document and images uploaded successfully');
+        return {
+            ...processedRoom,
+            poster: posterURL,
+            images: imageUrls,
+        }
     } catch (error) {
         console.error('Error adding room:', error);
     }
@@ -132,6 +138,7 @@ async function getRoomsFirebase(stayId: string) {
 
 export async function updateRoomFirebase(room: any, previousRoom: any, stayId: string, roomId: string, poster?: string, images?: string[]) {
     try {
+        console.log('Here', 'room: ', room,'prev: ' , previousRoom, 'stay: ',stayId,'room: ', roomId, 'poster: ', poster);
         const user = getCurrentUser();
         const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
@@ -143,16 +150,17 @@ export async function updateRoomFirebase(room: any, previousRoom: any, stayId: s
         const docRef = doc(roomsRef, roomId);
 
 
-        await updateDoc(docRef, room);
+        let finalPoster = previousRoom.poster;
 
         if (poster && previousRoom.poster !== poster) {
-            const storageRef = ref(storage, new URL(previousRoom.poster).pathname);
+            const storageRef = ref(storage, `${stayId}/${roomId}/poster`);
             await deleteObject(storageRef);
 
             const posterFile = await createFile({url: poster, name: 'poster'});
-            const posterURL = await uploadImage(posterFile, `draft/${stayId}/${docRef.id}/poster`);
-            await updateDoc(docRef, {poster: posterURL});
+            const posterURL = await uploadImage(posterFile, `${stayId}/${docRef.id}/poster`);
+            finalPoster = posterURL;
         }
+        let finalImages = previousRoom.images;
         if (images) {
             let oldImages: string[] = [];
             let newImages: string[] = [];
@@ -180,12 +188,20 @@ export async function updateRoomFirebase(room: any, previousRoom: any, stayId: s
                 const imageFile = await createFile({url: image, name: `image-${index}`});
                 return await uploadImage(imageFile, `draft/${stayId}/${docRef.id}/image-${index}`);
             }));
-            await updateDoc(docRef, {images: [...oldImages, ...imageUrls]});
+
+            finalImages = [...oldImages, ...imageUrls]
         }
-
+        let newRoom = {
+            ...room,
+            poster: finalPoster,
+            images: finalImages,
+        }
+        await updateDoc(docRef, newRoom)
         console.log('Document and images uploaded successfully');
-    } catch (error) {
+        return newRoom
 
+    } catch (error) {
+        console.log( 'Error updating docs:', error);
     }
 }
 

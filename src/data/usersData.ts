@@ -13,6 +13,7 @@ export async function getUserDetails(id: string) {
     try {
         const userDoc = doc(firestore, 'hosts', id);
         const docSnap = await getDoc(userDoc);
+        console.log(docSnap.data());
         return docSnap.data();
     } catch (error) {
         console.error(error);
