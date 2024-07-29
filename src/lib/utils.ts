@@ -77,17 +77,29 @@ export const dateReader = ({date = Date.now(), month = true, years = true, weekD
     return dateString;
 }
 
-export function getCountry() {
-    let result = {
-        country: ''
-    }
-     fetch('https://api.country.is').then((res) => {
-        res.json().then((data) => {
-            result = data;
-        })
-    });
+export async function getCountry() {
+    try {
+        // Fetch the client's IP address
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
 
-    return countries[result.country].name;
+        // Fetch the country using the IP address
+        const countryResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+        const countryData = await countryResponse.json();
+        const countryCode = countryData.country;
+
+        // Get country information from country-data package
+        const country = countries[countryCode];
+
+        return {
+            name: country.name,
+            emoji: country.emoji,
+        };
+    } catch (error) {
+        console.error("Error fetching country data: ", error);
+        return '';
+    }
 }
 
 export function serviceCountries() {
@@ -141,3 +153,21 @@ function getRandomSubarray(arr: Array<any>, size: number) {
     }
     return shuffled.slice(0, size);
 }
+// lib/getExchangeRate.js
+
+export const getExchangeRate = async (fromCurrency:string, toCurrency:string) => {
+    try {
+        const response = await fetch(`https://api.exchangerate.host/latest?base=${fromCurrency}&symbols=${toCurrency}`);
+        const data = await response.json();
+        const exchangeRate = data.rates[toCurrency];
+        if (!exchangeRate) {
+            throw new Error(`Unable to find exchange rate for ${toCurrency}`);
+        }
+        return exchangeRate;
+    } catch (error) {
+        console.error("Error fetching exchange rate: ", error);
+        return null;
+    }
+};
+
+

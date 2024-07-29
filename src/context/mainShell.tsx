@@ -4,6 +4,7 @@ import { Layout } from "antd";
 import Sidebar from "@/components/navigation/sidebar";
 import Navbar from "@/components/navigation/navbar";
 import {
+    fetchBookingsAsync,
     fetchStaysAsync, resetHasRun, selectErrorMessage,
     selectHasError, selectHasRun, selectIsLoading,
     setBalance, setBookings, setWithdraw
@@ -32,14 +33,15 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchData = async () => {
             if (!hasRun) {
-
+                console.log('Function is running and hasRun: ', hasRun)
                 dispatch(fetchStaysAsync());
-                dispatch(setBookings([]));
+                dispatch(fetchBookingsAsync());
                 dispatch(setBalance({
                     available: getRandomInt({ max: 100000, min: 10000 }),
                     pending: getRandomInt({ max: 10000, min: 1000 }),
                 }));
                 dispatch(setWithdraw(withdrawData()));
+
             }
         };
 
@@ -48,9 +50,6 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
         if (user) {
             fetchData();
 
-        } else {
-
-            router.push('/login');
         }
 
       });

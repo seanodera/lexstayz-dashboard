@@ -40,13 +40,18 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                     if (currentUser.uid !== user.uid){
                         const userDetails = await getUserDetails(user.uid);
                         dispatch(loginUser(userDetails));
+                        setUserLoaded(true);
                     }
                 } else {
+
                     if (!isAuthRoute) {
+                        console.log('Taking me to login: ContextProvider')
+                        setUserLoaded(false);
                         dispatch(logoutUser({}));
                         router.push('/login');
                     }
                 }
+                setUserLoaded(true)
             });
         };
         if (!userLoaded){

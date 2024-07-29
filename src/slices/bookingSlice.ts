@@ -1,35 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {addDays, differenceInDays} from "date-fns";
 import {uploadStay, addRoomFirebase, getStaysFirebase, updateRoomFirebase} from "@/data/hotelsData";
+import {Balance, Dates, Stay, Withdraw} from "@/lib/types";
+import {getBookings, updateStatus} from "@/data/bookingsData";
 
-
-export interface Stay {
-    id: string;
-    rooms: any[];
-
-    [ key: string ]: any;
-}
-
-interface Dates {
-    startDate: string;
-    endDate: string;
-    length: number;
-}
-
-interface Balance {
-    available: number;
-    pending: number;
-}
-
-interface WithdrawAccount {
-    method: string;
-    account: string;
-}
-
-interface Withdraw {
-    account: WithdrawAccount;
-    withdrawals: any[];
-}
 
 interface BookingState {
     cart: any[];
@@ -91,7 +65,7 @@ export const addRoomAsync = createAsyncThunk(
     'booking/addRoom',
     async ({room, stayId, poster, images}: { room: any, stayId: string, poster?: string, images: string[] }) => {
         console.log(room);
-        const updated = await addRoomFirebase(room, stayId, images , poster);
+        const updated = await addRoomFirebase(room, stayId, images, poster);
         return updated;
     }
 );
@@ -119,6 +93,20 @@ export const updateRoomAsync: any = createAsyncThunk(
         return updated
     })
 
+export const fetchBookingsAsync: any = createAsyncThunk('booking/fetchBookings', async () => {
+    const bookings = await getBookings();
+    return bookings;
+})
+
+export const updateBookingStatusAsync:any = createAsyncThunk('booking/updateStatus',
+    async ({
+               status, booking
+           }: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
+        console.log(booking, 'At async')
+        let updated = await updateStatus(status, booking)
+        return {booking: updated, status: status}
+
+    })
 const bookingSlice = createSlice({
     name: "booking",
     initialState,
@@ -154,7 +142,7 @@ const bookingSlice = createSlice({
             state.bookings = action.payload;
         },
         setCurrentBookingById: (state, action: PayloadAction<string | number>) => {
-            const currentBooking = state.bookings.find((booking) => booking.bookingId.toString() === action.payload.toString());
+            const currentBooking = state.bookings.find((booking) => booking.id.toString() === action.payload.toString());
             state.currentBooking = currentBooking ? currentBooking : {};
         },
         setWithdraw: (state, action: PayloadAction<Withdraw>) => {
@@ -212,6 +200,7 @@ const bookingSlice = createSlice({
                 state.isLoading = true;
                 state.hasError = false;
                 state.errorMessage = '';
+                state.hasRun = true;
             })
             .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<Stay[]>) => {
                 state.isLoading = false;
@@ -241,9 +230,42 @@ const bookingSlice = createSlice({
                 }
             })
             .addCase(updateRoomAsync.rejected, (state, action) => {
-            state.isLoading = false;
-            state.hasError = true;
-            state.errorMessage = action.error.message || 'Failed to fetch stays';
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.error.message || 'Failed to fetch stays';
+            })
+            .addCase(fetchBookingsAsync.pending, (state, action) => {
+                state.isLoading = true;
+                state.hasError = false;
+                state.errorMessage = '';
+            })
+            .addCase(fetchBookingsAsync.fulfilled, (state, action) => {
+                state.bookings = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(fetchBookingsAsync.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.error.message || 'Failed to fetch stays';
+            })
+
+            .addCase(updateBookingStatusAsync.pending, (state, action) => {
+                state.isLoading = true;
+                state.hasError = false;
+                state.errorMessage = '';
+            })
+            .addCase(updateBookingStatusAsync.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const index = state.bookings.findIndex((value) => value.id === action.payload.booking.id);
+                state.bookings[ index ] = {
+                    ...action.payload.booking,
+                    status: action.payload.status,
+                }
+            })
+            .addCase(updateBookingStatusAsync.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.error.message || 'Failed to update booking';
             })
         ;
     }

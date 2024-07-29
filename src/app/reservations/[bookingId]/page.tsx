@@ -2,13 +2,13 @@
 import {
     selectCurrentBooking, selectCurrentStay,
     setCurrentBookingById,
-    setCurrentStayFromId
+    setCurrentStayFromId, updateBookingStatusAsync
 } from "@/slices/bookingSlice";
 import {useParams} from "next/navigation";
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import BookingDescription from "@/components/booking/bookingDescription";
-import {Button, Col, Row, Skeleton} from "antd";
+import {Button, Col, message, Row, Skeleton} from "antd";
 import ContactCard from "@/components/booking/contactCard";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import BookedRooms from "@/components/booking/bookedRooms";
@@ -22,6 +22,7 @@ export default function Page() {
     const {bookingId} = params;
     const booking = useAppSelector(selectCurrentBooking);
     const stay = useAppSelector(selectCurrentStay);
+    const [messageApi, contextHolder] = message.useMessage()
     useEffect(() => {
         dispatch(setCurrentBookingById(bookingId.toString()));
     }, [bookingId, dispatch]);
@@ -37,23 +38,37 @@ export default function Page() {
 
     //await updateRoomFirebase(roomData, stayId, room.id, poster, images);
 
-    if (!booking || booking.bookingId === undefined || !stay || stay.id === undefined) {
+    function handleUpdate (e: any, status: 'Pending' | 'Confirmed'| 'Canceled'| 'Rejected'){
+        e.preventDefault()
+
+
+        dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value:any) => {
+            messageApi.success('Status updated successfully')
+            console.log(value)
+        });
+    }
+
+    if (!booking || booking.id === undefined || !stay || stay.id === undefined) {
         return <div className={'p-4'}><Skeleton active/></div>;
     } else {
+        console.log(booking)
         return <div className={'px-4 py-4'}>
-            <div className={'flex justify-between items-center'}>
+            {contextHolder}
+            <div className={'flex justify-between items-center mb-4'}>
                 <div className={'flex items-center gap-4'}>
                     <div>
                         <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
-                        <h1 className={'font-bold items-center'}>{booking.bookingCode}</h1>
+                        <h1 className={'font-bold items-center'}>{booking.id.slice(0,6).toUpperCase()}</h1>
                     </div>
                     {getTag(booking.status)}
                 </div>
-                <div className={'flex gap-2'}>
-                    <Button ghost danger icon={<CloseOutlined/>} onClick={() => {
-                    }}>Reject</Button>
-                    <Button type={'primary'} ghost icon={<CheckOutlined/>}>Confirm</Button>
-                </div>
+                {(booking.status === 'Pending')? <div className={'flex gap-2'}>
+                    <Button ghost danger icon={<CloseOutlined/>} onClick={(e) => handleUpdate(e, 'Confirmed')}>Reject</Button>
+                    <Button type={'primary'} ghost icon={<CheckOutlined/>} onClick={(e) =>handleUpdate(e, 'Confirmed') }>Confirm</Button>
+                </div> : (booking.status === 'Confirmed')? <div className={'flex gap-2'}>
+                    <Button type={'primary'}>Contact Guest</Button>
+                    <Button danger type={'primary'} onClick={(e) => handleUpdate(e, 'Canceled')}>Cancel</Button>
+                </div> : <div></div>}
             </div>
             <Row gutter={[16, 16]}>
                 <Col span={16} className={'space-y-4'}>

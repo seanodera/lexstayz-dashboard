@@ -24,7 +24,7 @@ async function deleteImage(path: string) {
     await deleteObject(storageRef);
 }
 
-function getCurrentUser() {
+export function getCurrentUser() {
     const user = auth.currentUser;
     if (!user) {
         throw new Error('No user is signed in');

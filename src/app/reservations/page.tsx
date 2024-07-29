@@ -13,6 +13,7 @@ export default function BookingPage() {
     const bookings = useSelector(selectBookings);
 
     const router = useRouter()
+
     return <div className={'m-4'}>
         <h1 className={'font-semibold'}>Bookings</h1>
         <Card>
@@ -33,7 +34,7 @@ export default function BookingPage() {
                 <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => getRooms(value)}/>
                 <Column className={'text-nowrap'} title={'Guests'} dataIndex={'numGuests'}/>
                 <Column className={'text-nowrap font-semibold'} title={'Total'} dataIndex={'totalPrice'} render={(value) => '$' + toMoneyFormat(value,{})}/>
-                <Column title={''} dataIndex={'bookingId'} render={(value) => <Link href={`/reservations/${value}`}><Button type={"primary"}>View</Button></Link> }/>
+                <Column title={''} dataIndex={'id'} render={(value) => <Link href={`/reservations/${value}`}><Button type={"primary"}>View</Button></Link> }/>
             </Table>
         </Card>
     </div>;

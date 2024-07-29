@@ -30,7 +30,7 @@ const Breadcrumbs: React.FC = () => {
             } else if (prevSnippet === 'rooms' && snippet !== 'create') {
                 path = getRoomNameById(snippet);
             } else if (prevSnippet === 'reservations') {
-                path = currentBooking?.bookingCode || 'Booking';
+                path = currentBooking?.bookingCode || snippet.slice(0,6).toUpperCase();
             }
         }
 

@@ -47,7 +47,9 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
             <h4 className={'text-gray-500'}>Lexstayz Fees</h4>
             <h4 className={'font-medium'}>$ {toMoneyFormat(0.035 * booking.totalPrice, {})}</h4>
             <h4 className={'text-gray-500'}>Total</h4>
-            <h4 className={'font-medium'}>$ {toMoneyFormat(booking.totalPrice, {})}</h4>
+            <h4 className={'font-medium'}>$ {toMoneyFormat(booking.totalPrice * 1.035, {})}</h4>
+            <h4 className={'font-gray-500'}>Converted Amount</h4>
+            <h4 className={'font-medium'}>{booking.currency} {toMoneyFormat(booking.totalPrice * 1.035 * booking.usedRate, {})}</h4>
         </div>
     </Card>
 }

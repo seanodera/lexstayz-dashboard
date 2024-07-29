@@ -12,7 +12,7 @@ export default function ReviewsPanel() {
                 <div>
                     <h3 className={'mb-0'}>Sarah.G wrote a review</h3>
                     <p className={'line-clamp-2'}>
-                        {faker.lorem.paragraph()}
+                        An Amazing stay
                     </p>
                     <div className={'flex justify-between items-center'}>
                         <div className={'text-lg'}>
