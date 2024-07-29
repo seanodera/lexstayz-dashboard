@@ -63,7 +63,7 @@ export default function Page() {
                     {getTag(booking.status)}
                 </div>
                 {(booking.status === 'Pending')? <div className={'flex gap-2'}>
-                    <Button ghost danger icon={<CloseOutlined/>} onClick={(e) => handleUpdate(e, 'Confirmed')}>Reject</Button>
+                    <Button ghost danger icon={<CloseOutlined/>} onClick={(e) => handleUpdate(e, 'Rejected')}>Reject</Button>
                     <Button type={'primary'} ghost icon={<CheckOutlined/>} onClick={(e) =>handleUpdate(e, 'Confirmed') }>Confirm</Button>
                 </div> : (booking.status === 'Confirmed')? <div className={'flex gap-2'}>
                     <Button type={'primary'}>Contact Guest</Button>
