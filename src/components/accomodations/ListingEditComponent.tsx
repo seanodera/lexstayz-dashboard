@@ -10,7 +10,7 @@ import {countries} from "country-data";
 
 import UploadImagesComponent from "@/components/accomodations/uploadImagesComponent";
 import {fetchStaysAsync, uploadStayAsync} from "@/slices/staySlice";
-import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
+import {useAppDispatch} from "@/hooks/hooks";
 import {UploadOutlined} from "@ant-design/icons";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
 
@@ -23,6 +23,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     const [facilities, setFacilities] = useState<Array<string>>([]);
     const [checkInTime, setCheckInTime] = useState<string>('12:00');
     const [checkOutTime, setCheckOutTime] = useState<string>('14:00');
+    const [currency, setCurrency] = useState<string>('USD')
     const router = useRouter();
 
     const [country, setCountry] = useState<string>('Kenya');
@@ -90,11 +91,12 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             smoking: smoking,
             parties: parties,
             pets: pets,
-            rating:0,
+            rating: 0,
+            currency: currency,
         }
         if (partial) {
             // @ts-ignore
-            dispatch(uploadStayAsync({ stay: newStay, poster, images })).then(() => {
+            dispatch(uploadStayAsync({stay: newStay, poster, images})).then(() => {
 
                 // @ts-ignore
                 dispatch(fetchStaysAsync());
@@ -106,7 +108,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     return <div>
         <div className={'flex justify-between items-center mb-2'}>
             <div className={''}>
-                <h3 className={'text-gray-500 font-bold mb-0'}>Rooms</h3>
+                <h3 className={'text-gray-500 font-bold mb-0'}>Accommodation</h3>
                 <h1 className={'font-bold'}>{name}</h1>
             </div>
 
@@ -141,10 +143,13 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                                         onChange={(_value, timeString) => setCheckOutTime(timeString.toString())}/>
                         </div>
                     </div>
-                    <div>
-                        <h3 className={'text-nowrap'}>Check Out Time</h3>
-                        <Select>
-                            {countries.all.map((country, index) => <option>{country.currencies[0]}</option>)}
+                    <div className={'mt-2'}>
+                        <h3 className={'text-nowrap'}>Stay Currency</h3>
+                        <Select value={currency} onChange={(value) => setCurrency(value.target.value)} className={'appearance-none py-1 rounded active:border-primary'}>
+                            <option value={'GHS'}>GHS</option>
+                            <option value={'USD'}>USD</option>
+                            <option value={'GBP'}>GBP</option>
+                            <option value={'EUR'}>EUR</option>
                         </Select>
                     </div>
                 </Col>
@@ -233,15 +238,18 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             </Field>
                             <Field className={'col-span-1'}>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Cancellation Rate (%)</Label>
-                                <Input disabled={!(cancellation === 'Other')} type={'number'} className={'w-full'} value={cancellationRate}
+                                <Input disabled={!(cancellation === 'Other')} type={'number'} className={'w-full'}
+                                       value={cancellationRate}
                                        onChange={(e) => setCancellationRate(parseInt(e.target.value))}/>
                             </Field>
                             <Field className={'col-span-1'}>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Cancellation Time</Label>
                                 <div className={'flex space-x-2 items-center'}>
-                                    <Input disabled={!(cancellation === 'Other')} className={'w-full'} value={cancellationTime}
+                                    <Input disabled={!(cancellation === 'Other')} className={'w-full'}
+                                           value={cancellationTime}
                                            onChange={(e) => setCancellationTime(parseInt(e.target.value))}/>
-                                    <Select disabled={!(cancellation === 'Other')} value={timeSpace} onChange={(e) => setTimeSpace(e.target.value)}
+                                    <Select disabled={!(cancellation === 'Other')} value={timeSpace}
+                                            onChange={(e) => setTimeSpace(e.target.value)}
                                             className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
                                         <option value="Days">Days</option>
                                         <option value="Hours">Hours</option>
@@ -250,7 +258,8 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             </Field>
                             <Field className={'col-span-1'}>
                                 <Label className={'text-gray-500 font-bold mb-0'}>Pre-Date Cancellation</Label>
-                                <Select disabled={!(cancellation === 'Other')} value={String(preDate)} onChange={(value) => setPreDate(Boolean(value.target.value))}
+                                <Select disabled={!(cancellation === 'Other')} value={String(preDate)}
+                                        onChange={(value) => setPreDate(Boolean(value.target.value))}
                                         className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
                                     <option value={String(true)}>Before Check In</option>
                                     <option value={String(false)}>After Booking Date</option>

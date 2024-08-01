@@ -38,18 +38,8 @@ export default function Page() {
                     <h1 className={'font-bold'}>{stay.name}</h1>
                     <span>{!stay.published ? getTag('Draft') : getTag('Published')}</span>
                 </div>
-                <div className={'space-x-2'}>
-                    <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
-                    <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'}
-                                                                                   icon={<PlusCircleOutlined/>}
-                                                                                   size={'large'}> Add
-                        Room</Button></Link>
-                    {!stay.published ? <Button type={'primary'} danger size={'large'} icon={<MdOutlinePublish/>}
-                                               onClick={() => dispatch(publishStayAsync(stay))}>Publish</Button> :
-                        <Button onClick={() => dispatch(unPublishStayAsync(stay))} type={'primary'} danger
-                                size={'large'}>UnPublish</Button>}
-                    {!stay.published && <Button type={'primary'} danger size={'large'} icon={<DeleteOutlined/>}
-                                                onClick={() => dispatch(deleteStayAsync(stay))}>Delete Stay</Button>}
+                <div className={''}>
+                   <FunctionButtons stay={stay}/>
                 </div>
             </div>
             <ListingDescription stay={stay}/>
@@ -59,5 +49,27 @@ export default function Page() {
                                                                               stayId={stay.id}/>)}
             </div>
         </div>
+    }
+}
+
+export function FunctionButtons({stay}:{stay: any}){
+    const dispatch = useAppDispatch();
+    if (stay.published){
+        return <div className={'space-x-2'}>
+            <Button onClick={() => dispatch(unPublishStayAsync(stay))} type={'primary'} danger
+                    size={'large'}>UnPublish</Button>
+        </div>
+    } else {
+    return <div className={'space-x-2'}>
+        <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
+        <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'}
+                                                                       icon={<PlusCircleOutlined/>}
+                                                                       size={'large'}> Add
+            Room</Button></Link>
+        <Button type={'primary'} danger size={'large'} icon={<MdOutlinePublish/>}
+                onClick={() => dispatch(publishStayAsync(stay))}>Publish</Button>
+        <Button type={'primary'} danger size={'large'} icon={<DeleteOutlined/>}
+                onClick={() => dispatch(deleteStayAsync(stay))}>Delete</Button>
+    </div>
     }
 }

@@ -25,9 +25,7 @@ import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 
 import {
     selectCurrentStay,
-    setCurrentStayFromId,
     addRoomAsync,
-    fetchStaysAsync,
     updateRoomAsync
 } from "@/slices/staySlice";
 import {useRouter} from "next/navigation";
@@ -101,7 +99,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                 // @ts-ignore
                 await dispatch(addRoomAsync({room: roomData, stayId, poster, images})).then((value) => {
 
-                    router.push(`/accommodations`)
+                    router.push(`/accommodations/${stayId}`)
                 });
                 //
                 //@ts-ignore
@@ -178,7 +176,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                     <Form className={'w-full'} layout={'vertical'} labelAlign={'left'}
                           rootClassName={'font-semibold text-lg w-full'}>
                         <Form.Item label={'Nightly Rate'}>
-                            <InputNumber prefix={'$'} min={0} value={price}
+                            <InputNumber prefix={currentStay.currency? currentStay.currency : 'USD'} min={0} value={price}
                                          onChange={(value: number | null) => setPrice(value)}/>
                         </Form.Item>
                         <Form.Item label={'Maximum Guests'}>
