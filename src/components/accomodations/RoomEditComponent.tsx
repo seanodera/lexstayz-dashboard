@@ -29,7 +29,7 @@ import {
     addRoomAsync,
     fetchStaysAsync,
     updateRoomAsync
-} from "@/slices/bookingSlice";
+} from "@/slices/staySlice";
 import {useRouter} from "next/navigation";
 
 const {TextArea} = Input;
@@ -84,6 +84,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
         console.log(stayId, 'Room Edit')
         if (room){
 
+            // @ts-ignore
             await dispatch(updateRoomAsync({room: roomData, previousRoom: room, stayId,roomId: room.id, poster, images})).then((value:any) => {
                 console.log(value)
                 router.push(`/accommodations/${stayId}/${room.id}`);
@@ -145,7 +146,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                 <Col span={19}>
                     <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
                         Images</h3>
-                        <Upload disabled={images.length >= 4} className={'mt-4'} beforeUpload={(file) => handleChangeDetails(file)}
+                        <Upload disabled={images.length >= 4} multiple={false} className={'mt-4'} beforeUpload={(file) => handleChangeDetails(file)}
                                 showUploadList={false}>
                             <Button icon={<UploadOutlined/>}>
                                 Add Image

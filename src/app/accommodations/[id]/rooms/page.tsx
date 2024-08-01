@@ -5,7 +5,7 @@ import {PlusCircleOutlined} from "@ant-design/icons";
 import React, {useEffect} from "react";
 import {useParams} from "next/navigation";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
-import {resetBooking, selectCurrentId, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
+import {selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import RoomComponent from "@/components/accomodations/roomComponent";
 import Link from "next/link";
 

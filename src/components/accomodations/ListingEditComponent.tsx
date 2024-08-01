@@ -9,7 +9,7 @@ import {Field, Fieldset, Label, Select} from "@headlessui/react";
 import {countries} from "country-data";
 
 import UploadImagesComponent from "@/components/accomodations/uploadImagesComponent";
-import {fetchStaysAsync, uploadStayAsync} from "@/slices/bookingSlice";
+import {fetchStaysAsync, uploadStayAsync} from "@/slices/staySlice";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {UploadOutlined} from "@ant-design/icons";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
@@ -90,6 +90,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             smoking: smoking,
             parties: parties,
             pets: pets,
+            rating:0,
         }
         if (partial) {
             // @ts-ignore
@@ -139,6 +140,12 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             <TimePicker format={'HH:mm'} value={dayjs(checkOutTime, 'HH:mm')}
                                         onChange={(_value, timeString) => setCheckOutTime(timeString.toString())}/>
                         </div>
+                    </div>
+                    <div>
+                        <h3 className={'text-nowrap'}>Check Out Time</h3>
+                        <Select>
+                            {countries.all.map((country, index) => <option>{country.currencies[0]}</option>)}
+                        </Select>
                     </div>
                 </Col>
                 <Col span={18} className={'space-y-8'}>

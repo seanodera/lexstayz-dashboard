@@ -1,15 +1,10 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {addDays, differenceInDays} from "date-fns";
-import {uploadStay, addRoomFirebase, getStaysFirebase, updateRoomFirebase} from "@/data/hotelsData";
-import {Balance, Dates, Stay, Withdraw} from "@/lib/types";
-import {getBookings, updateStatus} from "@/data/bookingsData";
-
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { addDays, differenceInDays } from "date-fns";
+import { getBookings, updateStatus } from "@/data/bookingsData";
+import { Balance, Dates, Withdraw } from "@/lib/types";
 
 interface BookingState {
     cart: any[];
-    currentStay: Stay;
-    currentId: number | string;
-    stays: Stay[];
     cartTotal: number;
     bookings: any[];
     currentBooking: any;
@@ -19,14 +14,10 @@ interface BookingState {
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
-    hasRun: boolean;
 }
 
 const initialState: BookingState = {
     cart: [],
-    currentStay: {} as Stay,
-    currentId: -1,
-    stays: [],
     cartTotal: 0,
     bookings: [],
     currentBooking: {},
@@ -48,87 +39,31 @@ const initialState: BookingState = {
     },
     isLoading: false,
     hasError: false,
-    errorMessage: '',
-    hasRun: false
+    errorMessage: ''
 };
 
-
-export const uploadStayAsync = createAsyncThunk(
-    'booking/uploadStay',
-    async ({stay, poster, images}: { stay: Stay, poster: string, images: string[] }) => {
-        await uploadStay(stay, poster, images);
-        return stay;
-    }
-);
-
-export const addRoomAsync = createAsyncThunk(
-    'booking/addRoom',
-    async ({room, stayId, poster, images}: { room: any, stayId: string, poster?: string, images: string[] }) => {
-        console.log(room);
-        const updated = await addRoomFirebase(room, stayId, images, poster);
-        return updated;
-    }
-);
-
-export const fetchStaysAsync: any = createAsyncThunk(
-    'booking/fetchStays',
+export const fetchBookingsAsync = createAsyncThunk(
+    'booking/fetchBookings',
     async () => {
-        const stays = await getStaysFirebase();
-        return stays;
+        const bookings = await getBookings();
+        return bookings;
     }
 );
 
-export const updateRoomAsync: any = createAsyncThunk(
-    'booking/updateRoom',
-    async ({room, previousRoom, stayId, roomId, poster, images}: {
-        room: any,
-        previousRoom: any,
-        stayId: string,
-        roomId: string,
-        poster?: string,
-        images?: string[]
-    }) => {
-        console.log(stayId, 'update room async')
-        const updated = await updateRoomFirebase(room, previousRoom, stayId, roomId, poster, images);
-        return updated
-    })
+export const updateBookingStatusAsync = createAsyncThunk(
+    'booking/updateStatus',
+    async ({ status, booking }: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
+        let updated = await updateStatus(status, booking);
+        return { booking: updated, status };
+    }
+);
 
-export const fetchBookingsAsync: any = createAsyncThunk('booking/fetchBookings', async () => {
-    const bookings = await getBookings();
-    return bookings;
-})
-
-export const updateBookingStatusAsync:any = createAsyncThunk('booking/updateStatus',
-    async ({
-               status, booking
-           }: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
-        console.log(booking, 'At async')
-        let updated = await updateStatus(status, booking)
-        return {booking: updated, status: status}
-
-    })
 const bookingSlice = createSlice({
     name: "booking",
     initialState,
     reducers: {
         resetBooking: (state) => {
             state.cart = [];
-            state.currentId = -1;
-            state.currentStay = {} as Stay;
-        },
-        setAllStays: (state, action: PayloadAction<Stay[]>) => {
-            state.stays = action.payload;
-        },
-        setCurrentStay: (state, action: PayloadAction<Stay>) => {
-            state.currentStay = action.payload;
-            state.currentId = -1;
-        },
-        setCurrentStayFromId: (state, action: PayloadAction<string | number>) => {
-
-            const currentStay = state.stays.find((value) => value.id === action.payload);
-            state.currentId = action.payload;
-            console.log(currentStay);
-            state.currentStay = currentStay ? currentStay : ({} as Stay);
         },
         updateCart: (state, action: PayloadAction<any[]>) => {
             state.cart = action.payload;
@@ -151,105 +86,27 @@ const bookingSlice = createSlice({
         setBalance: (state, action: PayloadAction<Balance>) => {
             state.balance = action.payload;
         },
-        resetHasRun: (state) => {
-            state.hasRun = false;
-        },
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(uploadStayAsync.pending, (state) => {
+            .addCase(fetchBookingsAsync.pending, (state) => {
                 state.isLoading = true;
                 state.hasError = false;
                 state.errorMessage = '';
             })
-            .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
-                state.isLoading = false;
-                state.stays.push(action.payload);
-            })
-            .addCase(uploadStayAsync.rejected, (state, action) => {
-                state.isLoading = false;
-                state.hasError = true;
-                state.errorMessage = action.error.message || 'Failed to upload stay';
-            })
-            .addCase(addRoomAsync.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
-                state.errorMessage = '';
-
-            })
-            .addCase(addRoomAsync.fulfilled, (state, action: PayloadAction<{ room: any; stayId: string }>) => {
-                state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId)
-                const stay = state.stays.at(stayIndex);
-                console.log(stay);
-                if (stay) {
-                    stay.stays.slice(stayIndex, 1)
-                    stay.rooms.push(action.payload.room);
-                    state.stays.push(stay)
-                }
-            })
-            .addCase(addRoomAsync.rejected, (state, action) => {
-                state.isLoading = false;
-                state.hasError = true;
-                state.errorMessage = action.error.message || 'Failed to add room';
-            })
-            .addCase(fetchStaysAsync.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
-                state.errorMessage = '';
-                state.hasRun = true;
-            })
-            .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<Stay[]>) => {
-                state.isLoading = false;
-                state.stays = action.payload;
-                state.hasRun = true;
-            })
-            .addCase(fetchStaysAsync.rejected, (state, action) => {
-                state.isLoading = false;
-                state.hasError = true;
-                state.errorMessage = action.error.message || 'Failed to fetch stays';
-            })
-            .addCase(updateRoomAsync.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
-                state.errorMessage = '';
-                console.log('update room');
-            })
-            .addCase(updateRoomAsync.fulfilled, (state, action) => {
-                state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId)
-                const stay = state.stays.at(stayIndex);
-                console.log(stay);
-                if (stay) {
-                    stay.rooms.push(action.payload.room);
-                    stay.stays.slice(stayIndex, 1)
-                    state.stays.push(stay)
-                }
-            })
-            .addCase(updateRoomAsync.rejected, (state, action) => {
-                state.isLoading = false;
-                state.hasError = true;
-                state.errorMessage = action.error.message || 'Failed to fetch stays';
-            })
-            .addCase(fetchBookingsAsync.pending, (state, action) => {
-                state.isLoading = true;
-                state.hasError = false;
-                state.errorMessage = '';
-            })
-            .addCase(fetchBookingsAsync.fulfilled, (state, action) => {
+            .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<any[]>) => {
                 state.bookings = action.payload;
                 state.isLoading = false;
             })
             .addCase(fetchBookingsAsync.rejected, (state, action) => {
                 state.isLoading = false;
                 state.hasError = true;
-                state.errorMessage = action.error.message || 'Failed to fetch stays';
+                state.errorMessage = action.error.message || 'Failed to fetch bookings';
             })
-
-            .addCase(updateBookingStatusAsync.pending, (state, action) => {
+            .addCase(updateBookingStatusAsync.pending, (state) => {
                 state.isLoading = true;
                 state.hasError = false;
                 state.errorMessage = '';
@@ -257,7 +114,7 @@ const bookingSlice = createSlice({
             .addCase(updateBookingStatusAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 const index = state.bookings.findIndex((value) => value.id === action.payload.booking.id);
-                state.bookings[ index ] = {
+                state.bookings[index] = {
                     ...action.payload.booking,
                     status: action.payload.status,
                 }
@@ -266,30 +123,22 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
                 state.hasError = true;
                 state.errorMessage = action.error.message || 'Failed to update booking';
-            })
-        ;
+            });
     }
 });
 
 export const {
-    setCurrentStay,
     resetBooking,
-    setAllStays,
-    setCurrentStayFromId,
     updateCart,
     updateDates,
     setBookings,
     setCurrentBookingById,
     setWithdraw,
     setBalance,
-    resetHasRun,
     setIsLoading,
 } = bookingSlice.actions;
 
-export const selectCurrentStay = (state: any) => state.booking.currentStay;
 export const selectCart = (state: any) => state.booking.cart;
-export const selectCurrentId = (state: any) => state.booking.currentId;
-export const selectAllStays = (state: any) => state.booking.stays;
 export const selectDates = (state: any) => state.booking.dates;
 export const selectBookings = (state: any) => state.booking.bookings;
 export const selectCurrentBooking = (state: any) => state.booking.currentBooking;
@@ -297,10 +146,8 @@ export const selectBalance = (state: any) => state.booking.balance;
 export const selectWithdraw = (state: any) => state.booking.withdraw;
 export const selectWithdrawals = (state: any) => state.booking.withdraw.withdrawals;
 export const selectWithdrawAccount = (state: any) => state.booking.withdraw.account;
-export const selectIsLoading = (state: any) => state.booking.isLoading;
+export const selectIsBookingLoading = (state: any) => state.booking.isLoading;
 export const selectHasError = (state: any) => state.booking.hasError;
 export const selectErrorMessage = (state: any) => state.booking.errorMessage;
-export const selectHasRun = (state: any) => state.booking.hasRun;
-
 
 export default bookingSlice.reducer;

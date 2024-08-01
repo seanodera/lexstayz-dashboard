@@ -2,8 +2,8 @@
 import {useEffect, useState} from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import {
-    fetchStaysAsync, resetHasRun, selectErrorMessage,
-    selectHasError, selectHasRun, selectIsLoading
+    selectErrorMessage,
+    selectHasError, selectIsBookingLoading
 } from "@/slices/bookingSlice";
 import 'antd/dist/reset.css';
 import { Layout, message } from 'antd';
@@ -17,17 +17,17 @@ import { auth } from "@/lib/firebase";
 import withdrawData from "@/data/withdrawData";
 import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
+import {selectHasRun,  selectIsLoading} from "@/slices/staySlice";
 
 export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
 
 export default function ContextProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const dispatch = useAppDispatch();
-    const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const isLoading = useAppSelector(selectIsLoading);
+    const isBookingLoading = useAppSelector(selectIsBookingLoading)
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
-    const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
     const [userLoaded, setUserLoaded] = useState(false);
     const currentUser = useAppSelector(selectCurrentUser);
@@ -65,7 +65,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         }
     }, [hasError, errorMessage]);
 
-    if (isLoading) {
+    if (isLoading || isBookingLoading) {
         return <div className="h-screen w-screen">
             <LoadingScreen />
         </div>;

@@ -2,7 +2,7 @@
 import RoomEditComponent from "@/components/accomodations/RoomEditComponent";
 import React from "react";
 import {useAppSelector} from "@/hooks/hooks";
-import {selectCurrentStay} from "@/slices/bookingSlice";
+import {selectCurrentStay} from "@/slices/staySlice";
 
 
 export default function Page(){

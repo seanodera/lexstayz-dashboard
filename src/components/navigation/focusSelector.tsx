@@ -1,11 +1,10 @@
 import { Avatar, MenuProps, theme, Dropdown } from 'antd';
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import {selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay} from "@/slices/bookingSlice";
+import {selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay} from "@/slices/staySlice";
 import { BsChevronDown } from "react-icons/bs";
 import {Stay} from "@/lib/types";
 
-const { useToken } = theme;
 
 export default function FocusSelector() {
     const stays = useAppSelector(selectAllStays);

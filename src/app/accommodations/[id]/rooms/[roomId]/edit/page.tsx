@@ -1,7 +1,7 @@
 'use client'
 import {useParams} from "next/navigation";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
-import {resetBooking, selectCurrentId, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
+import { selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import React, {useEffect} from "react";
 import RoomEditComponent from "@/components/accomodations/RoomEditComponent";
 import {Button} from "antd";

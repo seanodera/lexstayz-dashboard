@@ -4,8 +4,9 @@ import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@/hooks/hooks';
-import { selectCurrentBooking, selectCurrentStay } from '@/slices/bookingSlice';
+import { selectCurrentBooking} from '@/slices/bookingSlice';
 import { BsChevronRight } from 'react-icons/bs';
+import {selectCurrentStay} from "@/slices/staySlice";
 
 const Breadcrumbs: React.FC = () => {
     const pathname = usePathname();

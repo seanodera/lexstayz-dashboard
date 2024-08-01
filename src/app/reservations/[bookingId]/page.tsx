@@ -1,8 +1,8 @@
 'use client'
 import {
-    selectCurrentBooking, selectCurrentStay,
+    selectCurrentBooking,
     setCurrentBookingById,
-    setCurrentStayFromId, updateBookingStatusAsync
+     updateBookingStatusAsync
 } from "@/slices/bookingSlice";
 import {useParams} from "next/navigation";
 import React, {useEffect} from "react";
@@ -14,7 +14,7 @@ import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 import BookedRooms from "@/components/booking/bookedRooms";
 import PriceSummary from "@/components/booking/priceSummary";
 import {getTag} from "@/components/common";
-import {updateRoomFirebase} from "@/data/hotelsData";
+import {selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 
 export default function Page() {
     const params = useParams();
@@ -42,6 +42,7 @@ export default function Page() {
         e.preventDefault()
 
 
+        // @ts-ignore
         dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value:any) => {
             messageApi.success('Status updated successfully')
             console.log(value)
@@ -55,7 +56,7 @@ export default function Page() {
         return <div className={'px-4 py-4'}>
             {contextHolder}
             <div className={'flex justify-between items-center mb-4'}>
-                <div className={'flex items-center gap-4'}>
+                <div className={'flex items-center gap-4'}>             2=
                     <div>
                         <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
                         <h1 className={'font-bold items-center'}>{booking.id.slice(0,6).toUpperCase()}</h1>

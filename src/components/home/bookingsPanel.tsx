@@ -1,10 +1,11 @@
 import {Card, Dropdown, Table} from "antd";
 import {useSelector} from "react-redux";
-import {selectAllStays, selectBookings, selectCurrentStay, setCurrentStayFromId} from "@/slices/bookingSlice";
+import {selectAllStays, selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import {dateReader, toMoneyFormat} from "@/lib/utils";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {BsChevronDown} from "react-icons/bs";
 import {getRooms, getTag} from "@/components/common";
+import {selectBookings} from "@/slices/bookingSlice";
 
 
 const {Column} = Table;

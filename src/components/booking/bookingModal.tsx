@@ -1,7 +1,7 @@
 'use client'
 import {Modal} from "antd";
 import {useAppSelector} from "@/hooks/hooks";
-import {selectAllStays} from "@/slices/bookingSlice";
+import {selectAllStays} from "@/slices/staySlice";
 import {useState} from "react";
 
 
