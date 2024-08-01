@@ -56,7 +56,7 @@ export default function Page() {
         return <div className={'px-4 py-4'}>
             {contextHolder}
             <div className={'flex justify-between items-center mb-4'}>
-                <div className={'flex items-center gap-4'}>             2=
+                <div className={'flex items-center gap-4'}>
                     <div>
                         <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
                         <h1 className={'font-bold items-center'}>{booking.id.slice(0,6).toUpperCase()}</h1>
