@@ -52,7 +52,7 @@ export default function Page() {
     }
 }
 
-export function FunctionButtons({stay}:{stay: any}){
+function FunctionButtons({stay}:{stay: any}){
     const dispatch = useAppDispatch();
     if (stay.published){
         return <div className={'space-x-2'}>
