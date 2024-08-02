@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
-import { Layout } from "antd";
+import {Button, Layout } from "antd";
 import Sidebar from "@/components/navigation/sidebar";
 import Navbar from "@/components/navigation/navbar";
 import {
@@ -37,8 +37,8 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
                 console.log('Function is running and hasRun: ', hasRun)
                 // @ts-ignore
                 dispatch(fetchStaysAsync());
-                // @ts-ignore
-                dispatch(fetchBookingsAsync());
+
+                dispatch(fetchBookingsAsync({page: 1, limit: 10}));
                 dispatch(setBalance({
                     available: getRandomInt({ max: 100000, min: 10000 }),
                     pending: getRandomInt({ max: 10000, min: 1000 }),
@@ -57,6 +57,12 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
 
       });
 
+    function testData(){
+        dispatch(fetchBookingsAsync({page: 1, limit: 10})).then((value:any) => {
+            console.log(value)
+        })
+    }
+
     if (isLoading || isBookingLoading) {
         return <div><LoadingScreen/></div>;
     }
@@ -71,6 +77,10 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
             <Layout className="h-full">
                 <Navbar />
                 <Layout className="overscroll-contain overflow-y-scroll h-full">
+                    <div>
+                        <Button type={'primary'} onClick={() => testData()}>TestButton</Button>
+                        <p></p>
+                    </div>
                     <Content>
                         {children}
                     </Content>
