@@ -14,6 +14,9 @@ interface BookingState {
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
+    fetchedPages: number[];
+    page: number;
+    limit: number;
 }
 
 const initialState: BookingState = {
@@ -39,14 +42,27 @@ const initialState: BookingState = {
     },
     isLoading: false,
     hasError: false,
-    errorMessage: ''
+    errorMessage: '',
+    fetchedPages: [],
+    page: 1,
+    limit: 10,
 };
 
-export const fetchBookingsAsync = createAsyncThunk(
+export const fetchBookingsAsync:any = createAsyncThunk(
     'booking/fetchBookings',
-    async () => {
-        const bookings = await getBookings();
-        return bookings;
+    async ({ page, limit }: { page: number, limit: number }, { getState }) => {
+        const state = getState() as { booking: BookingState };
+        console.log('booking/fetchBookings', page, limit, 'fetched Pages', state.booking.fetchedPages)
+        if (state.booking.fetchedPages.includes(page)) {
+            console.log('coming back empty')
+            return { bookings: [], page }; // Return an empty array if the page has already been fetched
+        } else {
+            const last = (state.booking.bookings.length > 0)? state.booking.bookings[state.booking.bookings.length -1].createdAt: undefined;
+
+            const bookings = await getBookings(page, limit, last);
+        console.log(bookings)
+        return { bookings, page };
+    }
     }
 );
 
@@ -88,7 +104,10 @@ const bookingSlice = createSlice({
         },
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
-        }
+        },
+        setPage: (state, action: PayloadAction<number>) => {
+            state.page = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -97,8 +116,11 @@ const bookingSlice = createSlice({
                 state.hasError = false;
                 state.errorMessage = '';
             })
-            .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<any[]>) => {
-                state.bookings = action.payload;
+            .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<{ bookings: any[], page: number }>) => {
+                if (action.payload.bookings.length > 0) {
+                    state.bookings = [...state.bookings, ...action.payload.bookings];
+                    state.fetchedPages.push(action.payload.page);
+                }
                 state.isLoading = false;
             })
             .addCase(fetchBookingsAsync.rejected, (state, action) => {
@@ -136,6 +158,7 @@ export const {
     setWithdraw,
     setBalance,
     setIsLoading,
+    setPage,
 } = bookingSlice.actions;
 
 export const selectCart = (state: any) => state.booking.cart;
@@ -149,5 +172,10 @@ export const selectWithdrawAccount = (state: any) => state.booking.withdraw.acco
 export const selectIsBookingLoading = (state: any) => state.booking.isLoading;
 export const selectHasError = (state: any) => state.booking.hasError;
 export const selectErrorMessage = (state: any) => state.booking.errorMessage;
+export const selectPage = (state: any) => state.booking.page;
+export const selectLimit = (state: any) => state.booking.limit;
+export const selectTotalBookings = (state: any) => state.booking.bookings;
+export const selectFetchedPages= (state: any) => state.booking.fetchedPages
+
 
 export default bookingSlice.reducer;

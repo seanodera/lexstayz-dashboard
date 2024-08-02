@@ -2,7 +2,7 @@ import {faker} from "@faker-js/faker";
 import {differenceInDays} from "date-fns";
 import {Stay} from "@/lib/types";
 import {firestore} from "@/lib/firebase";
-import {collection, writeBatch} from "@firebase/firestore";
+import {collection, limit, orderBy, query, startAt, writeBatch} from "@firebase/firestore";
 import {doc, getDocs} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 
@@ -68,25 +68,35 @@ async function createBookingFirebase({
 }
 
 
-export async function getBookings() {
+export async function getBookings(page: number, limitNum: number, last: string | undefined) {
     try {
-        let bookings: any = []
-        const user = getCurrentUser()
-        const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings')
-        const snapshot = await getDocs(bookingsRef)
+        let bookings: any = [];
+        const user = getCurrentUser();
+        const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
+        const q = (last) ? query(
+            bookingsRef,
+            orderBy('createdAt', ),
+            limit(limitNum),
+            startAt(last)
+        ) : query(
+            bookingsRef,
+            orderBy('createdAt', 'desc'),
+            limit(limitNum));
+        const snapshot = await getDocs(q);
 
         snapshot.docs.forEach((document) => {
-            bookings.push(document.data())
-        })
+            bookings.push(document.data());
+        });
 
         return bookings;
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return [];
     }
 }
 
-export async function updateStatus(status: 'Pending' | 'Confirmed'| 'Canceled'| 'Rejected', booking: any){
+
+export async function updateStatus(status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any) {
     try {
         console.log(booking, 'At status')
         const user = getCurrentUser()
@@ -98,9 +108,9 @@ export async function updateStatus(status: 'Pending' | 'Confirmed'| 'Canceled'| 
 
         await batch.commit();
         let newBooking = {...booking};
-        newBooking.status  = status
+        newBooking.status = status
         return newBooking;
-    } catch (error){
+    } catch (error) {
         console.log(error)
     }
 }
