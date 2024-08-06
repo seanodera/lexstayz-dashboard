@@ -1,8 +1,7 @@
 'use client'
 import React, {Suspense, useEffect, useState} from "react";
-import LogoIcon from "@/components/LogoIcon";
 import {Field, Fieldset, Input, Label} from "@headlessui/react";
-import {Card, message} from "antd";
+import {Avatar, Card, message} from "antd";
 import {useRouter, useSearchParams} from "next/navigation";
 import {passwordReset, verifyReset} from "@/data/usersData";
 
@@ -49,17 +48,17 @@ function ResetPassWordWrappedComponent(){
                 try {
                     await passwordReset(oobCode as string, password);
                     messageApi.success("Password reset successfully");
-                    router.push('/login'); // redirect to login after successful reset
+                    router.push('/login');
                 } catch (error) {
                     messageApi.error("Failed to reset password. Please try again.");
                 }
             }
         }
     };
-    return <Card className={'text-center md:w-1/3 rounded-xl flex flex-col justify-center px-6 py-12 lg:px-8'}>
+    return <Card className={'text-center w-full max-md:min-h-screen md:w-1/3 rounded-xl flex flex-col justify-center md:px-6 py-12 lg:px-8'}>
         {contextHolder}
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <LogoIcon className="mx-auto h-20 w-auto"/>
+            <Avatar src={'/logo/lexstayz-logo-transparent-square.png'} shape={'square'} className="mx-auto h-20 w-20 object-cover aspect-square"/>
             <div className={'text-3xl'}>LexStayz</div>
             <h2 className="mt-12 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Reset Password

@@ -13,6 +13,7 @@ import {fetchStaysAsync, uploadStayAsync} from "@/slices/staySlice";
 import {useAppDispatch} from "@/hooks/hooks";
 import {UploadOutlined} from "@ant-design/icons";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
+import {getAmenityIcon} from "@/components/utilities/amenityIcon";
 
 export default function ListingEditComponent({stay, partial}: { stay?: any, partial?: any }) {
     const [name, setName] = useState<string>('');
@@ -257,7 +258,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                                 </div>
                             </Field>
                             <Field className={'col-span-1'}>
-                                <Label className={'text-gray-500 font-bold mb-0'}>Pre-Date Cancellation</Label>
+                                <Label className={'text-gray-500 font-bold  mb-0'}>Pre-Date Cancellation</Label>
                                 <Select disabled={!(cancellation === 'Other')} value={String(preDate)}
                                         onChange={(value) => setPreDate(Boolean(value.target.value))}
                                         className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
@@ -288,18 +289,23 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
 
                     return <div key={index} className={'flex flex-col'}>
                         <h3 className={'font-medium mb-0'}>{name}</h3>
-                        {value[ name ].map((item: string, index: number) => <Checkbox key={index} onChange={(e) => {
-                            if (e.target.checked) {
-                                if (!facilities.includes(item)) {
-                                    setFacilities(facilities.concat([item]));
+                        {value[ name ].map((item: string, index: number) => {
+                            const IconComponent = getAmenityIcon(item);
+
+                            function handleChange(e: any){
+                                if (e.target.checked) {
+                                    if (!facilities.includes(item)) {
+                                        setFacilities(facilities.concat([item]));
+                                    }
+                                } else {
+                                    if (facilities.includes(item)) {
+                                        setFacilities(facilities.toSpliced(facilities.indexOf(item), 1));
+                                    }
                                 }
-                            } else {
-                                if (facilities.includes(item)) {
-                                    setFacilities(facilities.toSpliced(facilities.indexOf(item), 1));
-                                }
+                                console.log(facilities)
                             }
-                            console.log(facilities)
-                        }} checked={facilities.includes(item)}>{item}</Checkbox>)}
+                            return <Checkbox key={index} onChange={handleChange} checked={facilities.includes(item)}><span className={'text-primary'}><IconComponent/></span> {item}</Checkbox>;
+                        })}
                     </div>
                 })}
             </div>

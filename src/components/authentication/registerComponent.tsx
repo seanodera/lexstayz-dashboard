@@ -1,8 +1,7 @@
 'use client'
-import LogoIcon from "@/components/LogoIcon";
 import {Field, Fieldset, Input, Label, Select} from "@headlessui/react";
 import Link from "next/link";
-import {Card} from "antd";
+import {Avatar, Card} from "antd";
 import {useState} from "react";
 import {useAppDispatch} from "@/hooks/hooks";
 import {useRouter} from "next/navigation";
@@ -34,8 +33,7 @@ export default function RegisterComponent() {
                 lastName: lastName,
                 email: email,
                 accountType: accountType,
-                balance: 0,
-                pending: 0,
+
             }
         } else {
             details = {
@@ -43,18 +41,15 @@ export default function RegisterComponent() {
                 companyName: companyName,
                 email: email,
                 accountType: accountType,
-                balance: 0,
-                pending: 0,
-
             }
         }
         await createUser(details, userCredentials.user.uid)
         router.push('/login');
     }
 
-    return <Card className={'text-center w-1/3 rounded-xl flex flex-col justify-center px-6 py-10 lg:px-8'}>
+    return <Card className={'text-center w-full max-md:min-h-screen md:w-1/3 rounded-xl flex flex-col justify-center md:px-6 py-10 lg:px-8'}>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <LogoIcon className="mx-auto h-20 w-auto"/>
+            <Avatar src={'/logo/lexstayz-logo-transparent-square.png'} shape={'square'} className="mx-auto h-20 w-20 object-cover aspect-square"/>
             <div className={'text-3xl'}>LexStayz</div>
             <h2 className="mt-8 mb-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Create an account
@@ -90,14 +85,14 @@ export default function RegisterComponent() {
                 <Input className={inputCls} type={'text'} id={'companyName'} placeholder={'Company Number'} required
                        value={companyName} onChange={(e) => setCompanyName(e.target.value)}/>
             </Field>)}
-            {/*<Field className={'block'}>*/}
-            {/*    <Label className={'block text-sm font-medium leading-6 text-gray-900'}*/}
-            {/*           htmlFor="phone">Phone</Label>*/}
-            {/*    <Input*/}
-            {/*        className={inputCls}*/}
-            {/*        type={'tel'} id="phone" placeholder="Enter phone number" value={phone} onChange={(e) => setPhone(e.target.value)}*/}
-            {/*         required/>*/}
-            {/*</Field>*/}
+            <Field className={'block'}>
+                <Label className={'block text-sm font-medium leading-6 text-gray-900'}
+                       htmlFor="phone">Phone</Label>
+                <Input
+                    className={inputCls}
+                    type={'tel'} id="phone" placeholder="Enter phone number" value={phone} onChange={(e) => setPhone(e.target.value)}
+                     required/>
+            </Field>
             <Field className={'block'}>
                 <Label className={'block text-sm font-medium leading-6 text-gray-900'}
                        htmlFor="email">Email</Label>

@@ -9,7 +9,8 @@ import {ConfigProvider} from "antd";
 // antd theme
 const theme = {
     token: {
-        colorPrimary: '#584cf4', // Your custom primary color
+        colorPrimary: '#584cf4',
+        borderRadius: 8,
     },
 };
 

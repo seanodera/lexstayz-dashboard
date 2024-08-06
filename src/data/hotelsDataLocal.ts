@@ -76,7 +76,7 @@ export const hotelFacilities = [
         'Guest Room Amenities': [
             'Air Conditioning/Heating',
             'Wi-Fi/Internet Access',
-            'Television with Cable/Satellite Channels',
+            'TV with Cable/Satellite Channels',
             'Telephone',
             'Mini-Bar',
             'Coffee/Tea Maker',
@@ -171,3 +171,21 @@ export const hotelFacilities = [
         ]
     }
 ];
+
+const guestRoomAmenities = [
+'Air Conditioning/Heating',
+    'Wi-Fi/Internet Access',
+    'Television with Cable/Satellite Channels',
+    'Telephone',
+    'Mini-Bar',
+    'Coffee/Tea Maker',
+    'In-Room Safe',
+    'Work Desk',
+    'Iron and Ironing Board',
+    'Hairdryer',
+    'Room Service',
+    'Alarm Clock/Radio',
+    'Bathrobes and Slippers',
+    'Toiletries',
+    'Closet/Wardrobe'
+]

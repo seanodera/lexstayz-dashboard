@@ -18,7 +18,7 @@ import { getDoc } from "firebase/firestore";
  * @param path - The storage path for the image.
  * @returns The download URL of the uploaded image.
  */
-async function uploadImage(file: File, path: string): Promise<string> {
+export async function uploadImage(file: File, path: string): Promise<string> {
     try {
         const storageRef = ref(storage, path);
         const snapshot = await uploadBytes(storageRef, file);
@@ -33,7 +33,7 @@ async function uploadImage(file: File, path: string): Promise<string> {
  * Deletes an image from Firebase Storage.
  * @param path - The storage path of the image to delete.
  */
-async function deleteImage(path: string): Promise<void> {
+export async function deleteImage(path: string): Promise<void> {
     try {
         const storageRef = ref(storage, path);
         await deleteObject(storageRef);

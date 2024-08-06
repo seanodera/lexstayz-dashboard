@@ -1,9 +1,9 @@
 'use client'
 import {Card, message} from "antd";
-import LogoIcon from "@/components/LogoIcon";
 import { Field, Fieldset, Input, Label } from "@headlessui/react";
 import React, { useState } from "react";
-import { resetPassword } from "@/data/usersData"; // Import the resetPassword function
+import { resetPassword } from "@/data/usersData";
+import Image from "next/image"; // Import the resetPassword function
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
@@ -23,9 +23,9 @@ export default function ForgotPassword() {
     };
 
     return (
-        <Card className={'text-center md:w-1/3 rounded-xl flex flex-col justify-center px-6 py-12 lg:px-8'}>
+        <Card className={'text-center w-full max-md:min-h-screen md:w-1/3  rounded-xl flex flex-col justify-center md:px-6 py-12 lg:px-8'}>
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <LogoIcon className="mx-auto h-20 w-auto" />
+                <Image src={'/logo/lexstayz-logo-transparent-square.png'} height={100} width={100} className="mx-auto h-20 w-20 object-cover aspect-square" alt={'logo'}/>
                 <div className={'text-3xl'}>LexStayz</div>
                 <h2 className="mt-12 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                     Forgot your password?

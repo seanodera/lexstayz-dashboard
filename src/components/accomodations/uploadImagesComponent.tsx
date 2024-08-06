@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {PlusOutlined} from '@ant-design/icons';
 import {Image, Switch, Upload} from 'antd';
 import type {GetProp, UploadFile, UploadProps} from 'antd';
+import {createFile} from "@/lib/utils";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -14,7 +15,7 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const UploadImagesComponent = ({onImageListChange}: { onImageListChange: (images: string[]) => void }) => {
+const UploadImagesComponent = ({onImageListChange, images}: {images?: string[], onImageListChange: (images: string[]) => void }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<Array<File>>([]);
@@ -33,6 +34,15 @@ const UploadImagesComponent = ({onImageListChange}: { onImageListChange: (images
     const handleChange = (newFileList: any) => {
        setFileList(newFileList)
     }
+    useEffect(() => {
+        if (images){
+            images.forEach((image) => {
+                createFile({url: image}).then((file) => {
+                    fileList.push(file);
+                })
+            })
+        }
+    })
     useEffect(() => {
         let data: string[] = [];
         fileList.forEach((file) => {
