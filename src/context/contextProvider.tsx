@@ -15,7 +15,7 @@ import {
     loginUser,
     logoutUser,
     selectCurrentUser,
-    selectIsAuthenticated
+    selectIsAuthenticated, selectIsAuthLoading
 } from "@/slices/authenticationSlice";
 import {browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
 import { getUserDetails } from "@/data/usersData";
@@ -32,6 +32,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const dispatch = useAppDispatch();
     const isLoading = useAppSelector(selectIsLoading);
     const isBookingLoading = useAppSelector(selectIsBookingLoading)
+    const isAuthLoading = useAppSelector(selectIsAuthLoading)
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
     const router = useRouter();
@@ -69,7 +70,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         }
     }, [hasError, errorMessage]);
 
-    if (isLoading || isBookingLoading) {
+    if (isLoading || isBookingLoading || isAuthLoading) {
         return <div className="h-screen w-screen">
             <LoadingScreen />
         </div>;

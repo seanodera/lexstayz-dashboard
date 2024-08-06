@@ -4,6 +4,7 @@ import ContextProvider from "@/context/contextProvider";
 import StoreProvider from "@/context/storeProvider";
 import {AntdRegistry} from "@ant-design/nextjs-registry";
 import {ConfigProvider} from "antd";
+import AuthErrorDialog from "@/components/dialogs/authErrorDialog";
 
 
 // antd theme
@@ -29,7 +30,13 @@ export default function RootLayout({
         <body><StoreProvider><AntdRegistry>
             <ConfigProvider theme={theme}><ContextProvider>
                 <div>{children}</div>
-            </ContextProvider></ConfigProvider> </AntdRegistry></StoreProvider>
+            </ContextProvider>
+            <AuthErrorDialog/>
+            </ConfigProvider>
+        </AntdRegistry>
+
+        </StoreProvider>
+
         </body>
         </html>
     );

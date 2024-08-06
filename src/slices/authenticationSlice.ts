@@ -1,7 +1,11 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {getUserDetails} from "@/data/usersData";
 import {signInWithEmailAndPassword} from "firebase/auth";
-import {auth} from "@/lib/firebase";
+import {auth, firestore} from "@/lib/firebase";
+import {doc, setDoc} from "firebase/firestore";
+import {getCurrentUser} from "@/data/hotelsData";
+import {updateDoc} from "@firebase/firestore";
+import {state} from "sucrase/dist/types/parser/traverser/base";
 
 
 
@@ -34,6 +38,21 @@ export const signInUserAsync: any = createAsyncThunk('authentication/signIn',
     }
 );
 
+export const updateUserAsync: any = createAsyncThunk('authentication/updateUser',
+    async ({details}:{details: any}, {rejectWithValue}) => {
+    try {
+        const user = getCurrentUser()
+        await updateDoc(doc(firestore, 'hosts', user.uid), details);
+        return details;
+    } catch (error){
+        if (error instanceof Error){
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue('An unknown error occurred');
+        }
+    }
+    })
+
 
 interface AuthenticationState {
     isAuthenticated: boolean,
@@ -65,6 +84,10 @@ const AuthenticationSlice = createSlice({
         },
         logoutUser: (state, action) => {
             state.isAuthenticated = false;
+        },
+        resetError: (state) => {
+            state.hasError = false;
+            state.errorMessage = ''
         }
     },
     extraReducers: builder => {
@@ -96,11 +119,28 @@ const AuthenticationSlice = createSlice({
                 state.errorMessage = action.payload as string;
                 state.isLoading = false;
             })
+            .addCase(updateUserAsync.fulfilled, (state, action) => {
+                state.user = {...state.user, ...action.payload};
+                state.isLoading = false;
+                state.hasError = false;
+                state.errorMessage = '';
+            })
+            .addCase(updateUserAsync.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.payload || 'Failed to update user';
+            })
+            .addCase(updateUserAsync.pending, (state) => {
+                state.isLoading = true;
+            })
     }
 })
 
 export const selectCurrentUser = (state: any) => state.authentication.user;
 export const selectIsAuthenticated = (state: any) => state.authentication.isAuthenticated;
+export const selectIsAuthLoading = (state: any) => state.authentication.isLoading;
+export const selectAuthHasError = (state: any) => state.authentication.hasError;
+export const selectAuthErrorMessage = (state: any) => state.authentication.errorMessage;
 
-export const {loginUser, logoutUser} = AuthenticationSlice.actions;
+export const {loginUser, logoutUser,resetError} = AuthenticationSlice.actions;
 export default AuthenticationSlice.reducer

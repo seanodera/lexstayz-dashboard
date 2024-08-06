@@ -38,6 +38,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
                 // @ts-ignore
                 dispatch(fetchStaysAsync());
 
+                // @ts-ignore
                 dispatch(fetchBookingsAsync({page: 1, limit: 10}));
                 dispatch(setBalance({
                     available: getRandomInt({ max: 100000, min: 10000 }),
@@ -57,11 +58,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
 
       });
 
-    function testData(){
-        dispatch(fetchBookingsAsync({page: 1, limit: 10})).then((value:any) => {
-            console.log(value)
-        })
-    }
+
 
     if (isLoading || isBookingLoading) {
         return <div><LoadingScreen/></div>;

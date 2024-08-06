@@ -51,7 +51,6 @@ export default function BookingPage() {
 
         console.log(filteredResults);
         setSearchResults(filteredResults);
-
     };
     const handleTableChange = (pagination: any, filters: any, sorter: any) => {
         console.log(pagination, filters, sorter, 'Change is coming from here');
