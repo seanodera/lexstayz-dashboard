@@ -1,7 +1,6 @@
 'use client'
 import React, {useState} from "react";
 import {Button, Card, Input, Select} from "antd";
-import {faker} from "@faker-js/faker";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {selectCurrentUser, updateUserAsync} from "@/slices/authenticationSlice";
 import {countries} from "country-data";

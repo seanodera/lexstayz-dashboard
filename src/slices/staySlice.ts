@@ -8,7 +8,7 @@ import {
     unPublishStay,
     deleteStay
 } from "@/data/hotelsData";
-import { Dates, Stay } from "@/lib/types";
+import { Stay } from "@/lib/types";
 
 interface StayState {
     stays: Stay[];

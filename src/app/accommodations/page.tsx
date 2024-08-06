@@ -4,9 +4,8 @@ import {PlusCircleOutlined} from "@ant-design/icons";
 import {useAppSelector} from "@/hooks/hooks";
 import {selectAllStays} from "@/slices/staySlice";
 import ListingItem from "@/components/accomodations/ListingItem";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import CreateDialog from "@/components/accomodations/createDialog";
-import {getStaysFirebase} from "@/data/hotelsData";
 
 export default function ListingsPage() {
     const stays = useAppSelector(selectAllStays)

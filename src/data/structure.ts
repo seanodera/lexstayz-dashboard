@@ -1,7 +1,3 @@
-import {faker} from "@faker-js/faker";
-import {statuses} from "@/data/bookingsData";
-
-
 const structure = {
     amenities: [
     {

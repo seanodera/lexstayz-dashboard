@@ -1,7 +1,5 @@
 'use client'
 import {Button, Form, Input, Modal, Select} from "antd";
-import Link from "next/link";
-import {PlusCircleOutlined} from "@ant-design/icons";
 import {useState} from "react";
 import {useAppDispatch} from "@/hooks/hooks";
 import {setStayPartial} from "@/slices/createStaySlice";

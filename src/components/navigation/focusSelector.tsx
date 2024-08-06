@@ -1,5 +1,5 @@
 'use client'
-import {Avatar, MenuProps, theme, Dropdown} from 'antd';
+import {Avatar, MenuProps, Dropdown} from 'antd';
 import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay} from "@/slices/staySlice";
@@ -10,6 +10,7 @@ import Link from "next/link";
 import {signOut} from "firebase/auth";
 import {auth} from "@/lib/firebase";
 import {router} from "next/client";
+import {useRouter} from "next/navigation";
 
 
 export function FocusSelectorOld({stays, currentStay}:{stays:any, currentStay: any}) {
@@ -71,7 +72,7 @@ export default function FocusSelector() {
     const currentStay = useAppSelector(selectCurrentStay);
     const currentUser = useAppSelector(selectCurrentUser);
     const dispatch = useAppDispatch();
-
+    const router = useRouter()
     function handleLogout(e:any){
         console.log('Signing out')
         signOut(auth).then(() => {

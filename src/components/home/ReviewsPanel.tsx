@@ -1,5 +1,4 @@
 'use client'
-import {faker} from "@faker-js/faker";
 import {StarFilled, StarOutlined} from "@ant-design/icons";
 import {Button, Card} from "antd";
 

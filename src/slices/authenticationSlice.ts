@@ -2,11 +2,9 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {getUserDetails} from "@/data/usersData";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, firestore} from "@/lib/firebase";
-import {doc, setDoc} from "firebase/firestore";
+import {doc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {updateDoc} from "@firebase/firestore";
-import {state} from "sucrase/dist/types/parser/traverser/base";
-
 
 
 export const getUserDetailsAsync:any = createAsyncThunk('authentication/user',

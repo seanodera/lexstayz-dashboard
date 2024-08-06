@@ -1,5 +1,3 @@
-import {Card} from "antd";
-import Image from "next/image";
 import Link from "next/link";
 
 

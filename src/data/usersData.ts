@@ -1,5 +1,5 @@
 import {auth, firestore} from "@/lib/firebase";
-import {addDoc, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import { sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
 
 

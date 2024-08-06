@@ -85,7 +85,7 @@ export default function AccountInfo() {
                         </div>
                         <div>
                             <h3 className={'mb-0'}>Date Of Birth</h3>
-                            {editMode ? <DatePicker format={'DD MMMM YYYY'} value={dateOfBirth && dayjs(dateOfBirth)}
+                            {editMode ? <DatePicker className={'w-full'} format={'DD MMMM YYYY'} value={dateOfBirth && dayjs(dateOfBirth)}
                                                     defaultValue={user.dob && dayjs(user.dob)}
                                                     onChange={(e) => setDateOfBirth(e.toISOString())}/> :
                                 <h3 className={'font-bold'}>{user.dob ? dateReader({date: user.dob}) : '-'}</h3>}
@@ -93,7 +93,7 @@ export default function AccountInfo() {
                         <div>
                             <h3 className={'mb-0'}>Gender</h3>
 
-                            {editMode ? <Select value={gender} defaultValue={user.gender}
+                            {editMode ? <Select className={'w-full'} value={gender} defaultValue={user.gender}
                                                 onChange={(value) => setGender(value)} options={[
                                     {
                                         label: 'Male',

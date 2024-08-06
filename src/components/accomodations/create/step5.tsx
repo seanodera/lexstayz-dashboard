@@ -3,7 +3,7 @@ import {Card, Checkbox} from "antd";
 import React, {useEffect, useState} from "react";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
 import {getAmenityIcon} from "@/components/utilities/amenityIcon";
-import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
+import {useAppSelector} from "@/hooks/hooks";
 import {selectPartialStay} from "@/slices/createStaySlice";
 
 

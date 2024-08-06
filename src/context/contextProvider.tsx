@@ -6,24 +6,19 @@ import {
     selectHasError, selectIsBookingLoading
 } from "@/slices/bookingSlice";
 import 'antd/dist/reset.css';
-import { Layout, message } from 'antd';
-import Navbar from "@/components/navigation/navbar";
-import Sidebar from "@/components/navigation/sidebar";
+import { message } from 'antd';
 import { usePathname, useRouter } from "next/navigation";
 import {
     getUserDetailsAsync,
-    loginUser,
     logoutUser,
     selectCurrentUser,
-    selectIsAuthenticated, selectIsAuthLoading
+    selectIsAuthLoading
 } from "@/slices/authenticationSlice";
-import {browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
-import { getUserDetails } from "@/data/usersData";
+import {browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import withdrawData from "@/data/withdrawData";
 import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
-import {selectHasRun,  selectIsLoading} from "@/slices/staySlice";
+import {selectIsLoading} from "@/slices/staySlice";
 
 export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
 

@@ -10,13 +10,10 @@ import {
     UserOutlined,
     HomeOutlined,
     BarChartOutlined,
-    SettingOutlined,
     QuestionCircleOutlined,
-    LogoutOutlined, WalletOutlined
+    WalletOutlined
 } from '@ant-design/icons';
 import LogoIcon from "@/components/LogoIcon";
-import {signOut} from "firebase/auth";
-import {auth} from "@/lib/firebase";
 
 const menuItems = [
     {

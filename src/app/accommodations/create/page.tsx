@@ -1,13 +1,10 @@
 'use client'
-import ListingEditComponent from "@/components/accomodations/ListingEditComponent";
-import Link from "next/link";
 import {Button, Card, message, Steps} from "antd";
 import {
     BookOutlined, CheckCircleOutlined, EditOutlined,
     EnvironmentOutlined,
     InfoCircleOutlined,
-    PictureOutlined,
-    PlusCircleOutlined
+    PictureOutlined
 } from "@ant-design/icons";
 import React, {useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";

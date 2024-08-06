@@ -5,8 +5,7 @@ import {Avatar, Card, message} from "antd";
 import {useState} from "react";
 import {useAppDispatch} from "@/hooks/hooks";
 import {useRouter} from "next/navigation";
-import {getUserDetails} from "@/data/usersData";
-import {loginUser, signInUserAsync} from "@/slices/authenticationSlice";
+import {signInUserAsync} from "@/slices/authenticationSlice";
 
 
 export default function LoginComponent() {
