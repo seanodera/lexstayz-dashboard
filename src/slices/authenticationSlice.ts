@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {getUserDetails} from "@/data/usersData";
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from "@/lib/firebase";
-import {redirect} from "next/navigation";
+
 
 
 export const getUserDetailsAsync:any = createAsyncThunk('authentication/user',
@@ -89,7 +89,7 @@ const AuthenticationSlice = createSlice({
                 state.isLoading = false;
                 state.hasError = false;
                 state.errorMessage = '';
-                redirect('/');
+
             })
             .addCase(signInUserAsync.rejected, (state, action) => {
                 state.hasError = true;
