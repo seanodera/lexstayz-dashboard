@@ -43,18 +43,20 @@ export default function Page() {
                 </div>
             </div>
             <ListingDescription stay={stay}/>
-            <h1 className={'font-bold my-4'}>Rooms</h1>
-            <div className={'grid grid-cols-3 gap-8'}>
-                {stay.rooms?.map((item: any, index: number) => <RoomComponent key={index} room={item}
-                                                                              stayId={stay.id}/>)}
+            {stay.type === 'Hotel' && <div><h1 className={'font-bold my-4'}>Rooms</h1>
+                <div className={'grid grid-cols-3 gap-8'}>
+                    {stay.rooms?.map((item: any, index: number) => <RoomComponent key={index} room={item}
+                                                                                  stayId={stay.id}/>)}
+                </div>
             </div>
+            }
         </div>
     }
 }
 
-function FunctionButtons({stay}:{stay: any}){
+function FunctionButtons({stay}: { stay: any }) {
     const dispatch = useAppDispatch();
-    if (stay.published){
+    if (stay.published) {
         return <div className={'space-x-2'}>
             <Button onClick={() => dispatch(unPublishStayAsync(stay))} type={'primary'} danger
                     size={'large'}>UnPublish</Button>
