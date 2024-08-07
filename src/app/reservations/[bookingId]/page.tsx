@@ -4,7 +4,7 @@ import {
     setCurrentBookingById,
     updateBookingStatusAsync
 } from "@/slices/bookingSlice";
-import {useParams} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import BookingDescription from "@/components/booking/bookingDescription";
@@ -24,6 +24,7 @@ export default function Page() {
     const booking = useAppSelector(selectCurrentBooking);
     const stay = useAppSelector(selectCurrentStay);
     const [messageApi, contextHolder] = message.useMessage()
+    const router = useRouter()
     useEffect(() => {
         dispatch(setCurrentBookingById(bookingId.toString()));
     }, [bookingId, dispatch]);
@@ -50,6 +51,8 @@ export default function Page() {
         });
     }
 
+
+
     function handleContactGuest() {
 
         // @ts-ignore
@@ -60,7 +63,7 @@ export default function Page() {
                 lastName: booking.user.lastName,
             }
         })).then((value: any) => {
-            console.log(value)
+            router.push('/messages')
         })
     }
 

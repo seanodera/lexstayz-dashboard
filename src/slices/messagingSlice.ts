@@ -6,11 +6,9 @@ import {RootState} from "@/data/store";
 import {setDoc} from "firebase/firestore";
 
 
-
-
 export const sendMessageAsync = createAsyncThunk(
     'messaging/sendMessage',
-    async ({chatId,  message}: {
+    async ({chatId, message}: {
         chatId: string,
         message: string
     }, {rejectWithValue}) => {
@@ -77,32 +75,34 @@ export const startChatAsync = createAsyncThunk('messaging/startChat',
             const user = getCurrentUser();
             const docRef = doc(collection(firestore, 'chats'));
             const now = new Date().toISOString();
-            const {authentication,messaging} = state;
-            const existingChat = messaging.userChats.find((value) => value.user.id === bookingUser.id)
-            if (existingChat){
+            const {authentication, messaging} = state;
+            const existingChatUsers = messaging.userChats.map((value) => value.user.id);
+
+            if (existingChatUsers.includes(bookingUser.id)) {
                 return undefined;
-            }
-            const chatItem = {
-                lastMessage: '',
-                timeStamp: now,
-                dateStarted: now,
-                id: docRef.id, hostId: user.uid, userId: bookingUser.id,
-                host: {
-                    role: 'host',
-                    lastOpen: now,
-                    name: (authentication.user.accountType === 'Individual' ? `${authentication.user.firstName}  ${authentication.user.lastName}` : authentication.user.companyName),
-                },
-                user: {
-                    role: 'user',
-                    lastOpen: 'never',
-                    firstName: bookingUser.firstName,
-                    lastName: bookingUser.lastName,
+            } else {
+                const chatItem = {
+                    lastMessage: '',
+                    timeStamp: now,
+                    dateStarted: now,
+                    id: docRef.id, hostId: user.uid, userId: bookingUser.id,
+                    host: {
+                        role: 'host',
+                        lastOpen: now,
+                        name: (authentication.user.accountType === 'Individual' ? `${authentication.user.firstName}  ${authentication.user.lastName}` : authentication.user.companyName),
+                    },
+                    user: {
+                        role: 'user',
+                        lastOpen: 'never',
+                        firstName: bookingUser.firstName,
+                        lastName: bookingUser.lastName,
+                    }
                 }
+                await setDoc(docRef, chatItem);
+
+
+                return chatItem;
             }
-            await setDoc(docRef, chatItem);
-
-
-            return chatItem;
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
@@ -199,7 +199,7 @@ const MessagingSlice = createSlice({
             })
             .addCase(startChatAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
-                if (action.payload){
+                if (action.payload) {
                     state.userChats = [...state.userChats, action.payload];
                 }
             })
@@ -218,14 +218,15 @@ const MessagingSlice = createSlice({
             })
             .addCase(fetchMessages.fulfilled, (state, action) => {
                 state.isLoading = false;
-                if (state.chat){
-                    state.chat.messages =  action.payload.messages
+                if (state.chat) {
+                    state.chat.messages = action.payload.messages
                 }
             });
     }
 });
 export const selectUserChats = (state: RootState) => state.messaging.userChats;
 export const selectFocusChat = (state: RootState) => state.messaging.chat;
-export const {setFocusChat,addMessage,setUserChats} = MessagingSlice.actions;
+export const selectIsMessagesLoading = (state: RootState) => state.messaging.isLoading;
+export const {setFocusChat, addMessage, setUserChats} = MessagingSlice.actions;
 
 export default MessagingSlice.reducer;

@@ -34,7 +34,7 @@ export default function ListingsPage() {
             <hr/>
             <h3 className={'text-2xl font-bold'}>Drafts</h3>
             <div className={'grid grid-cols-4 gap-8'}>
-                {stays.filter((item: any, index: number) => item.published === false).map((item: any, index: number) => <ListingItem key={index} stay={item}/>)}
+                {stays.filter((item: any, index: number) => (!item.published || item.published === false)).map((item: any, index: number) => <ListingItem key={index} stay={item}/>)}
             </div>
         </div>
         <CreateDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>

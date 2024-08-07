@@ -29,6 +29,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     const isBookingLoading = useAppSelector(selectIsBookingLoading)
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
+    const isMessagesLoading = useAppSelector(selectIsBookingLoading);
     const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
 
@@ -65,7 +66,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
 
 
 
-    if (isLoading || isBookingLoading) {
+    if (isLoading || isBookingLoading || isMessagesLoading) {
         return <div><LoadingScreen/></div>;
     }
 
