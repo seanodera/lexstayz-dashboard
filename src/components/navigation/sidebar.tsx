@@ -11,7 +11,7 @@ import {
     HomeOutlined,
     BarChartOutlined,
     QuestionCircleOutlined,
-    WalletOutlined
+    WalletOutlined, MessageOutlined
 } from '@ant-design/icons';
 import LogoIcon from "@/components/LogoIcon";
 
@@ -39,6 +39,12 @@ const menuItems = [
         icon: <WalletOutlined />,
         label: "Cashier",
         href: "/cashier"
+    },
+    {
+        key: 'messages',
+        icon: <MessageOutlined />,
+        label: "Messages",
+        href: "/messages"
     },
     {
         key: "guests",

@@ -3,6 +3,7 @@ import BookingReducer from '@/slices/bookingSlice'
 import stayReducer from "@/slices/staySlice";
 import AuthenticationReducer from '@/slices/authenticationSlice'
 import createStayReducer from "@/slices/createStaySlice";
+import messagingReducer from "@/slices/messagingSlice";
 
 const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
         authentication: AuthenticationReducer,
         createStay: createStayReducer,
         stay: stayReducer,
+        messaging: messagingReducer
     }
 });
 export type RootState = ReturnType<typeof store.getState>;

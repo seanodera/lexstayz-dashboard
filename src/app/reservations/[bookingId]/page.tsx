@@ -2,7 +2,7 @@
 import {
     selectCurrentBooking,
     setCurrentBookingById,
-     updateBookingStatusAsync
+    updateBookingStatusAsync
 } from "@/slices/bookingSlice";
 import {useParams} from "next/navigation";
 import React, {useEffect} from "react";
@@ -15,6 +15,7 @@ import BookedRooms from "@/components/booking/bookedRooms";
 import PriceSummary from "@/components/booking/priceSummary";
 import {getTag} from "@/components/common";
 import {selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
+import {startChatAsync} from "@/slices/messagingSlice";
 
 export default function Page() {
     const params = useParams();
@@ -29,7 +30,7 @@ export default function Page() {
 
     useEffect(() => {
 
-        if (booking.accommodationId){
+        if (booking.accommodationId) {
             dispatch(setCurrentStayFromId(booking.accommodationId));
         }
 
@@ -38,15 +39,29 @@ export default function Page() {
 
     //await updateRoomFirebase(roomData, stayId, room.id, poster, images);
 
-    function handleUpdate (e: any, status: 'Pending' | 'Confirmed'| 'Canceled'| 'Rejected'){
+    function handleUpdate(e: any, status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected') {
         e.preventDefault()
 
 
         // @ts-ignore
-        dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value:any) => {
+        dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value: any) => {
             messageApi.success('Status updated successfully')
             console.log(value)
         });
+    }
+
+    function handleContactGuest() {
+
+        // @ts-ignore
+        dispatch(startChatAsync({
+            bookingUser: {
+                id: booking.accountId,
+                firstName: booking.user.firstName,
+                lastName: booking.user.lastName,
+            }
+        })).then((value: any) => {
+            console.log(value)
+        })
     }
 
     if (!booking || booking.id === undefined || !stay || stay.id === undefined) {
@@ -59,15 +74,17 @@ export default function Page() {
                 <div className={'flex items-center gap-4'}>
                     <div>
                         <h3 className={'text-gray-500 font-bold mb-0'}>Reservation</h3>
-                        <h1 className={'font-bold items-center'}>{booking.id.slice(0,6).toUpperCase()}</h1>
+                        <h1 className={'font-bold items-center'}>{booking.id.slice(0, 6).toUpperCase()}</h1>
                     </div>
                     {getTag(booking.status)}
                 </div>
-                {(booking.status === 'Pending')? <div className={'flex gap-2'}>
-                    <Button ghost danger icon={<CloseOutlined/>} onClick={(e) => handleUpdate(e, 'Rejected')}>Reject</Button>
-                    <Button type={'primary'} ghost icon={<CheckOutlined/>} onClick={(e) =>handleUpdate(e, 'Confirmed') }>Confirm</Button>
-                </div> : (booking.status === 'Confirmed')? <div className={'flex gap-2'}>
-                    <Button type={'primary'}>Contact Guest</Button>
+                {(booking.status === 'Pending') ? <div className={'flex gap-2'}>
+                    <Button ghost danger icon={<CloseOutlined/>}
+                            onClick={(e) => handleUpdate(e, 'Rejected')}>Reject</Button>
+                    <Button type={'primary'} ghost icon={<CheckOutlined/>}
+                            onClick={(e) => handleUpdate(e, 'Confirmed')}>Confirm</Button>
+                </div> : (booking.status === 'Confirmed') ? <div className={'flex gap-2'}>
+                    <Button type={'primary'} onClick={() => handleContactGuest()}>Contact Guest</Button>
                     <Button danger type={'primary'} onClick={(e) => handleUpdate(e, 'Canceled')}>Cancel</Button>
                 </div> : <div></div>}
             </div>

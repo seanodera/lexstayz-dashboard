@@ -17,6 +17,7 @@ import { selectIsAuthenticated } from "@/slices/authenticationSlice";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
 import {fetchStaysAsync, selectHasRun, selectIsLoading} from "@/slices/staySlice";
+import {fetchUserChatsAsync} from "@/slices/messagingSlice";
 
 const { Content } = Layout;
 
@@ -40,6 +41,10 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
 
                 // @ts-ignore
                 dispatch(fetchBookingsAsync({page: 1, limit: 10}));
+
+                // @ts-ignore
+                dispatch(fetchUserChatsAsync())
+
                 dispatch(setBalance({
                     available: getRandomInt({ max: 100000, min: 10000 }),
                     pending: getRandomInt({ max: 10000, min: 1000 }),
@@ -69,16 +74,12 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     }
 
     return (
-        <Layout hasSider className="h-screen" style={{ height: '100vh' }}>
+        <Layout hasSider className="h-screen">
             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-            <Layout className="h-full">
+            <Layout className="flex flex-col h-full">
                 <Navbar />
-                <Layout className="overscroll-contain overflow-y-scroll h-full">
-                    {/*<div>*/}
-                    {/*    <Button type={'primary'} onClick={() => testData()}>TestButton</Button>*/}
-                    {/*    <p></p>*/}
-                    {/*</div>*/}
-                    <Content>
+                <Layout className="flex-1 overflow-y-auto">
+                    <Content className="flex-1">
                         {children}
                     </Content>
                 </Layout>

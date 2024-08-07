@@ -16,6 +16,10 @@
   }
 }
 
+main > div {
+  height: 100%;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -48,6 +52,7 @@ body {
 @keyframes l4 {
   100% {background-position: calc(100%/3) 0}
 }
+
 
 /* HTML: <div class="loader"></div> */
 .loader-circle {
