@@ -2,7 +2,7 @@
 import {Button, Card, message, Steps} from "antd";
 import {
     BookOutlined, CheckCircleOutlined, EditOutlined,
-    EnvironmentOutlined,
+    EnvironmentOutlined, HomeOutlined,
     InfoCircleOutlined,
     PictureOutlined
 } from "@ant-design/icons";
@@ -24,6 +24,7 @@ import CreateStep0 from "@/components/accomodations/create/step0";
 import {BsActivity} from "react-icons/bs";
 import CreateStep6 from "@/components/accomodations/create/step6";
 import {useRouter} from "next/navigation";
+import CreateStep25 from "@/components/accomodations/create/step25";
 
 
 export default function Page() {
@@ -34,12 +35,51 @@ export default function Page() {
     const isLoading = useAppSelector(selectPartialLoading)
     const hasError = useAppSelector(selectPartialHasError)
     const errorMessage = useAppSelector(selectPartialErrorMessage)
-    const items = [
+    const items = (stay.type === 'Home') ? [{
+        title: 'Create',
+        icon: <EditOutlined/>,
+        content: <CreateStep0/>
+    },
+        {
+            title: 'Home Details',
+            icon: <HomeOutlined/>,
+            content: <CreateStep25/>
+        },
+        {
+            title: "Location",
+            icon: <EnvironmentOutlined/>,
+            content: <CreateStep1/>
+        },
+        {
+            title: 'Images',
+            icon: <PictureOutlined/>,
+            content: <CreateStep2/>
+        },
+        {
+            title: 'Rules',
+            icon: <BookOutlined/>,
+            content: <CreateStep3/>
+        }, {
+            title: 'Cancellations',
+            icon: <InfoCircleOutlined/>,
+            content: <CreateStep4/>,
+        },
+        {
+            title: 'Facilities',
+            icon: <BsActivity/>,
+            content: <CreateStep5/>
+        },
+        {
+            title: 'Complete',
+            icon: <CheckCircleOutlined/>,
+            content: <CreateStep6/>
+        }] : [
         {
             title: 'Create',
             icon: <EditOutlined/>,
             content: <CreateStep0/>
         },
+
         {
             title: "Location",
             icon: <EnvironmentOutlined/>,
@@ -93,11 +133,11 @@ export default function Page() {
     return <div className={'pt-4 pb-10 px-4 md:px-10'}>
         <div className={'flex justify-center items-center w-full'}>
             {isLoading ? <Card className={'md:max-w-screen-md xl:max-w-screen-lg w-full aspect-20/7 p-0'}>
-                <div className={'h-full w-full flex flex-col justify-center items-center'}>
-                    <div className={'loader-circle h-20 w-20'}/>
-                </div>
+                    <div className={'h-full w-full flex flex-col justify-center items-center'}>
+                        <div className={'loader-circle h-20 w-20'}/>
+                    </div>
                 </Card> :
-                <Card className={'md:max-w-screen-md xl:max-w-screen-lg w-full'}>
+                <Card className={'md:max-w-screen-md xl:max-w-screen-xl w-full'}>
                     <Steps onChange={(num) => setCurrent(num)} current={current}
                            items={items.map((item) => ({key: item.title, title: item.title, icon: item.icon,}))}/>
                     {items[ current ].content}

@@ -189,3 +189,150 @@ const guestRoomAmenities = [
     'Toiletries',
     'Closet/Wardrobe'
 ]
+
+
+
+export const homeFacilities =  [
+        {
+            "name": "Living Room",
+            "features": [
+                "Sofa",
+                "Coffee Table",
+                "TV with Streaming Services",
+                "Bookshelf",
+                "Rug",
+                "Fireplace",
+                "Curtains",
+                "Wall Art"
+            ]
+        },
+        {
+            "name": "Kitchen",
+            "features": [
+                "Refrigerator",
+                "Oven",
+                "Microwave",
+                "Dishwasher",
+                "Kitchen Island",
+                "Pantry",
+                "Sink",
+                "Cabinets",
+                "Cookware",
+                "Tableware",
+                "Coffee Maker",
+                "Toaster"
+            ]
+        },
+        {
+            "name": "Bedroom",
+            "features": [
+                "Bed",
+                "Wardrobe",
+                "Nightstand",
+                "Dresser",
+                "Desk",
+                "Chair",
+                "Lamp",
+                "Mirror",
+                "Linens",
+                "Extra Pillows and Blankets"
+            ]
+        },
+        {
+            "name": "Bathroom",
+            "features": [
+                "Shower",
+                "Bathtub",
+                "Toilet",
+                "Sink",
+                "Mirror",
+                "Towel Rack",
+                "Storage Cabinet",
+                "Vanity",
+                "Toiletries",
+                "Towels"
+            ]
+        },
+        {
+            "name": "Dining Room",
+            "features": [
+                "Dining Table",
+                "Chairs",
+                "Buffet",
+                "Hutch",
+                "Chandelier",
+                "Tableware",
+                "Rug",
+                "Wall Decor"
+            ]
+        },
+        {
+            "name": "Home Office",
+            "features": [
+                "Desk",
+                "Office Chair",
+                "Bookshelves",
+                "Computer",
+                "Printer",
+                "Filing Cabinet",
+                "Desk Lamp",
+                "Whiteboard",
+                "High-Speed Internet"
+            ]
+        },
+        {
+            "name": "Garage",
+            "features": [
+                "Parking Space",
+                "Storage Shelves",
+                "Workbench",
+                "Tool Rack",
+                "Bicycle Rack",
+                "Lawn Equipment Storage",
+                "Sports Equipment Storage",
+                "Garage Door Opener"
+            ]
+        },
+        {
+            "name": "Backyard",
+            "features": [
+                "Patio",
+                "Deck",
+                "Garden",
+                "Swimming Pool",
+                "Barbecue Grill",
+                "Outdoor Furniture",
+                "Playground",
+                "Fence",
+                "Hot Tub",
+                "Fire Pit"
+            ]
+        },
+        {
+            "name": "Laundry Room",
+            "features": [
+                "Washing Machine",
+                "Dryer",
+                "Laundry Sink",
+                "Ironing Board",
+                "Drying Rack",
+                "Storage Cabinets",
+                "Laundry Detergent",
+                "Iron"
+            ]
+        },
+        {
+            "name": "General",
+            "features": [
+                "Air Conditioning",
+                "Heating",
+                "Wi-Fi",
+                "Smoke Detectors",
+                "Carbon Monoxide Detectors",
+                "First Aid Kit",
+                "Fire Extinguisher",
+                "Parking",
+                "Wheelchair Accessible"
+            ]
+        }
+    ]

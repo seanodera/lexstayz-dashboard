@@ -136,6 +136,7 @@ const createStaySlice = createSlice({
         setStayPartial: (state, action) => {
             state.stay = {
                 id: generateID(),
+                ...state.stay,
                 ...action.payload
             };
         },
