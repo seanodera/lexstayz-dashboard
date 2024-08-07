@@ -62,10 +62,10 @@ function FunctionButtons({stay}:{stay: any}){
     } else {
     return <div className={'space-x-2'}>
         <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
-        <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'}
-                                                                       icon={<PlusCircleOutlined/>}
-                                                                       size={'large'}> Add
-            Room</Button></Link>
+        {stay.type === 'Hotel' && <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'}
+                                                                        icon={<PlusCircleOutlined/>}
+                                                                        size={'large'}> Add
+            Room</Button></Link>}
         <Button type={'primary'} danger size={'large'} icon={<MdOutlinePublish/>}
                 onClick={() => dispatch(publishStayAsync(stay))}>Publish</Button>
         <Button type={'primary'} danger size={'large'} icon={<DeleteOutlined/>}

@@ -124,6 +124,7 @@ export default function Page() {
         // @ts-ignore
         dispatch(uploadStayAsync()).then((action: any) => {
             if (action.meta.requestStatus === 'fulfilled') {
+
             }
             message.success('Processing complete!')
             router.push('/accommodations');
@@ -140,7 +141,7 @@ export default function Page() {
                 <Card className={'md:max-w-screen-md xl:max-w-screen-xl w-full'}>
                     <Steps onChange={(num) => setCurrent(num)} current={current}
                            items={items.map((item) => ({key: item.title, title: item.title, icon: item.icon,}))}/>
-                    {items[ current ].content}
+                    {items[ (current > items.length -1 ? items.length  - 1 : current) ].content}
                     <div className={'flex justify-end items-center gap-2 mt-4'}>
                         {current > 0 && (
                             <Button onClick={() => prev()}>

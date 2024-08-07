@@ -140,8 +140,14 @@ export async function getStaysFirebase(): Promise<any[]> {
         const stays: any[] = [];
         const snapshot = await getDocs(staysRef);
         for (const doc of snapshot.docs) {
-            const rooms = await getRoomsFirebase(doc.id);
-            stays.push({ ...doc.data(), rooms });
+            const partialStay = doc.data()
+
+            if (partialStay.type === 'Hotel') {
+                const rooms = await getRoomsFirebase(doc.id);
+                stays.push({...doc.data(), rooms});
+            } else {
+                stays.push({...doc.data(), rooms: []});
+            }
         }
 
         console.log(stays);
