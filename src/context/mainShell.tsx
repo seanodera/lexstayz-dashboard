@@ -80,7 +80,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
             <Layout className="flex flex-col h-full">
                 <Navbar />
                 <Layout className="flex-1 overflow-y-auto">
-                    <Content className="flex-1">
+                    <Content className="flex-1 overflow-y-scroll">
                         {children}
                     </Content>
                 </Layout>

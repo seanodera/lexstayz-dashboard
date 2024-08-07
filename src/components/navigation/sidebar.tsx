@@ -46,24 +46,24 @@ const menuItems = [
         label: "Messages",
         href: "/messages"
     },
-    {
-        key: "guests",
-        icon: <UserOutlined />,
-        label: "Guests",
-        href: "/guests"
-    },
-    {
-        key: "reports",
-        icon: <BarChartOutlined />,
-        label: "Reports",
-        href: "/reports"
-    },
-    {
-        key: "help",
-        icon: <QuestionCircleOutlined />,
-        label: "Help",
-        href: "/help"
-    },
+    // {
+    //     key: "guests",
+    //     icon: <UserOutlined />,
+    //     label: "Guests",
+    //     href: "/guests"
+    // },
+    // {
+    //     key: "reports",
+    //     icon: <BarChartOutlined />,
+    //     label: "Reports",
+    //     href: "/reports"
+    // },
+    // {
+    //     key: "help",
+    //     icon: <QuestionCircleOutlined />,
+    //     label: "Help",
+    //     href: "/help"
+    // },
 ];
 const renderMenuItem = (item: any) => (
     {
