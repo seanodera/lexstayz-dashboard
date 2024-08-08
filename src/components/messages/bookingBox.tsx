@@ -85,7 +85,7 @@ export default function BookingBox() {
                     <h4 className={'text-gray-400'}>{booking.currency} {toMoneyFormat(booking.totalPrice * 0.035 * booking.usedRate, {})} Fees</h4>
                 </div>
                 <div className={'text-center'}>
-                    <Button type={'primary'} ghost>View Booking</Button>
+                    <Button type={'primary'} ghost href={`/reservations/${booking.id}`}>View Booking</Button>
                 </div>
             </div>
         </Card>
