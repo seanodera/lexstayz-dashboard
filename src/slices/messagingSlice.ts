@@ -76,9 +76,10 @@ export const startChatAsync = createAsyncThunk('messaging/startChat',
             const docRef = doc(collection(firestore, 'chats'));
             const now = new Date().toISOString();
             const {authentication, messaging} = state;
-            const existingChatUsers = messaging.userChats.map((value) => value.user.id);
+            const existingChatUsers = messaging.userChats.map((value) => value.userId);
 
             if (existingChatUsers.includes(bookingUser.id)) {
+
                 return undefined;
             } else {
                 const chatItem = {
