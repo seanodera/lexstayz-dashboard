@@ -19,7 +19,7 @@ export default function CreateStep25() {
             beds: beds,
             price: price,
         }))
-    }, [bathrooms, bedrooms, beds]);
+    }, [bathrooms, bedrooms, beds, dispatch, price]);
 
     return <Card className={'flex justify-center'}>
         <h2>House Details</h2>
