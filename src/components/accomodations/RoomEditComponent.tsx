@@ -82,7 +82,7 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
         console.log(stayId, 'Room Edit')
         if (room){
 
-            // @ts-ignore
+
             await dispatch(updateRoomAsync({room: roomData, previousRoom: room, stayId,roomId: room.id, poster, images})).then((value:any) => {
                 console.log(value)
                 router.push(`/accommodations/${stayId}/${room.id}`);
@@ -96,13 +96,13 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
 
                 // Add new room
                 console.log(stayId);
-                // @ts-ignore
+
                 await dispatch(addRoomAsync({room: roomData, stayId, poster, images})).then((value) => {
 
                     router.push(`/accommodations/${stayId}`)
                 });
-                //
-                //@ts-ignore
+
+
                 //dispatch(fetchStaysAsync());
                 console.log(stayId)
 

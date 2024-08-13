@@ -32,7 +32,7 @@ const initialState: StayState = {
 
 export const uploadStayAsync = createAsyncThunk(
     'stay/uploadStay',
-    async ({ stay, poster, images }: { stay: Stay, poster: string, images: string[] }) => {
+    async ({ stay, poster, images }: { stay: any, poster: string, images: string[] }) => {
         await uploadStay(stay, poster, images);
         return stay;
     }
@@ -69,7 +69,7 @@ export const updateRoomAsync = createAsyncThunk(
     }
 );
 
-export const publishStayAsync:any = createAsyncThunk(
+export const publishStayAsync = createAsyncThunk(
     'stay/publishStay',
     async (stay: Stay) => {
         await publishStayFirebase(stay);
@@ -77,7 +77,7 @@ export const publishStayAsync:any = createAsyncThunk(
     }
 );
 
-export const unPublishStayAsync:any  = createAsyncThunk(
+export const unPublishStayAsync  = createAsyncThunk(
     'stay/unPublishStay',
     async (stay: Stay) => {
         await unPublishStay(stay);
@@ -85,7 +85,7 @@ export const unPublishStayAsync:any  = createAsyncThunk(
     }
 );
 
-export const deleteStayAsync:any  = createAsyncThunk(
+export const deleteStayAsync  = createAsyncThunk(
     'stay/deleteStay',
     async (stay: Stay) => {
         await deleteStay(stay);

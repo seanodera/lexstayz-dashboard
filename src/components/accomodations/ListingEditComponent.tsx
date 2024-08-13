@@ -96,10 +96,10 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             currency: currency,
         }
         if (partial) {
-            // @ts-ignore
+
             dispatch(uploadStayAsync({stay: newStay, poster, images})).then(() => {
 
-                // @ts-ignore
+
                 dispatch(fetchStaysAsync());
                 router.push('/accommodations');
             });

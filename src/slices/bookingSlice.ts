@@ -1,10 +1,19 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { addDays, differenceInDays } from "date-fns";
-import { getDocs, collection, query, orderBy, startAfter, limit as fbLimit } from "firebase/firestore";
-import { getCurrentUser } from "@/data/hotelsData";
-import { firestore } from "@/lib/firebase";
-import { Dates, Balance, Withdraw } from "@/lib/types";
-import {updateStatus} from "@/data/bookingsData"; // Adjust the import according to your project structure
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {addDays, differenceInDays} from "date-fns";
+import {
+    getDocs,
+    collection,
+    query,
+    orderBy,
+    startAfter,
+    limit as fbLimit,
+    getCountFromServer, getAggregateFromServer, average, sum, count
+} from "firebase/firestore";
+import {getCurrentUser} from "@/data/hotelsData";
+import {firestore} from "@/lib/firebase";
+import {Dates, Balance, Withdraw} from "@/lib/types";
+import {updateStatus} from "@/data/bookingsData";
+import {state} from "sucrase/dist/types/parser/traverser/base"; // Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -20,12 +29,15 @@ interface BookingState {
     fetchedPages: number[];
     page: number;
     limit: number;
+    bookingCount: number;
 }
+
 const initialState: BookingState = {
     cart: [],
     cartTotal: 0,
     bookings: [],
     currentBooking: {},
+    bookingCount: 0,
     dates: {
         startDate: new Date().toDateString(),
         endDate: addDays(new Date(), 1).toDateString(),
@@ -52,10 +64,11 @@ const initialState: BookingState = {
 
 export const fetchBookingsAsync = createAsyncThunk(
     'booking/fetchBookings',
-    async ({ page, limit }: { page: number, limit: number }, { getState }) => {
+    async ({page, limit}: { page: number, limit: number }, {getState,dispatch}) => {
         const state = getState() as { booking: BookingState };
+        dispatch(updateBookingCount())
         if (state.booking.fetchedPages.includes(page)) {
-            return { bookings: [], page }; // Return empty if already fetched
+            return {bookings: [], page}; // Return empty if already fetched
         }
 
         const user = getCurrentUser();
@@ -63,7 +76,7 @@ export const fetchBookingsAsync = createAsyncThunk(
         let bookingsQuery;
 
         if (state.booking.bookings.length > 0) {
-            const lastBooking = state.booking.bookings[state.booking.bookings.length - 1];
+            const lastBooking = state.booking.bookings[ state.booking.bookings.length - 1 ];
             bookingsQuery = query(
                 bookingsRef,
                 orderBy('createdAt', 'desc'),
@@ -77,17 +90,39 @@ export const fetchBookingsAsync = createAsyncThunk(
         const snapshot = await getDocs(bookingsQuery);
         const bookings = snapshot.docs.map(doc => doc.data());
 
-        return { bookings, page };
+        return {bookings, page};
     }
 );
 
 export const updateBookingStatusAsync = createAsyncThunk(
     'booking/updateStatus',
-    async ({ status, booking }: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
+    async ({status, booking}: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
         let updated = await updateStatus(status, booking);
-        return { booking: updated, status };
+        return {booking: updated, status};
     }
 );
+
+export const updateBookingCount = createAsyncThunk(
+    'booking/updateBookingCount',
+    async (_) => {
+
+        const user = getCurrentUser();
+        const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
+        let countData = await getAggregateFromServer(bookingsRef, {
+            countOfDocs: count(),
+            totalAmount: sum('totalPrice'),
+            averageAmount: average('totalPrice')
+
+        })
+
+        return {
+            bookingCount: countData.data().countOfDocs,
+            totalAmount: countData.data().totalAmount,
+            averageAmount: countData.data().averageAmount || 0,
+        };
+
+    }
+)
 
 const bookingSlice = createSlice({
     name: "booking",
@@ -131,8 +166,11 @@ const bookingSlice = createSlice({
                 state.hasError = false;
                 state.errorMessage = '';
             })
-            .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<{ bookings: any[], page: number }>) => {
-                const { page, bookings } = action.payload;
+            .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<{
+                bookings: any[],
+                page: number
+            }>) => {
+                const {page, bookings} = action.payload;
                 if (page === 1) {
                     state.bookings = bookings;
                 } else {
@@ -157,7 +195,7 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
                 const index = state.bookings.findIndex((value) => value.id === action.payload.booking.id);
                 if (index !== -1) {
-                    state.bookings[index] = {
+                    state.bookings[ index ] = {
                         ...action.payload.booking,
                         status: action.payload.status,
                     };
@@ -167,6 +205,18 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
                 state.hasError = true;
                 state.errorMessage = action.error.message || 'Failed to update booking';
+            })
+            .addCase(updateBookingCount.pending, (state, action) => {
+                state.isLoading = true;
+            }).addCase(updateBookingCount.fulfilled, (state, action) => {
+            state.isLoading = false;
+            state.bookingCount = action.payload.bookingCount;
+            state.balance.pending = action.payload.totalAmount;
+            state.balance.available = action.payload.averageAmount;
+            })
+            .addCase(updateBookingCount.rejected, (state, action) => {
+                state.isLoading = false
+
             });
     }
 });
@@ -198,5 +248,6 @@ export const selectPage = (state: any) => state.booking.page;
 export const selectLimit = (state: any) => state.booking.limit;
 export const selectTotalBookings = (state: any) => state.booking.bookings;
 export const selectFetchedPages = (state: any) => state.booking.fetchedPages;
+export const selectBookingsCount = (state: any) => state.booking.bookingCount;
 
 export default bookingSlice.reducer;

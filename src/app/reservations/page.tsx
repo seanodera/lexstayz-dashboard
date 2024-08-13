@@ -8,7 +8,7 @@ import {
     selectLimit,
     selectIsBookingLoading,
     fetchBookingsAsync,
-    setPage, selectFetchedPages
+    setPage, selectFetchedPages, selectBookingsCount
 } from "@/slices/bookingSlice";
 import Link from "next/link";
 import {useEffect, useState} from "react";
@@ -28,10 +28,10 @@ export default function BookingPage() {
     const [localPage, setLocalPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
-
+    const bookingCount = useAppSelector(selectBookingsCount)
     useEffect(() => {
         if (!fetchedPages.includes(page)) {
-            // @ts-ignore
+
             dispatch(fetchBookingsAsync({page, limit}));
         }
     }, [page, limit, fetchedPages]);
@@ -56,7 +56,7 @@ export default function BookingPage() {
         console.log(pagination, filters, sorter, 'Change is coming from here');
         dispatch(setPage(pagination.current));
     };
-
+    console.log(bookings.length)
     return (
         <div className="m-4">
             <div className="flex items-center justify-between">
@@ -74,7 +74,7 @@ export default function BookingPage() {
                     pagination={{
                         current: page,
                         pageSize: limit,
-                        total: bookings.length + (isLoading ? limit : 0), // Adjust total for showing loading indicator
+                        total: bookingCount, // Adjust total for showing loading indicator
                         showSizeChanger: false,
                     }}
 

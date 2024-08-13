@@ -20,7 +20,7 @@ export default function LoginComponent() {
             .then((actionResult:any) => {
                 router.push('/')
             }).catch((error:any) => {
-            // @ts-ignore
+
             message.error(`Error logging in: ${error.message}`);
         });
     };

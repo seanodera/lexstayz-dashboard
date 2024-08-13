@@ -85,7 +85,7 @@ const initialState: CreateStayState = {
         parties: '',
         pets: '',
         rating: 0,
-        currency: 'GHS',
+        currency: 'USD',
         numReviews: 0,
     },
     isLoading: false,

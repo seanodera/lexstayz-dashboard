@@ -37,20 +37,15 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
         const fetchData = async () => {
             if (!hasRun) {
                 console.log('Function is running and hasRun: ', hasRun)
-                // @ts-ignore
+
                 dispatch(fetchStaysAsync());
 
-                // @ts-ignore
+
                 dispatch(fetchBookingsAsync({page: 1, limit: 10}));
 
-                // @ts-ignore
+
                 dispatch(fetchUserChatsAsync())
 
-                dispatch(setBalance({
-                    available: getRandomInt({ max: 100000, min: 10000 }),
-                    pending: getRandomInt({ max: 10000, min: 1000 }),
-                }));
-                dispatch(setWithdraw(withdrawData()));
 
             }
         };

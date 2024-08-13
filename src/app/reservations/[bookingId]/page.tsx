@@ -44,7 +44,7 @@ export default function Page() {
         e.preventDefault()
 
 
-        // @ts-ignore
+
         dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value: any) => {
             messageApi.success('Status updated successfully')
             console.log(value)
@@ -55,7 +55,7 @@ export default function Page() {
 
     function handleContactGuest() {
 
-        // @ts-ignore
+
         dispatch(startChatAsync({
             bookingUser: {
                 id: booking.accountId,

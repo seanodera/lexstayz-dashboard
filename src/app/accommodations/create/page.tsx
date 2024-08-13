@@ -121,7 +121,7 @@ export default function Page() {
     function handleDone() {
 
 
-        // @ts-ignore
+
         dispatch(uploadStayAsync()).then((action: any) => {
             if (action.meta.requestStatus === 'fulfilled') {
 

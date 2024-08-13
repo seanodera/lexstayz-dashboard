@@ -33,8 +33,8 @@ export default function ChatBox() {
     }, [chat]);
 
     const handleSubmit = () => {
-        if (inputValue.trim()) {
-            // @ts-ignore
+        if (inputValue.trim() && chat) {
+
             dispatch(sendMessageAsync({message: inputValue, chatId: chat.id}));
             // setMessages([
             //     ...messages,
