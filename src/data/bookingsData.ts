@@ -102,7 +102,7 @@ export async function updateStatus(status: 'Pending' | 'Confirmed' | 'Canceled' 
         const user = getCurrentUser()
         const batch = writeBatch(firestore);
         const hostDoc = doc(firestore, 'hosts', user.uid, 'bookings', booking.id)
-        const userDoc = doc(firestore, 'user', booking.accountId, 'bookings', booking.id)
+        const userDoc = doc(firestore, 'users', booking.accountId, 'bookings', booking.id)
         batch.update(hostDoc, {status: status, acceptedAt: new Date().toString()})
         batch.update(userDoc, {status: status, acceptedAt: new Date().toString()})
 
