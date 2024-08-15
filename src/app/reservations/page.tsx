@@ -96,7 +96,7 @@ export default function BookingPage() {
                         className="text-nowrap"
                         title="Booked at"
                         dataIndex="createdAt"
-                        render={(value) => `${dateReader({date: value})} ${timeFromDate({date: value, am_pm: true})}`}
+                        render={(value) => `${dateReader({date: value, years: false})} ${timeFromDate({date: value, am_pm: true})}`}
                         sorter={(a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()}
                     />
                     <Column
@@ -135,7 +135,7 @@ export default function BookingPage() {
                         className="text-nowrap"
                         title="Rooms"
                         dataIndex="rooms"
-                        render={(value) => getRooms(value)}
+                        render={(value) => value? getRooms(value) : '1'}
                     />
                     <Column
                         className="text-nowrap"
@@ -147,12 +147,16 @@ export default function BookingPage() {
                         className="text-nowrap font-semibold"
                         title="Total"
                         dataIndex="totalPrice"
-                        render={(value) => '$' + toMoneyFormat(value, {})}
+                        render={(value, record, index) => {
+                            console.log(record)
+                            return record.currency + toMoneyFormat(value, {});
+                        }}
                         sorter={(a: any, b: any) => a.totalPrice - b.totalPrice}
                     />
                     <Column
                         title=""
                         dataIndex="id"
+                        fixed={'right'}
                         render={(value) => (
                             <Link href={`/reservations/${value}`}>
                                 <Button type="primary">View</Button>

@@ -94,9 +94,9 @@ export default function Page() {
             <Row gutter={[16, 16]}>
                 <Col span={16} className={'space-y-4'}>
                     <BookingDescription booking={booking} stay={stay}/>
-                    <BookedRooms
+                    {stay.type === 'Hotel' && <BookedRooms
                         booking={booking}
-                        stay={stay}/></Col>
+                        stay={stay}/>}</Col>
                 <Col span={8} className={'space-y-4'}>
                     <ContactCard guest={guest}/>
                     <PriceSummary booking={booking} stay={stay}/>

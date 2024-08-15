@@ -8,14 +8,14 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
     const [pricePerNight, setPricePerNight] = useState(0)
     useEffect(() => {
         let _pricePerNight = 0;
-        booking.rooms.forEach((room: any) => {
+        stay.type === 'Hotel' && booking.rooms.forEach((room: any) => {
             _pricePerNight+=(room.numRooms * room.price);
         })
         setPricePerNight(_pricePerNight);
     }, [booking]);
     return <Card title={'Price Summary'} className={'rounded-xl'}>
         <div className={''}>
-            <table className={'table-auto text-nowrap'}>
+            {stay.type === 'Hotel'?<table className={'table-auto text-nowrap'}>
                 <thead>
                 <tr className={'border-0 border-b border-solid'}>
                     <th className={'w-full text-start'}>Room Name</th>
@@ -38,7 +38,7 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
                     }
                 )}
                 </tbody>
-            </table>
+            </table> : <div>Hy</div>}
         </div>
         <hr/>
         <div className={'grid grid-cols-2'}>
