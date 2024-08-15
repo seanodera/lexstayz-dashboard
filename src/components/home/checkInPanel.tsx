@@ -24,7 +24,7 @@ export default function CheckInPanel() {
     }, [bookings]);
 
     return <Card classNames={{body: 'px-0 pt-0'}} title={<h2 className={'mb-0 font-semibold'}>Today&apos;s Check Ins</h2>}>
-        <Table scroll={{x: true}} dataSource={displayBookings} pagination={false}>
+        <Table scroll={{x: true}} dataSource={displayBookings} pagination={false}   >
             <Column title={'Guest'} dataIndex={['user']} render={(value, record:any, index) => {
                 return <div key={index}>
                     <div className={'font-medium'}>{value.firstName} {value.lastName}</div>
