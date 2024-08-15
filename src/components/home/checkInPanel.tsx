@@ -37,7 +37,7 @@ export default function CheckInPanel() {
             <Column className={'text-nowrap'} title={'Check-Out'} dataIndex={'checkOutDate'}
                     render={value => dateReader({date: value})}/>
             <Column className={'text-nowrap'} title={'Status'} dataIndex={'status'} render={value => getTag(value)}/>
-            <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => getRooms(value)}/>
+            <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => value? getRooms(value) : 1}/>
             <Column className={'text-nowrap'} title={'Guests'} dataIndex={'numGuests'}/>
             <Column className={'text-nowrap'} title={'Total'} dataIndex={'totalPrice'} render={(value) => '$' + toMoneyFormat(value,{})}/>
         </Table>
