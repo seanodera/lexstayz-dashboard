@@ -16,6 +16,7 @@ import PriceSummary from "@/components/booking/priceSummary";
 import {getTag} from "@/components/common";
 import {selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import {startChatAsync} from "@/slices/messagingSlice";
+import {refundBooking} from "@/data/bookingsData";
 
 export default function Page() {
     const params = useParams();
@@ -40,17 +41,23 @@ export default function Page() {
 
     //await updateRoomFirebase(roomData, stayId, room.id, poster, images);
 
-    function handleUpdate(e: any, status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected') {
+    async function handleUpdate(e: any, status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected') {
         e.preventDefault()
+        try {
 
-
-
-        dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value: any) => {
-            messageApi.success('Status updated successfully')
-            console.log(value)
-        });
+            if (status === 'Rejected' || status === 'Canceled') {
+                if (booking.isConfirmed) {
+                    await refundBooking(booking)
+                }
+            }
+            dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value: any) => {
+                messageApi.success('Status updated successfully')
+                console.log(value)
+            });
+        } catch (err) {
+            console.log(err)
+        }
     }
-
 
 
     function handleContactGuest() {
