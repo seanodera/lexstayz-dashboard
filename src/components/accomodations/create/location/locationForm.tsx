@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { Field, Fieldset, Label } from "@headlessui/react";
 import { Input } from "antd";
