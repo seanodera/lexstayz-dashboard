@@ -21,7 +21,7 @@ export default function CreateStep25() {
         }))
     }, [bathrooms, bedrooms, beds, dispatch, price]);
 
-    return <Card className={'flex justify-center'}>
+    return <Card className={'flex justify-center border-0'}>
         <h2>House Details</h2>
         <Form className={'w-screen text-nowrap md:max-w-sm '} layout={'vertical'}>
             <Form.Item label={'Price'} className={'font-medium'}>

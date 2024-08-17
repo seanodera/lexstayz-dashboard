@@ -6,7 +6,7 @@ import {
     InfoCircleOutlined,
     PictureOutlined
 } from "@ant-design/icons";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {
     selectPartialErrorMessage,
@@ -29,7 +29,7 @@ import CreateStep25 from "@/components/accomodations/create/step25";
 
 export default function Page() {
     const stay = useAppSelector(selectPartialStay)
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const isLoading = useAppSelector(selectPartialLoading)
@@ -41,14 +41,14 @@ export default function Page() {
         content: <CreateStep0/>
     },
         {
-            title: 'Home Details',
-            icon: <HomeOutlined/>,
-            content: <CreateStep25/>
-        },
-        {
             title: "Location",
             icon: <EnvironmentOutlined/>,
             content: <CreateStep1/>
+        },
+        {
+            title: 'Home Details',
+            icon: <HomeOutlined/>,
+            content: <CreateStep25/>
         },
         {
             title: 'Images',
@@ -131,34 +131,36 @@ export default function Page() {
         })
     }
 
+    useEffect(() => {
+
+    }, []);
     return <div className={'pt-4 pb-10 px-4 md:px-10'}>
-        <div className={'flex justify-center items-center w-full'}>
+        <div className={'flex flex-col justify-center items-center w-full h-full'}>
             {isLoading ? <Card className={'md:max-w-screen-md xl:max-w-screen-lg w-full aspect-20/7 p-0'}>
                     <div className={'h-full w-full flex flex-col justify-center items-center'}>
                         <div className={'loader-circle h-20 w-20'}/>
                     </div>
                 </Card> :
-                <Card className={'md:max-w-screen-md xl:max-w-screen-xl w-full'}>
-                    <Steps onChange={(num) => setCurrent(num)} current={current}
-                           items={items.map((item) => ({key: item.title, title: item.title, icon: item.icon,}))}/>
-                    {items[ (current > items.length -1 ? items.length  - 1 : current) ].content}
-                    <div className={'flex justify-end items-center gap-2 mt-4'}>
+                <Card className={'max-w-xl w-full'}>
+                    <div className={'mb-4'}>
+                        {items[current].content}
+                    </div>
+                    <div className={'flex justify-between'}>
                         {current > 0 && (
-                            <Button onClick={() => prev()}>
+                            <Button type="primary" onClick={prev}>
                                 Previous
                             </Button>
                         )}
                         {current < items.length - 1 && (
-                            <Button type="primary" onClick={() => next()}>
+                            <Button type="primary" onClick={next}>
                                 Next
                             </Button>
                         )}
                         {current === items.length - 1 && (
-                            <Button type="primary" onClick={() => handleDone()}>
+                            <Button type="primary" onClick={handleDone}>
                                 Done
                             </Button>
                         )}
-
                     </div>
                 </Card>}
         </div>

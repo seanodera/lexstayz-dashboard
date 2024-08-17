@@ -8,7 +8,6 @@ import {RootState} from "@/data/store";
 import {fetchStaysAsync} from "@/slices/staySlice";
 
 
-
 export interface Location {
     street?: string,
     street2?: string,
@@ -16,6 +15,8 @@ export interface Location {
     city?: string,
     country: string,
     zipCode?: string,
+
+    [ key: string ]: any;
 }
 
 export interface Cancellation {
@@ -57,7 +58,7 @@ export interface CreateStayState {
 const initialState: CreateStayState = {
     stay: {
         name: '',
-        type: '',
+        type: 'Hotel',
         description: '',
         facilities: [],
         checkInTime: '12:00',
@@ -98,7 +99,11 @@ export function generateID() {
     return document.id
 }
 
-export const uploadStayAsync = createAsyncThunk('createStay/uploadStay', async (_,{getState,dispatch,rejectWithValue}) => {
+export const uploadStayAsync = createAsyncThunk('createStay/uploadStay', async (_, {
+    getState,
+    dispatch,
+    rejectWithValue
+}) => {
     const {createStay} = getState() as RootState;
     try {
         const user = getCurrentUser();
@@ -106,20 +111,20 @@ export const uploadStayAsync = createAsyncThunk('createStay/uploadStay', async (
         const staysRef = collection(userDocRef, 'stays');
         const docRef = doc(staysRef);
 
-        const processedStay = { ...createStay.stay, id: docRef.id };
+        const processedStay = {...createStay.stay, id: docRef.id};
         await setDoc(docRef, processedStay);
 
-        const posterFile = await createFile({ url: createStay.stay.poster, name: 'poster' });
+        const posterFile = await createFile({url: createStay.stay.poster, name: 'poster'});
         const posterURL = await uploadImage(posterFile, `${docRef.id}/poster`);
-        await updateDoc(docRef, { poster: posterURL });
+        await updateDoc(docRef, {poster: posterURL});
 
         const imageUrls = await Promise.all(createStay.stay.images.map(async (image, index) => {
-            const imageFile = await createFile({ url: image, name: `image-${index}` });
+            const imageFile = await createFile({url: image, name: `image-${index}`});
             return await uploadImage(imageFile, `${docRef.id}/image-${index}`);
         }));
-        await updateDoc(docRef, { images: imageUrls });
+        await updateDoc(docRef, {images: imageUrls});
         await dispatch(fetchStaysAsync)
-        return {...processedStay, images: imageUrls,poster: posterURL };
+        return {...processedStay, images: imageUrls, poster: posterURL};
     } catch (error) {
         if (error instanceof Error) {
             return rejectWithValue(error.message);
@@ -140,8 +145,8 @@ const createStaySlice = createSlice({
                 ...action.payload
             };
         },
-        updateLocation: (state, action: PayloadAction<Location>) => {
-            state.stay.location = action.payload
+        updateLocation: (state, action) => {
+            state.stay.location = {...state.stay.location, ...action.payload}
         },
         updateImages: (state, action) => {
             state.stay.images = action.payload.images;
@@ -166,7 +171,7 @@ const createStaySlice = createSlice({
         }
     },
     extraReducers: builder => {
-        builder.addCase(uploadStayAsync.pending, (state,action) => {
+        builder.addCase(uploadStayAsync.pending, (state, action) => {
             state.isLoading = true;
         })
             .addCase(uploadStayAsync.fulfilled, (state, action) => {

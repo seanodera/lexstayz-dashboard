@@ -15,7 +15,7 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
     }, [booking]);
     return <Card title={'Price Summary'} className={'rounded-xl'}>
         <div className={''}>
-            {stay.type === 'Hotel'?<table className={'table-auto text-nowrap'}>
+            {stay.type === 'Hotel'? <table className={'table-auto text-nowrap'}>
                 <thead>
                 <tr className={'border-0 border-b border-solid'}>
                     <th className={'w-full text-start'}>Room Name</th>

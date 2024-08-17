@@ -92,13 +92,10 @@ export async function getCountry() {
         // Get country information from country-data package
         const country = countries[countryCode];
 
-        return {
-            name: country.name,
-            emoji: country.emoji,
-        };
+        return country;
     } catch (error) {
         console.error("Error fetching country data: ", error);
-        return '';
+        return undefined;
     }
 }
 
