@@ -8,10 +8,7 @@ import {selectPartialStay, setStayPartial} from "@/slices/createStaySlice";
 
 
 export default function CreateStep0() {
-    const [name, setName] = useState("");
-    const [type, setType] = useState("Hotel");
-    const [description, setDescription] = useState('');
-    const [homeType, setHomeType] = useState("House");
+
     const stay = useAppSelector(selectPartialStay)
     const dispatch = useAppDispatch()
     const router = useRouter()

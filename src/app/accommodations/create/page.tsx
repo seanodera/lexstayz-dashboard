@@ -1,5 +1,5 @@
 'use client'
-import {Button, Card, message, Steps} from "antd";
+import {Button, Card, message} from "antd";
 import {
     BookOutlined, CheckCircleOutlined, EditOutlined,
     EnvironmentOutlined, HomeOutlined,
@@ -35,45 +35,8 @@ export default function Page() {
     const isLoading = useAppSelector(selectPartialLoading)
     const hasError = useAppSelector(selectPartialHasError)
     const errorMessage = useAppSelector(selectPartialErrorMessage)
-    const items = (stay.type === 'Home') ? [{
-        title: 'Create',
-        icon: <EditOutlined/>,
-        content: <CreateStep0/>
-    },
-        {
-            title: "Location",
-            icon: <EnvironmentOutlined/>,
-            content: <CreateStep1/>
-        },
-        {
-            title: 'Home Details',
-            icon: <HomeOutlined/>,
-            content: <CreateStep25/>
-        },
-        {
-            title: 'Images',
-            icon: <PictureOutlined/>,
-            content: <CreateStep2/>
-        },
-        {
-            title: 'Rules',
-            icon: <BookOutlined/>,
-            content: <CreateStep3/>
-        }, {
-            title: 'Cancellations',
-            icon: <InfoCircleOutlined/>,
-            content: <CreateStep4/>,
-        },
-        {
-            title: 'Facilities',
-            icon: <BsActivity/>,
-            content: <CreateStep5/>
-        },
-        {
-            title: 'Complete',
-            icon: <CheckCircleOutlined/>,
-            content: <CreateStep6/>
-        }] : [
+
+    const [items, setItems] = useState([
         {
             title: 'Create',
             icon: <EditOutlined/>,
@@ -109,7 +72,12 @@ export default function Page() {
             icon: <CheckCircleOutlined/>,
             content: <CreateStep6/>
         }
-    ]
+    ])
+
+
+    useEffect(() => {
+
+    }, []);
     const next = () => {
         setCurrent(current + 1);
     };
@@ -132,8 +100,85 @@ export default function Page() {
     }
 
     useEffect(() => {
+        if (stay.type === 'Home') {
+            setItems([{
+            title: 'Create',
+            icon: <EditOutlined/>,
+            content: <CreateStep0/>
+        },
+            {
+                title: "Location",
+                icon: <EnvironmentOutlined/>,
+                content: <CreateStep1/>
+            },
+            {
+                title: 'Home Details',
+                icon: <HomeOutlined/>,
+                content: <CreateStep25/>
+            },
+            {
+                title: 'Images',
+                icon: <PictureOutlined/>,
+                content: <CreateStep2/>
+            },
+            {
+                title: 'Rules',
+                icon: <BookOutlined/>,
+                content: <CreateStep3/>
+            }, {
+                title: 'Cancellations',
+                icon: <InfoCircleOutlined/>,
+                content: <CreateStep4/>,
+            },
+            {
+                title: 'Facilities',
+                icon: <BsActivity/>,
+                content: <CreateStep5/>
+            },
+            {
+                title: 'Complete',
+                icon: <CheckCircleOutlined/>,
+                content: <CreateStep6/>
+            }] )} else {
+            setItems( [
+                {
+                    title: 'Create',
+                    icon: <EditOutlined/>,
+                    content: <CreateStep0/>
+                },
 
-    }, []);
+                {
+                    title: "Location",
+                    icon: <EnvironmentOutlined/>,
+                    content: <CreateStep1/>
+                },
+                {
+                    title: 'Images',
+                    icon: <PictureOutlined/>,
+                    content: <CreateStep2/>
+                },
+                {
+                    title: 'Rules',
+                    icon: <BookOutlined/>,
+                    content: <CreateStep3/>
+                }, {
+                    title: 'Cancellations',
+                    icon: <InfoCircleOutlined/>,
+                    content: <CreateStep4/>,
+                },
+                {
+                    title: 'Facilities',
+                    icon: <BsActivity/>,
+                    content: <CreateStep5/>
+                },
+                {
+                    title: 'Complete',
+                    icon: <CheckCircleOutlined/>,
+                    content: <CreateStep6/>
+                }
+            ])
+        }
+    }, [stay.type]);
     return <div className={'pt-4 pb-10 px-4 md:px-10'}>
         <div className={'flex flex-col justify-center items-center w-full h-full'}>
             {isLoading ? <Card className={'md:max-w-screen-md xl:max-w-screen-lg w-full aspect-20/7 p-0'}>

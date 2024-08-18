@@ -1,18 +1,18 @@
 'use client'
 import React, {useEffect, useState} from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet" ;
 import "leaflet/dist/leaflet.css";
-import L, { LatLngTuple } from "leaflet";
+import  { LatLngTuple } from "leaflet";
 import { useAppSelector, useAppDispatch } from "@/hooks/hooks";
 import { updateLocation, selectPartialStay } from "@/slices/createStaySlice";
 import axios from "axios";
-
-// Fix default icon issues in Leaflet
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-    iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-});
+//
+// // Fix default icon issues in Leaflet
+// L.Icon.Default.mergeOptions({
+//     iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+//     iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+//     shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+// });
 
 export default function MapWithMarker() {
     const dispatch = useAppDispatch();
