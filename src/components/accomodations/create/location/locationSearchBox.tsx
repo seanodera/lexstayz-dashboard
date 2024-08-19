@@ -48,7 +48,7 @@ export default function LocationSearchBox() {
         }
 
         try {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+            const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${query}`);
             const sortedResults = response.data.sort((a: Location, b: Location) => {
                 const aMatches = a.display_name.includes(currentCountry);
                 const bMatches = b.display_name.includes(currentCountry);
@@ -70,20 +70,24 @@ export default function LocationSearchBox() {
         debouncedFetchSuggestions(query);
     }, [query, debouncedFetchSuggestions]);
 
-    const handleSelect = (location: SelectedLocation) => {
+    const handleSelect = (location: any) => {
         const { lat, lon, display_name } = location;
-
+        console.log(location);
         if (display_name === 'none') {
             handleCannotFindAddress();
         } else {
-            const [street, city, district, country] = display_name.split(',').map(part => part.trim());
+
+            let address = location.address;
             const locationData = {
-                street,
-                city,
-                district,
-                country: country || currentCountry,
+                street: address.road,
+                city: address.city,
+                district: address.town,
+                country: address.country || currentCountry,
+                zipCode: address.postcode,
+                street2: address.suburb,
                 latitude: lat ? parseFloat(lat) : null,
                 longitude: lon ? parseFloat(lon) : null,
+                fullAddress: location.display_name,
             };
             setSelected(location);
             dispatch(updateLocation(locationData));

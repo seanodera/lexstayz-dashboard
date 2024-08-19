@@ -17,6 +17,15 @@ export default function LocationForm() {
     console.log(location)
     return (
         <Fieldset className={'grid grid-cols-1 md:grid-cols-2 gap-8 mt-4'}>
+
+            <Field>
+                <Label className={'text-gray-500 font-bold mb-0'}>Street Address</Label>
+                <Input
+                    className={'w-full'}
+                    value={location.street}
+                    onChange={(e) => dispatch(updateLocation({ street: e.target.value }))}
+                />
+            </Field>
             <Field>
                 <Label className={'text-gray-500 font-bold mb-0'}>Street Address 2</Label>
                 <Input
