@@ -90,12 +90,15 @@ export default function Page() {
 
 
 
-        dispatch(uploadStayAsync()).then((action: any) => {
+        dispatch(uploadStayAsync()).then((action) => {
+            console.log(action)
             if (action.meta.requestStatus === 'fulfilled') {
-
+                message.success('Processing complete!')
+                router.push('/accommodations');
+            } else {
+                message.error('An error occurred')
             }
-            message.success('Processing complete!')
-            router.push('/accommodations');
+
         })
     }
 

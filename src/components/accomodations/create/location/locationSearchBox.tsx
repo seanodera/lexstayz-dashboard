@@ -79,14 +79,14 @@ export default function LocationSearchBox() {
 
             let address = location.address;
             const locationData = {
-                street: address.road,
-                city: address.city,
-                district: address.town,
+                street: address.road || '',
+                city: address.city || '',
+                district: address.town || address.village || '',
                 country: address.country || currentCountry,
-                zipCode: address.postcode,
-                street2: address.suburb,
-                latitude: lat ? parseFloat(lat) : null,
-                longitude: lon ? parseFloat(lon) : null,
+                zipCode: address.postcode || '',
+                street2: address.suburb || '',
+                latitude: lat ? parseFloat(lat) : 0,
+                longitude: lon ? parseFloat(lon) : 0,
                 fullAddress: location.display_name,
             };
             setSelected(location);
