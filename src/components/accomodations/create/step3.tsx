@@ -45,27 +45,27 @@ export default function CreateStep3() {
     return <Card>
         <h2>Accommodation Rules</h2>
         <div>
-            <div className={'flex gap-8 mt-4'}>
+            <div className={'grid grid-cols-2 gap-8 mt-4'}>
                 <div>
                     <h3 className={'text-nowrap'}>Check In Time</h3>
-                    <TimePicker format={'HH:mm'} value={dayjs(checkInTime, 'HH:mm')}
+                    <TimePicker format={'HH:mm'} value={dayjs(stay.checkInTime, 'HH:mm')}
                                 onChange={(_value, timeString) => setCheckInTime(timeString.toString())}/>
                 </div>
                 <div>
                     <h3 className={'text-nowrap'}>Check Out Time</h3>
-                    <TimePicker format={'HH:mm'} value={dayjs(checkOutTime, 'HH:mm')}
+                    <TimePicker format={'HH:mm'} value={dayjs(stay.checkOutTime, 'HH:mm')}
                                 onChange={(_value, timeString) => setCheckOutTime(timeString.toString())}/>
                 </div>
             </div>
             <Fieldset className={'grid grid-cols-1 md:grid-cols-2 gap-8'}>
                 <Field>
                     <Label className={'text-gray-500 font-bold mb-0'}>Age Restriction</Label>
-                    <Input type={'number'} min={16} max={60} value={minAge}
+                    <Input type={'number'} min={16} max={60} value={stay.minAge}
                            onChange={(e) => setMinAge(parseInt(e.target.value))}/>
                 </Field>
                 <Field>
                     <Label className={'text-gray-500 font-bold mb-0'}>Smoking</Label>
-                    <Select value={smoking} onChange={(e) => setSmoking(e.target.value)}
+                    <Select value={stay.smoking} onChange={(e) => setSmoking(e.target.value)}
                             className={'appearance-none py-1 rounded w-full active:border-primary'}>
                         <option value="Designated Smoking Areas">Designated Smoking Areas</option>
                         <option value="No Smoking Areas">No Smoking Areas</option>
@@ -73,7 +73,7 @@ export default function CreateStep3() {
                 </Field>
                 <Field>
                     <Label className={'text-gray-500 font-bold mb-0'}>Parties</Label>
-                    <Select value={parties} onChange={(e) => setParties(e.target.value)}
+                    <Select value={stay.parties} onChange={(e) => setParties(e.target.value)}
                             className={'appearance-none py-1 rounded w-full active:border-primary'}>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
@@ -81,7 +81,7 @@ export default function CreateStep3() {
                 </Field>
                 <Field>
                     <Label className={'text-gray-500 font-bold mb-0'}>Pets</Label>
-                    <Select value={pets} onChange={(e) => setPets(e.target.value)}
+                    <Select value={stay.pets} onChange={(e) => setPets(e.target.value)}
                             className={'appearance-none py-1 rounded w-full active:border-primary'}>
                         <option value="No">No</option>
                         <option value="Yes">Yes</option>

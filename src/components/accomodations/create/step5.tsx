@@ -18,7 +18,7 @@ export default function CreateStep5() {
     return <Card>
 
         <h2 className={'font-bold'}>Accommodation Facilities Offered</h2>
-        {stay.type === 'Home'? <div className={'grid md:grid-cols-2 lg:grid-cols-4 gap-4'}>
+        {stay.type === 'Home'? <div className={'grid md:grid-cols-2 lg:grid-cols-3  gap-4'}>
             {homeFacilities.map((value, index: number) => {
                 return <div key={index} className={'flex flex-col'}>
                     <h3 className={'font-medium mb-0'}>{value.name}</h3>
@@ -42,7 +42,7 @@ export default function CreateStep5() {
                             className={'text-primary'}><IconComponent/></span> {item}</Checkbox>;
                     })}</div>;
             })}
-        </div> : <div className={'grid md:grid-cols-2 lg:grid-cols-4 gap-4'}>
+        </div> : <div className={'grid md:grid-cols-2 lg:grid-cols-3 4 gap-4'}>
             {hotelFacilities.map((value: any, index: number) => {
                 let name = Object.keys(value)[ 0 ];
 

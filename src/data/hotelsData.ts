@@ -287,7 +287,7 @@ export async function unPublishStay(stay: any): Promise<void> {
         const batch = writeBatch(firestore);
         batch.update(originStayRef, { published: false });
         batch.update(userDocRef, { published: newPublishedStays });
-        batch.delete(publicStaysRef);
+        batch.update(publicStaysRef, {published:false});
         await batch.commit();
     } catch (error) {
         console.error('Error unpublishing stay:', error);

@@ -29,7 +29,7 @@ import CreateStep25 from "@/components/accomodations/create/step25";
 
 export default function Page() {
     const stay = useAppSelector(selectPartialStay)
-    const [current, setCurrent] = useState(1);
+    const [current, setCurrent] = useState(2);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const isLoading = useAppSelector(selectPartialLoading)
@@ -186,7 +186,7 @@ export default function Page() {
                         <div className={'loader-circle h-20 w-20'}/>
                     </div>
                 </Card> :
-                <Card className={'max-w-xl w-full'}>
+                <Card className={'max-lg:max-w-xl max-w-2xl w-full'}>
                     <div className={'mb-4'}>
                         {items[current].content}
                     </div>

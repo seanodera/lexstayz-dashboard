@@ -25,7 +25,7 @@ export default function CreateStep2() {
 
     return <Card className={'md:max-w-screen-md xl:max-w-screen-lg w-full'}>
         <h2>Pick your poster</h2>
-        <div className={'grid grid-cols-1 md:grid-cols-5 gap-4 w-full'}>
+        <div className={' w-full'}>
             <div className={'md:col-span-2'} >
                 <div className={'flex justify-between items-center py-0 mb-2'}>
                     <h3 className={'font-bold mb-0 text-nowrap'}>Main Image</h3>
