@@ -4,9 +4,9 @@ import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@/hooks/hooks';
-import { selectCurrentBooking} from '@/slices/bookingSlice';
+import { selectCurrentBooking } from '@/slices/bookingSlice';
 import { BsChevronRight } from 'react-icons/bs';
-import {selectCurrentStay} from "@/slices/staySlice";
+import { selectCurrentStay } from "@/slices/staySlice";
 
 const Breadcrumbs: React.FC = () => {
     const pathname = usePathname();
@@ -31,24 +31,26 @@ const Breadcrumbs: React.FC = () => {
             } else if (prevSnippet === 'rooms' && snippet !== 'create') {
                 path = getRoomNameById(snippet);
             } else if (prevSnippet === 'reservations') {
-                path = currentBooking?.bookingCode || snippet.slice(0,6).toUpperCase();
+                path = currentBooking?.bookingCode || snippet.slice(0, 6).toUpperCase();
             }
         }
 
-        return (
-            <Breadcrumb.Item key={url}>
-                <Link href={url}>{path}</Link>
-            </Breadcrumb.Item>
-        );
+        return {
+            key: url,
+            title: <Link href={url}>{path}</Link>,
+        };
     });
 
+    const items = [
+        {
+            key: 'home',
+            title: <Link href="/">Home</Link>,
+        },
+        ...breadcrumbItems,
+    ];
+
     return (
-        <Breadcrumb className={'items-center'} separator={<BsChevronRight />}>
-            <Breadcrumb.Item key="home">
-                <Link href="/">Home</Link>
-            </Breadcrumb.Item>
-            {breadcrumbItems}
-        </Breadcrumb>
+        <Breadcrumb className="items-center" separator={<BsChevronRight />} items={items} />
     );
 };
 

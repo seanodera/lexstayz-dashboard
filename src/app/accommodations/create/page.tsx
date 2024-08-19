@@ -29,7 +29,7 @@ import CreateStep25 from "@/components/accomodations/create/step25";
 
 export default function Page() {
     const stay = useAppSelector(selectPartialStay)
-    const [current, setCurrent] = useState(2);
+    const [current, setCurrent] = useState(0);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const isLoading = useAppSelector(selectPartialLoading)
