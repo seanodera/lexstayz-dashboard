@@ -9,11 +9,12 @@ import {Field, Fieldset, Label, Select} from "@headlessui/react";
 import {countries} from "country-data";
 
 import UploadImagesComponent from "@/components/accomodations/uploadImagesComponent";
-import {fetchStaysAsync, uploadStayAsync} from "@/slices/staySlice";
+import {fetchStaysAsync, updateStayAsync, uploadStayAsync} from "@/slices/staySlice";
 import {useAppDispatch} from "@/hooks/hooks";
 import {UploadOutlined} from "@ant-design/icons";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
 import {getAmenityIcon} from "@/components/utilities/amenityIcon";
+import {updateStayFirebase} from "@/data/hotelsData";
 
 export default function ListingEditComponent({stay, partial}: { stay?: any, partial?: any }) {
     const [name, setName] = useState<string>('');
@@ -57,12 +58,73 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
 
     useEffect(() => {
         if (stay) {
-            // Populate state with stay details if editing an existing stay
+            setName(stay.name || '');
+            setType(stay.type || '');
+            setPoster(stay.poster || '');
+            setImages(stay.images || []);
+            setDescription(stay.description || '');
+            setFacilities(stay.facilities || []);
+            setCheckInTime(stay.checkInTime || '12:00');
+            setCheckOutTime(stay.checkOutTime || '14:00');
+            setCurrency(stay.currency || 'USD');
+
+            setCountry(stay.location?.country || 'Kenya');
+            setCity(stay.location?.city || '');
+            setDistrict(stay.location?.district || '');
+            setStreet(stay.location?.street || '');
+            setStreet2(stay.location?.street2 || '');
+            setZipCode(stay.location?.zipCode || '');
+
+            setMinAge(stay.minAge || 18);
+            setSmoking(stay.smoking || 'Designated Smoking Areas');
+            setParties(stay.parties || 'Yes');
+            setPets(stay.pets || 'No');
+
+            setCancellation(stay.cancellation?.cancellation || 'Free');
+            setCancellationRate(stay.cancellation?.rate || 20);
+            setCancellationTime(stay.cancellation?.time || 0);
+            setTimeSpace(stay.cancellation?.timeSpace || 'Days');
+            setPreDate(stay.cancellation?.preDate ?? true); // Using ?? to ensure boolean handling
         } else if (partial) {
-            setName(partial.name);
-            setType(partial.type);
+            setName(partial.name || '');
+            setType(partial.type || '');
         }
     }, [stay, partial]);
+    useEffect(() => {
+        if (stay) {
+            setName(stay.name || '');
+            setType(stay.type || '');
+            setPoster(stay.poster || '');
+            setImages(stay.images || []);
+            setDescription(stay.description || '');
+            setFacilities(stay.facilities || []);
+            setCheckInTime(stay.checkInTime || '12:00');
+            setCheckOutTime(stay.checkOutTime || '14:00');
+            setCurrency(stay.currency || 'USD');
+
+            setCountry(stay.location?.country || 'Kenya');
+            setCity(stay.location?.city || '');
+            setDistrict(stay.location?.district || '');
+            setStreet(stay.location?.street || '');
+            setStreet2(stay.location?.street2 || '');
+            setZipCode(stay.location?.zipCode || '');
+
+            setMinAge(stay.minAge || 18);
+            setSmoking(stay.smoking || 'Designated Smoking Areas');
+            setParties(stay.parties || 'Yes');
+            setPets(stay.pets || 'No');
+
+            setCancellation(stay.cancellation?.cancellation || 'Free');
+            setCancellationRate(stay.cancellation?.rate || 20);
+            setCancellationTime(stay.cancellation?.time || 0);
+            setTimeSpace(stay.cancellation?.timeSpace || 'Days');
+            setPreDate(stay.cancellation?.preDate ?? true); // Using ?? to ensure boolean handling
+        } else if (partial) {
+            setName(partial.name || '');
+            setType(partial.type || '');
+        }
+    }, [stay, partial]);
+
 
     async function SaveStay() {
         const newStay = {
@@ -103,6 +165,10 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                 dispatch(fetchStaysAsync());
                 router.push('/accommodations');
             });
+        } else {
+            dispatch(updateStayAsync({stay, newStay, poster, images})).then((value) => {
+                router.push('/accommodations');
+            })
         }
     }
 
@@ -278,7 +344,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                 </Col>
             </Row>
 
-            <UploadImagesComponent onImageListChange={(images) => {
+            <UploadImagesComponent images={images} onImageListChange={(images) => {
                 setImages(images)
                 console.log(images)
             }}/>

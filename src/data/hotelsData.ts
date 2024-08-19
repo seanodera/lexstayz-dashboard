@@ -87,14 +87,55 @@ export async function uploadStay(stay: any, poster: string, images: string[]): P
     }
 }
 
-/**
- * Adds a room to an existing stay and uploads associated images.
- * @param room - The room details.
- * @param stayId - The ID of the stay.
- * @param images - The array of image URLs.
- * @param poster - The poster image URL (optional).
- * @returns The updated room details.
- */
+
+export async function updateStayFirebase(stay: any, newStay: any,  poster?: string, images?: string[]) {
+    try {
+        const batch = writeBatch(firestore)
+        const user = getCurrentUser();
+        const publicStaysRef = doc(firestore, 'stays', stay.id);
+        const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
+
+
+        let finalPoster = stay.poster;
+        if (poster && stay.poster !== poster) {
+            await deleteImage(`${stay.id}/poster`);
+
+            const posterFile = await createFile({ url: poster, name: 'poster' });
+            finalPoster = await uploadImage(posterFile, `${stay.id}/poster`);
+        }
+
+        let finalImages = stay.images;
+        if (images) {
+            const oldImages = images.filter(image => stay.images.includes(image));
+            const newImages = images.filter(image => !stay.images.includes(image));
+            const removedImages:string[] = stay.images.filter((image:string) => !images.includes(image));
+
+            await Promise.all(removedImages.map(async image => {
+                const oldImagePath = new URL(image).pathname;
+                await deleteImage(oldImagePath);
+            }));
+
+            const newImageUrls = await Promise.all(newImages.map(async (image, index) => {
+                const imageFile = await createFile({ url: image, name: `image-${index}` });
+                return await uploadImage(imageFile, `${stay.id}/image-${index}`);
+            }));
+
+            finalImages = [...oldImages, ...newImageUrls];
+        }
+        const finalStay = { ...stay,...newStay, poster: finalPoster, images: finalImages };
+
+        if (stay.publishedDate){
+            batch.update(publicStaysRef, finalStay);
+        }
+        batch.update(originStayRef, finalStay);
+        await batch.commit()
+        return finalStay;
+    } catch (error){
+        console.log(error)
+    }
+}
+
+
 export async function addRoomFirebase(room: any, stayId: string, images: string[], poster?: string): Promise<any> {
     try {
         const user = getCurrentUser();
@@ -126,10 +167,7 @@ export async function addRoomFirebase(room: any, stayId: string, images: string[
     }
 }
 
-/**
- * Retrieves all stays for the current user, including their rooms.
- * @returns An array of stays with their rooms.
- */
+
 export async function getStaysFirebase(): Promise<any[]> {
     try {
         const user = getCurrentUser();
@@ -158,11 +196,7 @@ export async function getStaysFirebase(): Promise<any[]> {
     }
 }
 
-/**
- * Retrieves all rooms for a given stay.
- * @param stayId - The ID of the stay.
- * @returns An array of rooms.
- */
+
 async function getRoomsFirebase(stayId: string): Promise<any[]> {
     try {
         const user = getCurrentUser();
@@ -181,16 +215,7 @@ async function getRoomsFirebase(stayId: string): Promise<any[]> {
     }
 }
 
-/**
- * Updates a room's details, including handling new and deleted images.
- * @param room - The new room details.
- * @param previousRoom - The previous room details.
- * @param stayId - The ID of the stay.
- * @param roomId - The ID of the room.
- * @param poster - The new poster image URL (optional).
- * @param images - The new array of image URLs (optional).
- * @returns The updated room details.
- */
+
 export async function updateRoomFirebase(room: any, previousRoom: any, stayId: string, roomId: string, poster?: string, images?: string[]): Promise<any> {
     try {
         console.log('Here', 'room: ', room, 'prev: ', previousRoom, 'stay: ', stayId, 'room: ', roomId, 'poster: ', poster);

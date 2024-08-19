@@ -63,7 +63,7 @@ function FunctionButtons({stay}: { stay: any }) {
         </div>
     } else {
     return <div className={'space-x-2'}>
-        <Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button>
+        <Link href={`/accommodations/${stay.id}/edit`}><Button type={'primary'} ghost icon={<EditOutlined/>} size={'large'}>Edit</Button></Link>
         {stay.type === 'Hotel' && <Link href={`/accommodations/${stay.id}/rooms/create`}><Button type={'primary'}
                                                                         icon={<PlusCircleOutlined/>}
                                                                         size={'large'}> Add

@@ -6,7 +6,7 @@ import {
     updateRoomFirebase,
     publishStayFirebase,
     unPublishStay,
-    deleteStay
+    deleteStay, updateStayFirebase
 } from "@/data/hotelsData";
 import { Stay } from "@/lib/types";
 
@@ -68,6 +68,15 @@ export const updateRoomAsync = createAsyncThunk(
         return { room: updated, stayId };
     }
 );
+
+export const updateStayAsync = createAsyncThunk(
+    'stay/updateStay', async ({stay, newStay, poster, images}: {
+        stay: any, newStay: any, poster: string, images: string[]
+    }) => {
+        const updated = await updateStayFirebase(stay, newStay, poster, images)
+        return updated;
+    }
+)
 
 export const publishStayAsync = createAsyncThunk(
     'stay/publishStay',
@@ -228,6 +237,23 @@ const staySlice = createSlice({
                 state.stays = state.stays.filter((stay) => stay.id !== action.payload);
             })
             .addCase(deleteStayAsync.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.error.message || 'Failed to delete stay';
+            })
+            .addCase(updateStayAsync.pending, (state) => {
+                state.isLoading = true;
+                state.hasError = false;
+                state.errorMessage = '';
+            })
+            .addCase(updateStayAsync.fulfilled, (state, action) => {
+                state.isLoading = false
+                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
+                if (stayIndex !== -1) {
+                    state.stays[stayIndex] = action.payload;
+                }
+            })
+            .addCase(updateStayAsync.rejected, (state, action) => {
                 state.isLoading = false;
                 state.hasError = true;
                 state.errorMessage = action.error.message || 'Failed to delete stay';
