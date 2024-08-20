@@ -3,9 +3,11 @@ import {refundBooking} from "@/data/bookingsData";
 import {getCurrentUser} from "@/data/hotelsData";
 import {writeBatch} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
-import {doc} from "firebase/firestore";
+import {collection, doc, getDoc} from "firebase/firestore";
 import {RootState} from "@/data/store";
 import dayjs from "dayjs";
+import {batch} from "react-redux";
+import {addDays} from "date-fns";
 
 
 
@@ -20,6 +22,9 @@ export const updateBookingStatusAsync = createAsyncThunk(
             const batch = writeBatch(firestore);
             const hostDoc = doc(firestore, 'hosts', user.uid, 'bookings', booking.id)
             const userDoc = doc(firestore, 'users', booking.accountId, 'bookings', booking.id)
+            const hostTransaction = doc(firestore, 'hosts', booking.hostId, 'pendingTransactions', booking.id);
+            const transactionDoc = await getDoc(hostTransaction)
+            const availableRef = collection(firestore, 'hosts',user.uid, 'availableTransactions')
 
             if (status === 'Rejected' || status === 'Canceled'){
                 if (booking.isConfirmed) {
@@ -51,15 +56,49 @@ export const updateBookingStatusAsync = createAsyncThunk(
                                     date = dayjs(booking.checkInDate).add(cancellation.time, 'hours')
                                 }
                             }
+                            if (transactionDoc.exists()){
+                                batch.delete(hostTransaction)
+                            }
                             if (date.isAfter(dayjs())){
                                 const amount = ((100  - cancellation.rate) /100 ) * booking.paymentData.amount
                                 await refundBooking(booking,amount)
+                                if (transactionDoc.exists()){
+                                batch.set(doc(availableRef, booking.id),{...transactionDoc,amount: (cancellation.rate /100 ) * booking.totalPrice})
+                                } else {
+                                    batch.set(doc(availableRef, booking.id),{
+                                        id: booking.id,
+                                        amount: (cancellation.rate /100 ) * booking.totalPrice,
+                                        currency: 'USD',
+                                        paymentData: booking.paymentData,
+                                        date: booking.createdAt,
+                                        availableDate: date,
+                                    })
+                                }
                             } else {
                                 await refundBooking(booking)
                             }
                         }
 
                     }
+                }
+            }
+
+            if (transactionDoc.exists()) {
+                if (status === 'Canceled' || status === 'Rejected') {
+                    batch.delete(hostTransaction)
+                } else {
+
+                }
+            } else {
+                if (status === 'Confirmed') {
+                    batch.set(hostTransaction, {
+                        id: booking.id,
+                        amount: booking.totalPrice,
+                        currency: 'USD',
+                        paymentData: booking.paymentData,
+                        date: booking.createdAt,
+                        availableDate: addDays(booking.checkOutDate, 3).toISOString(),
+                    })
                 }
             }
             batch.update(hostDoc, {status: status, acceptedAt: new Date().toString()})
