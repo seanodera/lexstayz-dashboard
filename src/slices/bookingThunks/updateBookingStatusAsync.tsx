@@ -5,6 +5,7 @@ import {writeBatch} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
 import {doc} from "firebase/firestore";
 import {RootState} from "@/data/store";
+import dayjs from "dayjs";
 
 
 
@@ -35,7 +36,27 @@ export const updateBookingStatusAsync = createAsyncThunk(
                         if (stay.cancellation.cancellation === 'Free'){
                             await refundBooking(booking)
                         } else if (stay.cancellation.cancellation === 'Other') {
-
+                            const cancellation = stay.cancellation
+                            let date = dayjs()
+                            if (cancellation.preDate){
+                                if (cancellation.timeSpace === 'Days'){
+                                    date = dayjs(booking.checkInDate).subtract(cancellation.time, 'days')
+                                } else if (cancellation.timeSpace === 'Hours'){
+                                    date = dayjs(booking.checkInDate).subtract(cancellation.time, 'hours')
+                                }
+                            } else {
+                                if (cancellation.timeSpace === 'Days'){
+                                    date = dayjs(booking.checkInDate).add(cancellation.time, 'days')
+                                } else if (cancellation.timeSpace === 'Hours'){
+                                    date = dayjs(booking.checkInDate).add(cancellation.time, 'hours')
+                                }
+                            }
+                            if (date.isAfter(dayjs())){
+                                const amount = ((100  - cancellation.rate) /100 ) * booking.paymentData.amount
+                                await refundBooking(booking,amount)
+                            } else {
+                                await refundBooking(booking)
+                            }
                         }
 
                     }

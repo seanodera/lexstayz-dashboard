@@ -7,12 +7,14 @@ type Data = {
 };
 
 export async function POST(req: NextRequest) {
-    const { reference } = await req.json();
+    const { reference, amount } = await req.json();
     const secretKey = process.env.PAYSTACK_SECRET_KEY as string;
 
     try {
+
         const response = await axios.post(`https://api.paystack.co/refund`,{
             transaction: reference,
+            amount
         } ,{
             headers: {
                 Authorization: `Bearer ${secretKey}`,

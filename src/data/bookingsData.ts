@@ -120,7 +120,12 @@ export async function getBookings(page: number, limitNum: number, last: string |
 //     }
 // }
 
-export async function refundBooking(booking: any) {
-    const response = await axios.post('/api/createRefund', {reference: booking.id})
+export async function refundBooking(booking: any, amount?: number) {
+    let response;
+   if (amount){
+       response = await axios.post('/api/createRefund', {reference: booking.id, amount: amount * 100})
+   } else {
+     response = await axios.post('/api/createRefund', {reference: booking.id})
+   }
     return response.data;
 }
