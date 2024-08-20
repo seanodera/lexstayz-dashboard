@@ -28,9 +28,10 @@ export const updateBookingStatusAsync = createAsyncThunk(
 
             if (status === 'Rejected' || status === 'Canceled'){
                 if (booking.isConfirmed) {
-                    const stay = stayState.stays.find((stay) => stay.id === booking.stayId);
+                    const stay = stayState.stays.find((stay) => stay.id === booking.accommodationId);
+                    console.log(stay)
                     if (stay){
-                        const stayDoc = doc(firestore, 'stays', booking.stayId);
+                        const stayDoc = doc(firestore, 'stays', booking.accommodationId);
                         batch.update(stayDoc, {status: status});
                         if (status === 'Rejected' || status === 'Canceled') {
                             const newStay = {...stay};
@@ -43,6 +44,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
                         } else if (stay.cancellation.cancellation === 'Other') {
                             const cancellation = stay.cancellation
                             let date = dayjs()
+                            console.log(cancellation)
                             if (cancellation.preDate){
                                 if (cancellation.timeSpace === 'Days'){
                                     date = dayjs(booking.checkInDate).subtract(cancellation.time, 'days')
@@ -59,8 +61,10 @@ export const updateBookingStatusAsync = createAsyncThunk(
                             if (transactionDoc.exists()){
                                 batch.delete(hostTransaction)
                             }
-                            if (date.isAfter(dayjs())){
+                            console.log(date)
+                            if (date.isBefore(dayjs())){
                                 const amount = ((100  - cancellation.rate) /100 ) * booking.paymentData.amount
+                                console.log(amount)
                                 await refundBooking(booking,amount)
                                 if (transactionDoc.exists()){
                                 batch.set(doc(availableRef, booking.id),{...transactionDoc,amount: (cancellation.rate /100 ) * booking.totalPrice})
@@ -71,10 +75,11 @@ export const updateBookingStatusAsync = createAsyncThunk(
                                         currency: 'USD',
                                         paymentData: booking.paymentData,
                                         date: booking.createdAt,
-                                        availableDate: date,
+                                        availableDate: date.toISOString(),
                                     })
                                 }
                             } else {
+                                console.log('full')
                                 await refundBooking(booking)
                             }
                         }

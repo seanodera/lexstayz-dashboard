@@ -9,7 +9,7 @@ type Data = {
 export async function POST(req: NextRequest) {
     const { reference, amount } = await req.json();
     const secretKey = process.env.PAYSTACK_SECRET_KEY as string;
-
+console.log(amount)
     try {
 
         const response = await axios.post(`https://api.paystack.co/refund`,{

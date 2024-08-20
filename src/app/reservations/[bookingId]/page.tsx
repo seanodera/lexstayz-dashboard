@@ -45,11 +45,6 @@ export default function Page() {
         e.preventDefault()
         try {
 
-            if (status === 'Rejected' || status === 'Canceled') {
-                if (booking.isConfirmed) {
-                    await refundBooking(booking)
-                }
-            }
             dispatch(updateBookingStatusAsync({status: status, booking: booking})).then((value: any) => {
                 messageApi.success('Status updated successfully')
                 console.log(value)
