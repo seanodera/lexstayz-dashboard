@@ -20,9 +20,7 @@ interface BookingState {
     cartTotal: number;
     bookings: any[];
     currentBooking: any;
-    dates: Dates;
-    balance: Balance;
-    withdraw: Withdraw;
+    pendingTransactions:any[]
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
@@ -38,22 +36,7 @@ const initialState: BookingState = {
     bookings: [],
     currentBooking: {},
     bookingCount: 0,
-    dates: {
-        startDate: new Date().toDateString(),
-        endDate: addDays(new Date(), 1).toDateString(),
-        length: 1,
-    },
-    balance: {
-        available: 65784,
-        pending: 34286,
-    },
-    withdraw: {
-        account: {
-            method: 'Pryzapay',
-            account: ''
-        },
-        withdrawals: []
-    },
+    pendingTransactions: [],
     isLoading: false,
     hasError: false,
     errorMessage: '',
@@ -124,6 +107,7 @@ export const updateBookingCount = createAsyncThunk(
     }
 )
 
+
 const bookingSlice = createSlice({
     name: "booking",
     initialState,
@@ -134,11 +118,7 @@ const bookingSlice = createSlice({
         updateCart: (state, action: PayloadAction<any[]>) => {
             state.cart = action.payload;
         },
-        updateDates: (state, action: PayloadAction<Dates>) => {
-            state.dates.startDate = action.payload.startDate;
-            state.dates.endDate = action.payload.endDate;
-            state.dates.length = differenceInDays(new Date(state.dates.endDate), new Date(state.dates.startDate));
-        },
+
         setBookings: (state, action: PayloadAction<any[]>) => {
             state.bookings = action.payload;
         },
@@ -146,12 +126,7 @@ const bookingSlice = createSlice({
             const currentBooking = state.bookings.find((booking) => booking.id.toString() === action.payload.toString());
             state.currentBooking = currentBooking ? currentBooking : {};
         },
-        setWithdraw: (state, action: PayloadAction<Withdraw>) => {
-            state.withdraw = action.payload;
-        },
-        setBalance: (state, action: PayloadAction<Balance>) => {
-            state.balance = action.payload;
-        },
+
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
@@ -211,8 +186,7 @@ const bookingSlice = createSlice({
             }).addCase(updateBookingCount.fulfilled, (state, action) => {
             state.isLoading = false;
             state.bookingCount = action.payload.bookingCount;
-            state.balance.pending = action.payload.totalAmount;
-            state.balance.available = action.payload.averageAmount;
+
             })
             .addCase(updateBookingCount.rejected, (state, action) => {
                 state.isLoading = false
@@ -224,11 +198,8 @@ const bookingSlice = createSlice({
 export const {
     resetBooking,
     updateCart,
-    updateDates,
     setBookings,
     setCurrentBookingById,
-    setWithdraw,
-    setBalance,
     setIsLoading,
     setPage,
 } = bookingSlice.actions;
@@ -237,10 +208,8 @@ export const selectCart = (state: any) => state.booking.cart;
 export const selectDates = (state: any) => state.booking.dates;
 export const selectBookings = (state: any) => state.booking.bookings;
 export const selectCurrentBooking = (state: any) => state.booking.currentBooking;
-export const selectBalance = (state: any) => state.booking.balance;
-export const selectWithdraw = (state: any) => state.booking.withdraw;
-export const selectWithdrawals = (state: any) => state.booking.withdraw.withdrawals;
-export const selectWithdrawAccount = (state: any) => state.booking.withdraw.account;
+
+
 export const selectIsBookingLoading = (state: any) => state.booking.isLoading;
 export const selectHasError = (state: any) => state.booking.hasError;
 export const selectErrorMessage = (state: any) => state.booking.errorMessage;

@@ -7,10 +7,9 @@ import {
     fetchBookingsAsync,
     selectErrorMessage,
     selectHasError, selectIsBookingLoading,
-    setBalance, setWithdraw
+
 } from "@/slices/bookingSlice";
-import { getRandomInt } from "@/lib/utils";
-import withdrawData from "@/data/withdrawData";
+
 import { auth } from "@/lib/firebase";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { selectIsAuthenticated } from "@/slices/authenticationSlice";
@@ -18,6 +17,7 @@ import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
 import {fetchStaysAsync, selectHasRun, selectIsLoading} from "@/slices/staySlice";
 import {fetchUserChatsAsync} from "@/slices/messagingSlice";
+import {fetchPendingTransactions} from "@/slices/transactionsSlice";
 
 const { Content } = Layout;
 
@@ -39,8 +39,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
                 console.log('Function is running and hasRun: ', hasRun)
 
                 dispatch(fetchStaysAsync());
-
-
+                dispatch(fetchPendingTransactions())
                 dispatch(fetchBookingsAsync({page: 1, limit: 10}));
 
 

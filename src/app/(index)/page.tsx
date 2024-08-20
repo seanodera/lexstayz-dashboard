@@ -8,10 +8,12 @@ import BookingsPanel from "@/components/home/bookingsPanel";
 import CheckInPanel from "@/components/home/checkInPanel";
 import ReviewsPanel from "@/components/home/ReviewsPanel";
 import {useAppSelector} from "@/hooks/hooks";
-import {selectBalance} from "@/slices/bookingSlice";
+
+import {selectAvailableBalance, selectPendingBalance} from "@/slices/transactionsSlice";
 
 export default function Home() {
-    const balances = useAppSelector(selectBalance)
+    const pendingBalance = useAppSelector(selectPendingBalance)
+    const availableBalance = useAppSelector(selectAvailableBalance)
     const items = [
         {
             Icon: BookFilled,
@@ -26,13 +28,13 @@ export default function Home() {
         {
             Icon: WalletOutlined,
             name: "Pending Balance",
-            value: balances.pending,
+            value: pendingBalance,
             prefix: '$',
         },
         {
             Icon: WalletFilled,
             name: "Available Balance",
-            value: balances.available,
+            value: availableBalance,
             prefix: '$',
         }
 

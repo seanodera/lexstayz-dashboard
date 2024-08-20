@@ -4,6 +4,7 @@ import stayReducer from "@/slices/staySlice";
 import AuthenticationReducer from '@/slices/authenticationSlice'
 import createStayReducer from "@/slices/createStaySlice";
 import messagingReducer from "@/slices/messagingSlice";
+import transactionsReducer from "@/slices/transactionsSlice";
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         authentication: AuthenticationReducer,
         createStay: createStayReducer,
         stay: stayReducer,
-        messaging: messagingReducer
+        messaging: messagingReducer,
+        transactions: transactionsReducer
     }
 });
 export type RootState = ReturnType<typeof store.getState>;

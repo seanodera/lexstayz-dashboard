@@ -276,7 +276,7 @@ export async function publishStayFirebase(stay: any): Promise<void> {
         const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
         const timestamp = new Date().toString();
 
-        if (stay.published && stay.modified) {
+        if (stay.publishedDate) {
             await updateDoc(publicStaysRef, { ...stay, published: true, publishedDate: timestamp, hostId: user.uid });
         } else {
             await setDoc(publicStaysRef, { ...stay, published: true, publishedDate: timestamp, hostId: user.uid });
@@ -304,14 +304,9 @@ export async function unPublishStay(stay: any): Promise<void> {
         const firestore = getFirestore();
         const publicStaysRef = doc(firestore, 'stays', stay.id);
         const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
-        const userDocRef = doc(firestore, 'hosts', user.uid);
-        const userDoc = await getDoc(userDocRef);
-        const publishedStays = userDoc.get('published') || [];
-        const newPublishedStays = publishedStays.filter((id: string) => id !== stay.id);
 
         const batch = writeBatch(firestore);
         batch.update(originStayRef, { published: false });
-        batch.update(userDocRef, { published: newPublishedStays });
         batch.update(publicStaysRef, {published:false});
         await batch.commit();
     } catch (error) {
