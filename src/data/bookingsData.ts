@@ -97,24 +97,28 @@ export async function getBookings(page: number, limitNum: number, last: string |
 }
 
 
-export async function updateStatus(status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any) {
-    try {
-        console.log(booking, 'At status')
-        const user = getCurrentUser()
-        const batch = writeBatch(firestore);
-        const hostDoc = doc(firestore, 'hosts', user.uid, 'bookings', booking.id)
-        const userDoc = doc(firestore, 'users', booking.accountId, 'bookings', booking.id)
-        batch.update(hostDoc, {status: status, acceptedAt: new Date().toString()})
-        batch.update(userDoc, {status: status, acceptedAt: new Date().toString()})
-
-        await batch.commit();
-        let newBooking = {...booking};
-        newBooking.status = status
-        return newBooking;
-    } catch (error) {
-        console.log(error)
-    }
-}
+// export async function updateStatus(status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any) {
+//     try {
+//         console.log(booking, 'At status')
+//         const user = getCurrentUser()
+//         const batch = writeBatch(firestore);
+//         const hostDoc = doc(firestore, 'hosts', user.uid, 'bookings', booking.id)
+//         const userDoc = doc(firestore, 'users', booking.accountId, 'bookings', booking.id)
+//
+//         if (status === 'Rejected' || status === 'Canceled'){
+//
+//         }
+//         batch.update(hostDoc, {status: status, acceptedAt: new Date().toString()})
+//         batch.update(userDoc, {status: status, acceptedAt: new Date().toString()})
+//
+//         await batch.commit();
+//         let newBooking = {...booking};
+//         newBooking.status = status
+//         return newBooking;
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
 export async function refundBooking(booking: any) {
     const response = await axios.post('/api/createRefund', {reference: booking.id})

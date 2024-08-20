@@ -11,9 +11,8 @@ import {
 } from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
-import {Dates, Balance, Withdraw} from "@/lib/types";
-import {updateStatus} from "@/data/bookingsData";
-import {state} from "sucrase/dist/types/parser/traverser/base"; // Adjust the import according to your project structure
+
+import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync"; // Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -77,13 +76,6 @@ export const fetchBookingsAsync = createAsyncThunk(
     }
 );
 
-export const updateBookingStatusAsync = createAsyncThunk(
-    'booking/updateStatus',
-    async ({status, booking}: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }) => {
-        let updated = await updateStatus(status, booking);
-        return {booking: updated, status};
-    }
-);
 
 export const updateBookingCount = createAsyncThunk(
     'booking/updateBookingCount',
@@ -195,6 +187,8 @@ const bookingSlice = createSlice({
     }
 });
 
+
+export {updateBookingStatusAsync}
 export const {
     resetBooking,
     updateCart,
