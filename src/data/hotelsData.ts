@@ -12,12 +12,7 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from "@firebase/storag
 import { createFile } from "@/lib/utils";
 import { getDoc } from "firebase/firestore";
 
-/**
- * Uploads an image to Firebase Storage and returns the download URL.
- * @param file - The image file to upload.
- * @param path - The storage path for the image.
- * @returns The download URL of the uploaded image.
- */
+
 export async function uploadImage(file: File, path: string): Promise<string> {
     try {
         const storageRef = ref(storage, path);

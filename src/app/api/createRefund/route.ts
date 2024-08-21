@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-type Data = {
-    status: 'success' | 'error';
-    message: string;
-};
 
 export async function POST(req: NextRequest) {
     const { reference, amount } = await req.json();

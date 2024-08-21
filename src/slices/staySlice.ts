@@ -1,14 +1,15 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-    uploadStay,
-    addRoomFirebase,
-    getStaysFirebase,
-    updateRoomFirebase,
-    publishStayFirebase,
-    unPublishStay,
-    deleteStay, updateStayFirebase
-} from "@/data/hotelsData";
-import { Stay } from "@/lib/types";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+
+import {Stay} from "@/lib/types";
+import {fetchStaysAsync} from "@/slices/stayThunks/fetchStaysThunk";
+import {updateRoomAsync} from "@/slices/stayThunks/updateRoomThunk";
+import {publishStayAsync} from "@/slices/stayThunks/publishStayThunk";
+import {unPublishStayAsync} from "@/slices/stayThunks/unPublishStayThunk";
+import {deleteStayAsync} from "@/slices/stayThunks/deleteStayThunk";
+import {updateStayAsync} from "@/slices/stayThunks/updateStayThunk";
+import uploadStayAsync from "@/slices/stayThunks/uploadStayThunk";
+import {addRoomAsync} from "@/slices/stayThunks/addRoomThunk";
+
 
 interface StayState {
     stays: Stay[];
@@ -30,77 +31,77 @@ const initialState: StayState = {
     hasRun: false
 };
 
-export const uploadStayAsync = createAsyncThunk(
-    'stay/uploadStay',
-    async ({ stay, poster, images }: { stay: any, poster: string, images: string[] }) => {
-        await uploadStay(stay, poster, images);
-        return stay;
-    }
-);
-
-export const addRoomAsync = createAsyncThunk(
-    'stay/addRoom',
-    async ({ room, stayId, poster, images }: { room: any, stayId: string, poster?: string, images: string[] }) => {
-        const updated = await addRoomFirebase(room, stayId, images, poster);
-        return { room: updated, stayId };
-    }
-);
-
-export const fetchStaysAsync = createAsyncThunk(
-    'stay/fetchStays',
-    async () => {
-        const stays = await getStaysFirebase();
-        return stays;
-    }
-);
-
-export const updateRoomAsync = createAsyncThunk(
-    'stay/updateRoom',
-    async ({ room, previousRoom, stayId, roomId, poster, images }: {
-        room: any,
-        previousRoom: any,
-        stayId: string,
-        roomId: string,
-        poster?: string,
-        images?: string[]
-    }) => {
-        const updated = await updateRoomFirebase(room, previousRoom, stayId, roomId, poster, images);
-        return { room: updated, stayId };
-    }
-);
-
-export const updateStayAsync = createAsyncThunk(
-    'stay/updateStay', async ({stay, newStay, poster, images}: {
-        stay: any, newStay: any, poster: string, images: string[]
-    }) => {
-        const updated = await updateStayFirebase(stay, newStay, poster, images)
-        return updated;
-    }
-)
-
-export const publishStayAsync = createAsyncThunk(
-    'stay/publishStay',
-    async (stay: Stay) => {
-        await publishStayFirebase(stay);
-        return stay;
-    }
-);
-
-export const unPublishStayAsync  = createAsyncThunk(
-    'stay/unPublishStay',
-    async (stay: Stay) => {
-        await unPublishStay(stay);
-        return stay;
-    }
-);
-
-export const deleteStayAsync  = createAsyncThunk(
-    'stay/deleteStay',
-    async (stay: Stay) => {
-        await deleteStay(stay);
-        return stay.id;
-    }
-);
+// export const uploadStayAsync = createAsyncThunk(
+//     'stay/uploadStay',
+//     async ({ stay, poster, images }: { stay: any, poster: string, images: string[] }) => {
+//         await uploadStay(stay, poster, images);
+//         return stay;
+//     }
+// );
+//
+// export const addRoomAsync = createAsyncThunk(
+//     'stay/addRoom',
+//     async ({ room, stayId, poster, images }: { room: any, stayId: string, poster?: string, images: string[] }) => {
+//         const updated = await addRoomFirebase(room, stayId, images, poster);
+//         return { room: updated, stayId };
+//     }
+// );
+//
+// export const fetchStaysAsync = createAsyncThunk(
+//     'stay/fetchStays',
+//     async () => {
+//         const stays = await getStaysFirebase();
+//         return stays;
+//     }
+// );
+//
+// export const updateRoomAsync = createAsyncThunk(
+//     'stay/updateRoom',
+//     async ({ room, previousRoom, stayId, roomId, poster, images }: {
+//         room: any,
+//         previousRoom: any,
+//         stayId: string,
+//         roomId: string,
+//         poster?: string,
+//         images?: string[]
+//     }) => {
+//         const updated = await updateRoomFirebase(room, previousRoom, stayId, roomId, poster, images);
+//         return { room: updated, stayId };
+//     }
+// );
+//
+// export const updateStayAsync = createAsyncThunk(
+//     'stay/updateStay', async ({stay, newStay, poster, images}: {
+//         stay: any, newStay: any, poster: string, images: string[]
+//     }) => {
+//         const updated = await updateStayFirebase(stay, newStay, poster, images)
+//         return updated;
+//     }
+// )
+//
+// export const publishStayAsync = createAsyncThunk(
+//     'stay/publishStay',
+//     async (stay: Stay) => {
+//         await publishStayFirebase(stay);
+//         return stay;
+//     }
+// );
+//
+// export const unPublishStayAsync  = createAsyncThunk(
+//     'stay/unPublishStay',
+//     async (stay: Stay) => {
+//         await unPublishStay(stay);
+//         return stay;
+//     }
+// );
+//
+// export const deleteStayAsync  = createAsyncThunk(
+//     'stay/deleteStay',
+//     async (stay: Stay) => {
+//         await deleteStay(stay);
+//         return stay.id;
+//     }
+// );
 
 const staySlice = createSlice({
     name: "stay",
@@ -126,12 +127,11 @@ const staySlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder
-            .addCase(uploadStayAsync.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
-                state.errorMessage = '';
-            })
+        builder .addCase(uploadStayAsync.pending, (state) => {
+            state.isLoading = true;
+            state.hasError = false;
+            state.errorMessage = '';
+        })
             .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
                 state.isLoading = false;
                 state.stays.push(action.payload);
@@ -183,7 +183,7 @@ const staySlice = createSlice({
             .addCase(updateRoomAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId);
-                const stay = state.stays[stayIndex];
+                const stay = state.stays[ stayIndex ];
                 if (stay) {
                     stay.rooms = stay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
                 }
@@ -202,7 +202,7 @@ const staySlice = createSlice({
                 state.isLoading = false;
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
-                    state.stays[stayIndex].published = true;
+                    state.stays[ stayIndex ].published = true;
                 }
             })
             .addCase(publishStayAsync.rejected, (state, action) => {
@@ -219,7 +219,7 @@ const staySlice = createSlice({
                 state.isLoading = false;
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
-                    state.stays[stayIndex].published = false;
+                    state.stays[ stayIndex ].published = false;
                 }
             })
             .addCase(unPublishStayAsync.rejected, (state, action) => {
@@ -250,7 +250,7 @@ const staySlice = createSlice({
                 state.isLoading = false
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
-                    state.stays[stayIndex] = action.payload;
+                    state.stays[ stayIndex ] = action.payload;
                 }
             })
             .addCase(updateStayAsync.rejected, (state, action) => {
@@ -260,6 +260,9 @@ const staySlice = createSlice({
             });
     }
 });
+
+export {updateStayAsync, deleteStayAsync, unPublishStayAsync, publishStayAsync, fetchStaysAsync, updateRoomAsync, uploadStayAsync,
+addRoomAsync }
 
 export const {
     setCurrentStay,

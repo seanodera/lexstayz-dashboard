@@ -24,8 +24,9 @@ import {bedTypes, hotelFacilities} from "@/data/hotelsDataLocal";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 
 import {
-    selectCurrentStay,
     addRoomAsync,
+    selectCurrentStay,
+
     updateRoomAsync
 } from "@/slices/staySlice";
 import {useRouter} from "next/navigation";
