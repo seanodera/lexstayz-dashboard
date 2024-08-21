@@ -62,7 +62,7 @@ export const fetchPendingTransactions = createAsyncThunk(
             let pending = countData.data().totalAmount
             let transactions = pendingTransactions.filter((value) => {
                 const availableDate = new Date(value.availableDate)
-
+                console.log(value)
                 if (isAfter( today, availableDate)){
                     batch.set(doc(availableRef, value.id),value)
                     batch.delete(doc(pendingRef, value.id))
@@ -70,8 +70,8 @@ export const fetchPendingTransactions = createAsyncThunk(
                 }
                 return !isAfter( today, availableDate)
             })
-            // await batch.commit()
-            if (transactions.length !== pendingTransactions.length){
+            await batch.commit()
+            if (transactions.length !== countData.data().countOfDocs){
                 dispatch(fetchPendingTransactions)
             }
             const availableSnapshot = await getDocs(availableRef)
@@ -82,7 +82,7 @@ export const fetchPendingTransactions = createAsyncThunk(
                 averageAmount: average('amount')
 
             })
-            return {pendingTransactions: transactions, pendingBalance: countData.data().totalAmount,availableTransactions: availableTransactions, availableBalance: availableData.data().totalAmount };
+            return {pendingTransactions: transactions, pendingBalance: pending,availableTransactions: availableTransactions, availableBalance: availableData.data().totalAmount };
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);

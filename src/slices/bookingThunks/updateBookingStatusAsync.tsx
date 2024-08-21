@@ -11,7 +11,7 @@ import {addDays} from "date-fns";
 
 export const updateBookingStatusAsync = createAsyncThunk(
     'booking/updateStatus',
-    async ({status, booking}: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected', booking: any }, {
+    async ({status, booking}: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected' | 'Completed', booking: any }, {
         getState,
         rejectWithValue
     }) => {
@@ -28,7 +28,10 @@ export const updateBookingStatusAsync = createAsyncThunk(
             const availableRef = collection(firestore, 'hosts', user.uid, 'availableTransactions')
             let paymentData = booking.paymentData;
             if (status === 'Rejected' || status === 'Canceled') {
-                if (booking.isConfirmed) {
+                if (booking.status === 'Pending' && booking.isConfirmed){
+                    paymentData = await refundBooking(booking)
+                }
+                else if (booking.isConfirmed) {
                     const stay = stayState.stays.find((stay) => stay.id === booking.accommodationId);
                     console.log(stay)
                     if (stay) {
