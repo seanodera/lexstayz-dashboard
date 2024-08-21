@@ -44,7 +44,7 @@ export default function BookingsPanel() {
                  </Dropdown>}>
         <Table scroll={{x: true}} dataSource={displayBookings.slice(0, 5)} pagination={false}>
             <Column title={'Guest'} dataIndex={['user']} render={(value, record: any, index) => {
-                console.log(index)
+
                 return <div key={index}>
                     <div className={'font-medium'}>{value.firstName} {value.lastName}</div>
                     <div className={'text-gray-500'}>{value.email}</div>

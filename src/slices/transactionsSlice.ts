@@ -6,6 +6,7 @@ import {state} from "sucrase/dist/types/parser/traverser/base";
 import {RootState} from "@/data/store";
 import {writeBatch} from "@firebase/firestore";
 import dayjs from "dayjs";
+import {isAfter} from "date-fns";
 
 interface Transaction {
     id: string,
@@ -48,6 +49,7 @@ export const fetchPendingTransactions = createAsyncThunk(
             const pendingSnapshot = await getDocs(pendingRef);
             const pendingTransactions = pendingSnapshot.docs.map((doc) => doc.data());
 
+
             let countData = await getAggregateFromServer(pendingRef, {
                 countOfDocs: count(),
                 totalAmount: sum('amount'),
@@ -57,16 +59,18 @@ export const fetchPendingTransactions = createAsyncThunk(
             const today = new Date()
 
             const batch = writeBatch(firestore)
-
+            let pending = countData.data().totalAmount
             let transactions = pendingTransactions.filter((value) => {
-                if (dayjs(value.availableDate).isAfter(today)){
+                const availableDate = new Date(value.availableDate)
+
+                if (isAfter( today, availableDate)){
                     batch.set(doc(availableRef, value.id),value)
                     batch.delete(doc(pendingRef, value.id))
-
+                    pending = pending - value.amount;
                 }
-                return !dayjs(value.availableDate).isAfter(today)
+                return !isAfter( today, availableDate)
             })
-            await batch.commit()
+            // await batch.commit()
             if (transactions.length !== pendingTransactions.length){
                 dispatch(fetchPendingTransactions)
             }
