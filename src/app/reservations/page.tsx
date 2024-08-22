@@ -149,7 +149,7 @@ export default function BookingPage() {
                         dataIndex="totalPrice"
                         render={(value, record, index) => {
                             console.log(record)
-                            return record.currency + toMoneyFormat(value, {});
+                            return 'USD' + toMoneyFormat(value, {});
                         }}
                         sorter={(a: any, b: any) => a.totalPrice - b.totalPrice}
                     />

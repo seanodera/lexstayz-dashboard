@@ -4,7 +4,7 @@ import {PlusOutlined} from "@ant-design/icons";
 
 
 export default function ListingDescription({stay}: { stay: any }) {
-
+    console.log(stay)
     return <Card className={'rounded-2xl gap-y-8 space-y-16'}>
         <div>
             <Row gutter={[16, 16]}>
@@ -89,9 +89,31 @@ export default function ListingDescription({stay}: { stay: any }) {
                 </div>
             </div>
         </div>
-        <div className={'mt-4'}>
-            <h3 className={'font-bold'}>Description</h3>
-            <p>{stay.description}</p>
+        <h3 className={'font-bold mt-4'}>Description</h3>
+        <div className={'grid grid-cols-2 gap-4'}>
+            <div className={''}>
+                <p>{stay.description}</p>
+            </div>
+            <div className={''}>
+                <div className={'grid grid-cols-2 gap-2'}>
+                    <div>
+                        <h4 className={'text-gray-500 font-bold mb-0'}>Price Per Night</h4>
+                        <span>{stay.currency} {stay.price}</span>
+                    </div>
+                    <div>
+                        <h4 className={'text-gray-500 font-bold mb-0'}>Bathrooms</h4>
+                        <span className={'text-nowrap'}>{stay.bathrooms}</span>
+                    </div>
+                    <div>
+                        <h4 className={'text-gray-500 font-bold mb-0'}>Beds</h4>
+                        <span>{stay.beds}</span>
+                    </div>
+                    <div>
+                        <h4 className={'text-gray-500 font-bold mb-0'}>Bedrooms</h4>
+                        <span>{stay.bedrooms}</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div className={'mt-4'}>
             <h3 className={'font-bold'}>Facilities</h3>
