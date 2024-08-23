@@ -8,7 +8,7 @@ import {
     writeBatch
 } from "@firebase/firestore";
 import { auth, firestore, storage } from "@/lib/firebase";
-import { createFile } from "@/lib/utils";
+import {createFile, extractFirebaseStoragePath} from "@/lib/utils";
 import { getDoc } from "firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {deleteImage, getCurrentUser, uploadImage} from "@/data/hotelsData";
@@ -48,7 +48,7 @@ export const updateRoomAsync = createAsyncThunk(
                 const removedImages:string[] = previousRoom.images.filter((image:string) => !images.includes(image));
 
                 await Promise.all(removedImages.map(async image => {
-                    const oldImagePath = new URL(image).pathname;
+                    const oldImagePath = extractFirebaseStoragePath(image);
                     await deleteImage(oldImagePath);
                 }));
 

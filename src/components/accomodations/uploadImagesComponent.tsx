@@ -29,6 +29,7 @@ const UploadImagesComponent = ({ onImageListChange, images = [] }: { images?: st
     const handleChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
         setFileList(newFileList);
         const imageUrls = newFileList.map(file => file.url || URL.createObjectURL(file.originFileObj as File));
+        console.log(fileList)
         onImageListChange(imageUrls);
     };
 

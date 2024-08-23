@@ -185,3 +185,22 @@ export async function getServerTime() {
 
     }
 }
+
+export function extractFirebaseStoragePath(downloadURL: string): string  {
+    try {
+
+        const url = new URL(downloadURL);
+        const pathname = url.pathname;
+
+
+        const pathParts = pathname.split('/o/');
+        if (pathParts.length > 1) {
+            const encodedPath = pathParts[1];
+            return decodeURIComponent(encodedPath);
+        }
+        return '';
+    } catch (error) {
+        console.error("Invalid Firebase Storage URL", error);
+        throw Error("Invalid Firebase Storage URL")
+    }
+}
