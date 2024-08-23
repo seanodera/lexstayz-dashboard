@@ -3,7 +3,7 @@
 import {usePathname} from "next/navigation";
 import React from "react";
 import Link from "next/link";
-import {Avatar, Layout, Menu} from "antd";
+import {Avatar, Button, Layout, Menu} from "antd";
 import {
     DashboardOutlined,
     BookOutlined,
@@ -80,39 +80,37 @@ const renderMenuItem = (item: any) => (
 export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, setCollapsed: any}) {
     const pathname = usePathname();
     const currentUser = useAppSelector(selectCurrentUser);
-    return <Layout.Sider className={'h-screen flex flex-col flex-1 w-full max-w-60 max-md:hidden bg-white z-10'}  theme={'light'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
+    return <Layout.Sider className={`h-screen flex flex-col flex-1  max-md:hidden z-10`} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
         <div className={'flex flex-col justify-between h-screen pb-8  w-full'}>
             <div className={' w-full'}>
                 <Link href={'/'}
-                      className={`flex items-center gap-2 px-2 py-2 text-dark ${collapsed && 'justify-center'}`}>
+                      className={`flex items-center text-white gap-2 px-2 py-2 ${collapsed && 'justify-center'}`}>
                     <div className={`p-1 h-12 aspect-square bg-white bg-opacity-10 rounded-lg`}><LogoIcon
                         className={'fill-primary'}/></div>
                     <div className={`font-semibold text-lg  ${collapsed ? 'hidden' : ''}`}>LexStayz</div>
                 </Link>
 
                 <div className={'mx-4 mb-4'}>
-                    <Input className={'rounded-lg border-0 bg-gray-200 w-full'} placeholder={'Find Anything by ID'}/>
+                    <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>
                 </div>
-                <Menu theme="light" className={'flex flex-col h-full flex-1'} mode="inline"
+                <Menu theme="dark" className={'flex flex-col h-full flex-1'} mode="inline"
                       selectedKeys={[pathname.split('/')[ 1 ]]} items={
                     menuItems.map(item => renderMenuItem(item))
                 }>
                 </Menu>
             </div>
 
-            <div className={' w-full'}>
+            <div className={` ${!collapsed && 'w-full'} mb-6`}>
                 <div
-                    className={'m-2 bg-[#f5f5f5] flex flex-col justify-center items-center rounded-lg aspect-video gap-3'}>
-                    <div className={'bg-primary text-white p-1 w-min rounded-full text-xl aspect-square text-center'}>
-                        <PlusOutlined/>
-                    </div>
-                    <div className={'text-dark text-sm'}>Create New Accommodation</div>
+                    className={`m-2  flex flex-col justify-center items-center rounded-lg group hover:border-primary hover:border-solid ${!collapsed && 'aspect-video bg-[#f5f5f5] bg-opacity-40'} gap-3`}>
+                    <Button type={'primary'} icon={ <PlusOutlined/>} shape={'circle'}/>
+                    <div className={`text-current text-sm ${collapsed && 'hidden'}`}>Create Stay</div>
                 </div>
-                <div className={'flex text-dark gap-1 items-center mx-2 mt-6'}>
+                <div className={'flex text-current gap-1 items-center mt-6 justify-center'}>
                     <Avatar shape="circle" className="bg-primary capitalize " >
                         {currentUser?.accountType === 'Individual' ? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}
                     </Avatar>
-                    <div className={''}>
+                    <div className={`${collapsed && 'hidden'}`}>
                         <h4 className={'mb-0 text-sm font-medium'}>{currentUser?.firstName} {currentUser?.lastName}</h4>
                         <span className={'text-gray-500 text-xs'}>{currentUser?.email}</span>
                     </div>

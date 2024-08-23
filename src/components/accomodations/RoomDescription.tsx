@@ -51,7 +51,7 @@ export default function RoomDescription({room}: any){
                 <h3 className={'font-bold'}>Details</h3>
                 <div className={'grid grid-cols-2 gap-y-1'}>
                     <h3 className={'mb-0 font-medium text-gray-500'}>Rate</h3>
-                    <h3 className={'mb-0 text-primary'}>$ {toMoneyFormat(room.pric)} / night</h3>
+                    <h3 className={'mb-0 text-primary'}>$ {toMoneyFormat(room.price)} / night</h3>
                     {/*<h3 className={'mb-0 font-medium text-gray-500'}>Discounted</h3>*/}
                     {/*<h3 className={'mb-0 capitalize'}>{room.discounted.toString()}</h3>*/}
                     <h3 className={'mb-0 font-medium text-gray-500'}>Available</h3>
