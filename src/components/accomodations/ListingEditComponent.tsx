@@ -165,8 +165,8 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                 dispatch(fetchStaysAsync());
                 router.push('/accommodations');
             });
-        } else {
-            dispatch(updateStayAsync({stay, newStay, poster, images})).then((value) => {
+        } else if (stay) {
+            dispatch(updateStayAsync({stay, newStay: {...newStay, location: {...stay.location, ...newStay.location}}, poster, images})).then((value) => {
                 router.push('/accommodations');
             })
         }
