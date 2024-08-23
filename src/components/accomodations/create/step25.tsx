@@ -39,7 +39,7 @@ export default function CreateStep25() {
                 <InputNumber value={stay.beds} onChange={(value) => setBeds(value || 0)} min={1}/>
             </Form.Item>
             <Form.Item label={'Baths'} className={'font-medium'} >
-                <InputNumber min={0} value={stay.bathrooms} onChange={(value) => setBathrooms(bathrooms)}/>
+                <InputNumber min={0} value={stay.bathrooms} onChange={(value) => setBathrooms(value)}/>
             </Form.Item>
         </Form>
     </Card>
