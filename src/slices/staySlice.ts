@@ -9,6 +9,7 @@ import {deleteStayAsync} from "@/slices/stayThunks/deleteStayThunk";
 import {updateStayAsync} from "@/slices/stayThunks/updateStayThunk";
 import uploadStayAsync from "@/slices/stayThunks/uploadStayThunk";
 import {addRoomAsync} from "@/slices/stayThunks/addRoomThunk";
+import {RootState} from "@/data/store";
 
 
 interface StayState {
@@ -19,6 +20,10 @@ interface StayState {
     hasError: boolean;
     errorMessage: string;
     hasRun: boolean;
+    occupancy : {
+    vacant: number,
+        booked: number,
+}
 }
 
 const initialState: StayState = {
@@ -28,7 +33,11 @@ const initialState: StayState = {
     isLoading: false,
     hasError: false,
     errorMessage: '',
-    hasRun: false
+    hasRun: false,
+    occupancy : {
+        vacant: 0,
+        booked: 0,
+    }
 };
 
 // export const uploadStayAsync = createAsyncThunk(
@@ -165,9 +174,10 @@ const staySlice = createSlice({
                 state.errorMessage = '';
                 state.hasRun = true;
             })
-            .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<Stay[]>) => {
+            .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<{ stays: Stay[ ], occupancy: any }>) => {
                 state.isLoading = false;
-                state.stays = action.payload;
+                state.stays = action.payload.stays;
+                state.occupancy = action.payload.occupancy;
                 state.hasRun = true;
             })
             .addCase(fetchStaysAsync.rejected, (state, action) => {
@@ -272,12 +282,13 @@ export const {
     setIsLoading,
 } = staySlice.actions;
 
-export const selectCurrentStay = (state: any) => state.stay.currentStay;
-export const selectAllStays = (state: any) => state.stay.stays;
-export const selectCurrentId = (state: any) => state.stay.currentId;
-export const selectIsLoading = (state: any) => state.stay.isLoading;
-export const selectHasError = (state: any) => state.stay.hasError;
-export const selectErrorMessage = (state: any) => state.stay.errorMessage;
-export const selectHasRun = (state: any) => state.stay.hasRun;
+export const selectOccupancy = (state: RootState) => state.stay.occupancy
+export const selectCurrentStay = (state: RootState) => state.stay.currentStay;
+export const selectAllStays = (state: RootState) => state.stay.stays;
+export const selectCurrentId = (state:  RootState) => state.stay.currentId;
+export const selectIsLoading = (state:  RootState) => state.stay.isLoading;
+export const selectHasError = (state:  RootState) => state.stay.hasError;
+export const selectErrorMessage = (state: RootState) => state.stay.errorMessage;
+export const selectHasRun = (state:  RootState) => state.stay.hasRun;
 
 export default staySlice.reducer;

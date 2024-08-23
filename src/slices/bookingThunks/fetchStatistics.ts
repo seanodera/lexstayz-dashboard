@@ -1,7 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {collection, query, where, getCountFromServer} from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { getServerTime } from '@/lib/utils';
+import {firestore} from '@/lib/firebase';
+import {getServerTime} from '@/lib/utils';
 import {getCurrentUser} from "@/data/hotelsData";
 
 const FetchStatistics = createAsyncThunk(
@@ -25,16 +25,16 @@ const FetchStatistics = createAsyncThunk(
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
-                where('checkInDate', '<=', currentDate),
-                where('checkOutDate', '>=', currentDate)
+                where('checkInDate', '<=', currentDate.toISOString()),
+                where('checkOutDate', '>=', currentDate.toISOString())
             );
             const checkInQuery = query(
                 bookingsRef,
-                where('checkInDate', '==', currentDate)
+                where('checkInDate', '==', currentDate.toISOString())
             );
             const checkOutQuery = query(
                 bookingsRef,
-                where('checkOutDate', '==', currentDate)
+                where('checkOutDate', '==', currentDate.toISOString())
             );
             const pendingQuery = query(
                 bookingsRef,
@@ -42,25 +42,25 @@ const FetchStatistics = createAsyncThunk(
             );
             const upComingQuery = query(
                 bookingsRef,
-                where('checkInDate', '>', currentDate)
+                where('checkInDate', '>', currentDate.toISOString())
             );
 
             // Aggregate counts from the server
-            const [onGoingCount, checkInCount, checkOutCount, pendingCount, upComingCount] = await Promise.all([
-                getCountFromServer(onGoingQuery).then((snapshot) => snapshot.data().count),
-                getCountFromServer(checkInQuery).then((snapshot) => snapshot.data().count),
-                getCountFromServer(checkOutQuery).then((snapshot) => snapshot.data().count),
-                getCountFromServer(pendingQuery).then((snapshot) => snapshot.data().count),
-                getCountFromServer(upComingQuery).then((snapshot) => snapshot.data().count),
-            ]);
+
+            const onGoingCount = await getCountFromServer(onGoingQuery);
+            const checkInCount = await getCountFromServer(checkInQuery);
+            const checkOutCount = await getCountFromServer(checkOutQuery);
+            const pendingCount = await getCountFromServer(pendingQuery);
+            const upComingCount = await getCountFromServer(upComingQuery);
+
 
             // Set stats based on server results
-            stats.onGoing = onGoingCount;
-            stats.checkIn = checkInCount;
-            stats.checkOut = checkOutCount;
-            stats.pending = pendingCount;
-            stats.upComing = upComingCount;
-
+            stats.onGoing = onGoingCount.data().count;
+            stats.checkIn = checkInCount.data().count;
+            stats.checkOut = checkOutCount.data().count;
+            stats.pending = pendingCount.data().count;
+            stats.upComing = upComingCount.data().count;
+            console.log(stats)
             return stats;
         } catch (e) {
             console.error('Error fetching statistics:', e);

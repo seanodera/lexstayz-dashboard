@@ -181,7 +181,7 @@ export async function getServerTime() {
         console.log(data)
         return new Date(data.utc_datetime);
     } catch (error) {
-        console.error('Error fetching server time:', error);
-        return null;
+        throw Error('Error fetching server time');
+
     }
 }

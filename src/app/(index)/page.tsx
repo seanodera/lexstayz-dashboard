@@ -12,13 +12,14 @@ import {useAppSelector} from "@/hooks/hooks";
 import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} from "@/slices/transactionsSlice";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {selectBookingStats} from "@/slices/bookingSlice";
+import {selectOccupancy} from "@/slices/staySlice";
 
 export default function Home() {
     const pendingBalance = useAppSelector(selectPendingBalance)
     const availableBalance = useAppSelector(selectAvailableBalance)
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
-
+    const occupancy = useAppSelector(selectOccupancy)
     return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10 bg-white'}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>
@@ -45,7 +46,7 @@ export default function Home() {
                        <h2>{bookingStats.pending}</h2>
                    </div>
                     <div>
-                        <h4>Confirmed Bookings</h4>
+                        <h4>Upcoming Bookings</h4>
                         <h2>{bookingStats.upComing}</h2>
                     </div>
                 </div>
@@ -58,19 +59,19 @@ export default function Home() {
                             <div className={'w-2 h-4 bg-dark rounded'}/>
                             Vacant
                         </div>
-                        <h1>40</h1>
+                        <h1>{occupancy.vacant}</h1>
                     </div>
                     <div>
                         <div className={'flex items-center flex-nowrap gap-2'}>
                             <div className={'w-2 h-4 bg-primary rounded'}/>Occupied
                         </div>
-                        <h1>20</h1>
+                        <h1>{occupancy.booked}</h1>
                     </div>
                 </div>
                 <Progress strokeColor={'#001529'} size={{
                     height: 70,
                 }} showInfo={false} percent={100} success={{
-                    percent: 20/60 * 100,
+                    percent: (occupancy.booked/(occupancy.booked + occupancy.vacant)) * 100,
                     strokeColor: '#584cf4'
                 }} />
             </Card>

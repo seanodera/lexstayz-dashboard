@@ -10,10 +10,11 @@ import {
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {getCurrentUser} from "@/data/hotelsData";
 import {query} from "firebase/firestore";
+import {getServerTime} from "@/lib/utils";
 
 export const fetchStaysAsync = createAsyncThunk(
     'stay/fetchStays',
-    async (_, { rejectWithValue }) => {
+    async (_, {rejectWithValue}) => {
         try {
             const user = getCurrentUser();
             const firestore = getFirestore();
@@ -21,7 +22,7 @@ export const fetchStaysAsync = createAsyncThunk(
             const staysRef = collection(userDocRef, 'stays');
             const publicStaysRef = collection(firestore, 'stays');
             const stays: any[] = [];
-
+            const serverTime = await getServerTime()
             const queryPub = query(publicStaysRef, where('hostId', '==', user.uid))
             const queryLoc = query(staysRef, where('published', '==', false))
             const snapshotLocal = await getDocs(queryLoc);
@@ -36,8 +37,37 @@ export const fetchStaysAsync = createAsyncThunk(
                 }
             }
             const pubStays = snapshotPub.docs.map(doc => doc.data());
+            let occupancy = {
+                vacant: 0,
+                booked: 0,
+            }
+            pubStays.forEach((doc) => {
+                if (doc.type === 'Home') {
+                    if (doc.bookedDates > 0 && doc.bookedDates.includes(serverTime.toISOString().split('T')[ 0 ])) {
+                        occupancy.booked += 1
+                    } else {
+                        occupancy.vacant += 1
+                    }
+                    console.log(doc.id, occupancy)
+                } else {
+                    const rooms = doc.rooms;
+                    rooms.forEach((room: any) => {
+                        if (room.bookedDates && room.bookedDates[ serverTime.toISOString().split('T')[ 0 ] ]) {
+                            occupancy.booked += room.bookedDates[ serverTime.toISOString().split('T')[ 0 ] ];
+                            occupancy.vacant += room.available - room.bookedDates[ serverTime.toISOString().split('T')[ 0 ] ]
+                        } else {
+                            occupancy.vacant += room.available
+                        }
+                        console.log(doc.id, room.id, occupancy, room.bookedDates)
+                    })
+                }
+            })
+
             console.log(stays);
-            return [...pubStays,...stays];
+            return {
+                stays: [...pubStays, ...stays],
+                occupancy,
+            };
         } catch (error) {
 
             if (error instanceof Error) {
