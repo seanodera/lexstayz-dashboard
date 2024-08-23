@@ -11,11 +11,13 @@ import {useAppSelector} from "@/hooks/hooks";
 
 import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} from "@/slices/transactionsSlice";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
+import {selectBookingStats} from "@/slices/bookingSlice";
 
 export default function Home() {
     const pendingBalance = useAppSelector(selectPendingBalance)
     const availableBalance = useAppSelector(selectAvailableBalance)
     const userDetails = useAppSelector(selectCurrentUser)
+    const bookingStats = useAppSelector(selectBookingStats)
 
     return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10 bg-white'}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
@@ -26,25 +28,25 @@ export default function Home() {
                 <div className={'flex justify-between items-center'}>
                     <div>
                         <h4>Ongoing</h4>
-                        <h2>20</h2>
+                        <h2>{bookingStats.onGoing}</h2>
                     </div>
                     <div>
                         <h4>Check In</h4>
-                        <h2>4</h2>
+                        <h2>{bookingStats.checkIn}</h2>
                     </div>
                     <div>
                         <h4>Check out</h4>
-                        <h2>4</h2>
+                        <h2>{bookingStats.checkOut}</h2>
                     </div>
                 </div>
                 <div className={'flex justify-between items-center'}>
                    <div>
                        <h4>Pending Bookings</h4>
-                       <h2>5</h2>
+                       <h2>{bookingStats.pending}</h2>
                    </div>
                     <div>
                         <h4>Confirmed Bookings</h4>
-                        <h2>7</h2>
+                        <h2>{bookingStats.upComing}</h2>
                     </div>
                 </div>
             </Card>

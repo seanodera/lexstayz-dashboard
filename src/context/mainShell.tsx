@@ -18,6 +18,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import {fetchStaysAsync, selectHasRun, selectIsLoading} from "@/slices/staySlice";
 import {fetchUserChatsAsync} from "@/slices/messagingSlice";
 import {fetchPendingTransactions} from "@/slices/transactionsSlice";
+import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 
 const { Content } = Layout;
 
@@ -41,8 +42,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
                 dispatch(fetchStaysAsync());
                 dispatch(fetchPendingTransactions())
                 dispatch(fetchBookingsAsync({page: 1, limit: 10}));
-
-
+                dispatch(fetchStatistics(),)
                 dispatch(fetchUserChatsAsync())
 
 

@@ -12,7 +12,8 @@ import {
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
 
-import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync"; // Adjust the import according to your project structure
+import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync";
+import fetchStatistics from "@/slices/bookingThunks/fetchStatistics"; // Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -27,6 +28,13 @@ interface BookingState {
     page: number;
     limit: number;
     bookingCount: number;
+    stats: {
+        onGoing: number,
+        checkIn: number,
+        checkOut: number,
+        pending: number,
+        upComing: number,
+    },
 }
 
 const initialState: BookingState = {
@@ -40,6 +48,13 @@ const initialState: BookingState = {
     hasError: false,
     errorMessage: '',
     fetchedPages: [],
+    stats: {
+        onGoing: 0,
+        checkIn: 0,
+        checkOut: 0,
+        pending: 0,
+        upComing: 0,
+    },
     page: 1,
     limit: 10,
 };
@@ -182,8 +197,16 @@ const bookingSlice = createSlice({
             })
             .addCase(updateBookingCount.rejected, (state, action) => {
                 state.isLoading = false
-
-            });
+            })
+            .addCase(fetchStatistics.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(fetchStatistics.fulfilled, (state, action) => {
+                state.stats = action.payload;
+                state.isLoading = false;
+            }).addCase(fetchStatistics.rejected, (state, action) => {
+            state.isLoading = false
+        });
     }
 });
 
@@ -202,8 +225,7 @@ export const selectCart = (state: any) => state.booking.cart;
 export const selectDates = (state: any) => state.booking.dates;
 export const selectBookings = (state: any) => state.booking.bookings;
 export const selectCurrentBooking = (state: any) => state.booking.currentBooking;
-
-
+export const selectBookingStats = (state: any) => state.booking.stats;
 export const selectIsBookingLoading = (state: any) => state.booking.isLoading;
 export const selectHasError = (state: any) => state.booking.hasError;
 export const selectErrorMessage = (state: any) => state.booking.errorMessage;

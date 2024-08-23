@@ -5,10 +5,11 @@ import {
     updateDoc,
     getDocs,
     getFirestore,
-    writeBatch
+    writeBatch, where
 } from "@firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {getCurrentUser} from "@/data/hotelsData";
+import {query} from "firebase/firestore";
 
 export const fetchStaysAsync = createAsyncThunk(
     'stay/fetchStays',
@@ -18,12 +19,15 @@ export const fetchStaysAsync = createAsyncThunk(
             const firestore = getFirestore();
             const userDocRef = doc(firestore, 'hosts', user.uid);
             const staysRef = collection(userDocRef, 'stays');
-
+            const publicStaysRef = collection(firestore, 'stays');
             const stays: any[] = [];
-            const snapshot = await getDocs(staysRef);
-            for (const doc of snapshot.docs) {
-                const partialStay = doc.data()
 
+            const queryPub = query(publicStaysRef, where('hostId', '==', user.uid))
+            const queryLoc = query(staysRef, where('published', '==', false))
+            const snapshotLocal = await getDocs(queryLoc);
+            const snapshotPub = await getDocs(queryPub)
+            for (const doc of snapshotLocal.docs) {
+                const partialStay = doc.data()
                 if (partialStay.type === 'Hotel') {
                     const rooms = await getRoomsFirebase(doc.id);
                     stays.push({...doc.data(), rooms});
@@ -31,9 +35,9 @@ export const fetchStaysAsync = createAsyncThunk(
                     stays.push({...doc.data(), rooms: []});
                 }
             }
-
+            const pubStays = snapshotPub.docs.map(doc => doc.data());
             console.log(stays);
-            return stays;
+            return [...pubStays,...stays];
         } catch (error) {
 
             if (error instanceof Error) {
