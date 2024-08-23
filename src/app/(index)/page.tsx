@@ -1,5 +1,5 @@
 'use client'
-import {Card, Col, Flex, Row, Typography} from "antd";
+import {Badge, Card, Col, Divider, Flex, Progress, Row, Statistic, Typography} from "antd";
 import {BookFilled, BookOutlined, WalletFilled, WalletOutlined} from "@ant-design/icons";
 import {toMoneyFormat} from "@/lib/utils";
 import CountUp from "react-countup";
@@ -9,67 +9,140 @@ import CheckInPanel from "@/components/home/checkInPanel";
 import ReviewsPanel from "@/components/home/ReviewsPanel";
 import {useAppSelector} from "@/hooks/hooks";
 
-import {selectAvailableBalance, selectPendingBalance} from "@/slices/transactionsSlice";
+import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} from "@/slices/transactionsSlice";
+import {selectCurrentUser} from "@/slices/authenticationSlice";
 
 export default function Home() {
     const pendingBalance = useAppSelector(selectPendingBalance)
     const availableBalance = useAppSelector(selectAvailableBalance)
-    const items = [
-        {
-            Icon: BookFilled,
-            name: "Confirmed Bookings",
-            value: 24
-        },
-        {
-            Icon: BookOutlined,
-            name: "Pending Bookings",
-            value: 3
-        },
-        {
-            Icon: WalletOutlined,
-            name: "Pending Balance",
-            value: pendingBalance,
-            prefix: '$',
-        },
-        {
-            Icon: WalletFilled,
-            name: "Available Balance",
-            value: availableBalance,
-            prefix: '$',
-        }
+    const userDetails = useAppSelector(selectCurrentUser)
 
-    ]
-    return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10'}>
-        <Row gutter={[16, 16]} className={''}>
-            <Col span={24}>
-                <div className={'grid grid-cols-4 gap-4 w-full'}>
-                    {items.map((item, index) => <Card className={'col-span-1'} key={index}>
-                        <Flex align="center" gap={16}>
-                            <div
-                                className="text-2xl flex items-center justify-center rounded-md h-12 w-12 bg-primary-200">
-                                <item.Icon/>
-                            </div>
-                            <div>
-                                <CountUp className={'font-semibold h1'} end={item.value} prefix={item.prefix}
-                                         formattingFn={(value: number) => (item.prefix ? '$ ' + toMoneyFormat(value, {fractionDigits: (item.prefix) ? 2 : 0}) :value.toString())}/>
-                                <Typography className={'text-gray-500'}>{item.name}</Typography>
-                            </div>
-                        </Flex>
-                    </Card>)}
+    return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10 bg-white'}>
+        <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
+        <h2 className={'font-bold'}>Overview</h2>
+        <div className={'grid grid-cols-1 lg:grid-cols-3 gap-4'}>
+            <Card className={'bg-lightGray'}>
+                <h2>Reservations</h2>
+                <div className={'flex justify-between items-center'}>
+                    <div>
+                        <h4>Ongoing</h4>
+                        <h2>20</h2>
+                    </div>
+                    <div>
+                        <h4>Check In</h4>
+                        <h2>4</h2>
+                    </div>
+                    <div>
+                        <h4>Check out</h4>
+                        <h2>4</h2>
+                    </div>
                 </div>
-            </Col>
-            <Col span={18}>
+                <div className={'flex justify-between items-center'}>
+                   <div>
+                       <h4>Pending Bookings</h4>
+                       <h2>5</h2>
+                   </div>
+                    <div>
+                        <h4>Confirmed Bookings</h4>
+                        <h2>7</h2>
+                    </div>
+                </div>
+            </Card>
+            <Card>
+                <h2>Occupancy</h2>
+                <div className={'flex justify-start items-center gap-4'}>
+                    <div>
+                        <div className={'flex items-center flex-nowrap gap-2'}>
+                            <div className={'w-2 h-4 bg-dark rounded'}/>
+                            Vacant
+                        </div>
+                        <h1>40</h1>
+                    </div>
+                    <div>
+                        <div className={'flex items-center flex-nowrap gap-2'}>
+                            <div className={'w-2 h-4 bg-primary rounded'}/>Occupied
+                        </div>
+                        <h1>20</h1>
+                    </div>
+                </div>
+                <Progress strokeColor={'#001529'} size={{
+                    height: 70,
+                }} showInfo={false} percent={100} success={{
+                    percent: 20/60 * 100,
+                    strokeColor: '#584cf4'
+                }} />
+            </Card>
+            <Overview/>
+        </div>
+
+        <div className={'grid grid-cols-3 mt-4 gap-4'}>
+            <div className={'col-span-2'}>
                 <BookingsPanel/>
-            </Col>
-            <Col span={6}>
-                <NotificationsPanel/>
-            </Col>
-            <Col span={18}>
-                <CheckInPanel/>
-            </Col>
-            <Col span={6}>
-                <ReviewsPanel/>
-            </Col>
-        </Row>
+            </div>
+            <CheckInPanel/>
+        </div>
     </div>;
 }
+
+
+const Overview = () => {
+    const pendingBalance = useAppSelector(selectPendingBalance)
+    const availableBalance = useAppSelector(selectAvailableBalance)
+    const averageEarnings = useAppSelector(selectAverageEarnings)
+    return (
+        <Card className={'border-0'}>
+            <h2>Revenue</h2>
+            <div className={' space-y-4'}>
+                <div className={'flex justify-between items-center'}>
+                    <div className={''}>
+                        <h3 className={'text-gray-500 text-lg'}>Total Balance</h3>
+                        <CountUp className={'font-semibold text-2xl'} start={0}
+                                 end={pendingBalance + availableBalance}
+                                 duration={2}
+                                 separator=","
+                                 decimals={2}
+                                 prefix="USD "
+                        />
+                    </div>
+                    <Divider type={'vertical'} className={'text-gray-500 h-full'}/>
+                    <div>
+                        <h3 className={'text-gray-500 font-medium'}>Available Balance</h3>
+                        <CountUp className={'font-semibold text-xl'} start={0}
+                                 end={availableBalance}
+                                 duration={2}
+                                 separator=","
+                                 decimals={2}
+                                 prefix="USD "
+                        />
+                    </div>
+                </div>
+                <div className={'flex justify-between items-center'}>
+                    <div>
+                        <h3 className={'text-gray-500 font-medium'}>Avg Earnings per Booking</h3>
+                        <CountUp className={'font-semibold text-xl'} start={0}
+                                 end={averageEarnings}
+                                 duration={2}
+                                 separator=","
+                                 decimals={2}
+                                 prefix="USD "
+                        />
+                    </div>
+                    <Divider type={'vertical'} className={'text-gray-500 h-full'}/>
+                    <div>
+                        <h3 className={'text-gray-500 font-medium'}>Pending Balance</h3>
+                        <CountUp className={'font-semibold text-xl'} start={0}
+                                 end={pendingBalance}
+                                 duration={2}
+                                 separator=","
+                                 decimals={2}
+                                 prefix="USD "
+                        />
+                    </div>
+
+                </div>
+            </div>
+        </Card>
+    );
+};
+
+

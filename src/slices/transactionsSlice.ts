@@ -2,10 +2,8 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {average, collection, count, doc, getAggregateFromServer, getDocs, sum} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
-import {state} from "sucrase/dist/types/parser/traverser/base";
 import {RootState} from "@/data/store";
 import {writeBatch} from "@firebase/firestore";
-import dayjs from "dayjs";
 import {isAfter} from "date-fns";
 import {getServerTime} from "@/lib/utils";
 
@@ -23,10 +21,12 @@ interface TransactionsState {
     completedTransactions: Transaction[];
     pendingBalance: number;
     availableBalance: number;
+    averageEarnings: number;
     withdrawList: Transaction[];
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
+
 
 }
 
@@ -38,6 +38,7 @@ const initialState: TransactionsState = {
     withdrawList: [],
     isLoading: false,
     hasError: false,
+    averageEarnings: 0,
     errorMessage: '',
 }
 
@@ -89,7 +90,8 @@ export const fetchPendingTransactions = createAsyncThunk(
                 averageAmount: average('amount')
 
             })
-            return {pendingTransactions: transactions, pendingBalance: pending,availableTransactions: availableTransactions, availableBalance: availableData.data().totalAmount };
+            const averageEarnings = (countData.data().totalAmount + availableData.data().totalAmount)/(countData.data().countOfDocs + availableData.data().countOfDocs)
+            return {pendingTransactions: transactions, pendingBalance: pending,availableTransactions: availableTransactions, availableBalance: availableData.data().totalAmount, averageEarnings: averageEarnings};
         } catch (error) {
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
@@ -124,6 +126,7 @@ const transactionsSlice = createSlice({
                 state.pendingBalance = action.payload.pendingBalance;
                 state.completedTransactions = action.payload.availableTransactions as Transaction[];
                 state.availableBalance = action.payload.availableBalance;
+                state.averageEarnings = action.payload.averageEarnings;
             }).addCase(fetchPendingTransactions.rejected, (state, action) => {
                 state.isLoading = false;
                 state.hasError = true;
@@ -138,5 +141,6 @@ export const selectPendingBalance = (state: RootState) => state.transactions.pen
 export const selectCompletedTransactions = (state: RootState) => state.transactions.completedTransactions;
 export const selectAvailableBalance = (state: RootState) => state.transactions.availableBalance;
 export const selectWithdrawList = (state: RootState) => state.transactions.withdrawList;
+export const selectAverageEarnings = (state: RootState) => state.transactions.averageEarnings;
 
 export default transactionsSlice.reducer;

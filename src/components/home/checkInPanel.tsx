@@ -1,19 +1,20 @@
-import {Card, Table} from "antd";
+import {Button, Card, Table} from "antd";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {useSelector} from "react-redux";
 import {selectBookings} from "@/slices/bookingSlice";
-import {dateReader, toMoneyFormat} from "@/lib/utils";
-import {getRooms, getTag} from "@/components/common";
+import {useAppSelector} from "@/hooks/hooks";
+import {selectAllStays} from "@/slices/staySlice";
+import {EyeOutlined} from "@ant-design/icons";
+import Link from "next/link";
 
 const {Column} = Table;
 export default function CheckInPanel() {
-    const [displayBookings,setDisplayBookings] = useState([]);
+    const [displayBookings,setDisplayBookings] = useState<any[]>([]);
     const bookings = useSelector(selectBookings);
-
+    const stays = useAppSelector(selectAllStays)
     useEffect(() => {
-        let localDocuments = bookings;
-        let filtered =  localDocuments.filter((value:any) => {
+        let filtered =  bookings.filter((value:any) => {
             let checkIn = dayjs(value.checkInDate).toISOString().split("T")[0];
             let today = dayjs().toISOString().split("T")[0];
             console.log('Check In: ' ,checkIn,' Today: ', today , checkIn === today)
@@ -23,24 +24,38 @@ export default function CheckInPanel() {
         setDisplayBookings(filtered);
     }, [bookings]);
 
-    return <Card classNames={{body: 'px-0 pt-0'}} title={<h2 className={'mb-0 font-semibold'}>Today&apos;s Check Ins</h2>}>
-        <Table scroll={{x: true}} dataSource={displayBookings} pagination={false}   >
-            <Column title={'Guest'} dataIndex={['user']} render={(value, record:any, index) => {
-                return <div key={index}>
-                    <div className={'font-medium'}>{value.firstName} {value.lastName}</div>
-                    <div className={'text-gray-500'}>{value.email}</div>
-                </div>;
-            }
-            }/>
-            <Column className={'text-nowrap'} title={'Check-In'} dataIndex={'checkInDate'}
-                    render={value => dateReader({date: value})}/>
-            <Column className={'text-nowrap'} title={'Check-Out'} dataIndex={'checkOutDate'}
-                    render={value => dateReader({date: value})}/>
-            <Column className={'text-nowrap'} title={'Status'} dataIndex={'status'} render={value => getTag(value)}/>
-            <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => value? getRooms(value) : 1}/>
-            <Column className={'text-nowrap'} title={'Guests'} dataIndex={'numGuests'}/>
-            <Column className={'text-nowrap'} title={'Total'} dataIndex={'totalPrice'} render={(value) => '$' + toMoneyFormat(value,{})}/>
-        </Table>
+    return <Card classNames={{
+        header: 'bg-lightGray'
+    }} title={<h2 className={'mb-0'}>Check ins</h2>}>
 
+    <div className={'grid grid-cols-2 grid-rows-4'}>
+            {displayBookings.map((booking, index) => (<ListItem key={index} id={booking.id} user={booking.user} stay={stays.find((value:any) => value.id === booking.accommodationId)}/>))}
+        </div>
     </Card>
 }
+
+
+function ListItem({ id, user, stay }: { id: string; user: any; stay: any }) {
+    console.log(stay);
+    return (
+        <div className="border border-solid border-gray-200 p-4 rounded-lg flex justify-between items-center group hover:border-primary">
+            <div>
+                <div className="text-gray-500">{id.slice(0, 8).toUpperCase()}</div>
+                <div className="text-lg font-medium">
+                    {user.firstName} {user.lastName}
+                </div>
+                <div className="text-sm">{stay?.name}</div>
+            </div>
+            <Link href={`/reservations/${id}`}>
+            <Button
+                className="hidden group-hover:block"
+                type={'text'}
+                icon={<EyeOutlined />}
+                shape="circle"
+            />
+            </Link>
+        </div>
+    );
+}
+
+

@@ -1,3 +1,4 @@
+'use client'
 import {Card, Dropdown, Table} from "antd";
 import {useSelector} from "react-redux";
 import {selectAllStays, selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
@@ -8,13 +9,14 @@ import {getRooms, getTag} from "@/components/common";
 import {selectBookings} from "@/slices/bookingSlice";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
+import {useRouter} from "next/navigation";
 
 
 const {Column} = Table;
 export default function BookingsPanel() {
     const bookings = useSelector(selectBookings);
     const [displayBookings, setDisplayBookings] = useState<any[]>([]);
-
+    const router = useRouter();
 
     useEffect(() => {
         let localBookings = [...bookings];
@@ -33,6 +35,12 @@ export default function BookingsPanel() {
             </div>,
         }
     })
+    // Function to handle row click
+    const handleRowClick = (record: any) => {
+        console.log("Row clicked:", record);
+        router.push(`/bookings/${record.id}`);
+    };
+
 
     return <Card className={'rounded-xl'} classNames={{body: 'px-0 pt-0 pb-0'}}
                  title={<h2 className={'mb-0 font-semibold'}>Recent Bookings</h2>}
@@ -42,7 +50,11 @@ export default function BookingsPanel() {
                          {currentStay?.name} <BsChevronDown className={'text-xs'}/>
                      </div>
                  </Dropdown>}>
-        <Table scroll={{x: true}} dataSource={displayBookings.slice(0, 5)} pagination={false}>
+        <Table scroll={{x: true}} dataSource={displayBookings.slice(0, 5)} pagination={false}  onRow={(record) => {
+            return {
+                onClick: () => handleRowClick(record), // Click row
+            };
+        }} >
             <Column title={'Guest'} dataIndex={['user']} render={(value, record: any, index) => {
 
                 return <div key={index}>
@@ -59,7 +71,7 @@ export default function BookingsPanel() {
             <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => value? getRooms(value): 0}/>
             <Column className={'text-nowrap'} title={'Guests'} dataIndex={'numGuests'}/>
             <Column className={'text-nowrap'} title={'Total'} dataIndex={'totalPrice'}
-                    render={(value) => '$' + toMoneyFormat(value, {})}/>
+                    render={(value) => '$' + toMoneyFormat(value)}/>
         </Table>
     </Card>
 }

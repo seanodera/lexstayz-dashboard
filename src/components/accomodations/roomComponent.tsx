@@ -35,7 +35,7 @@ export default function RoomComponent({room, stayId}:{room: any, stayId:string})
             </div>
             <div>
                 <h3 className={'font-medium'}>Price</h3>
-                <p className={'text-primary font-semibold'}>$ {toMoneyFormat(room.price, {})}/night</p>
+                <p className={'text-primary font-semibold'}>$ {toMoneyFormat(room.price)}/night</p>
             </div>
         </div>
     </Link>

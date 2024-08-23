@@ -28,9 +28,10 @@ const config: Config = {
     extend: {
       colors: {
         primary: primaryColor,
-        dark: primaryColor[950],
+        dark: '#001529',
         danger: '#FF4D4F',
         warning: '#faad14',
+        lightGray: '#F5F5F5',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

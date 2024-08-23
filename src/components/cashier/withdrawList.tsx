@@ -16,7 +16,7 @@ export default function WithdrawList() {
                     render={(value) => `${dayjs(value, 'HH:mm')}`}/>
             {/*<Column title={'Method'} dataIndex={'method'}/>*/}
             {/*<Column title={'Account'} dataIndex={'account'}/>*/}
-            <Column title={'Amount'} dataIndex={'amount'} render={(value) => toMoneyFormat(value, {})}/>
+            <Column title={'Amount'} dataIndex={'amount'} render={(value) => toMoneyFormat(value)}/>
             {/*<Column title={'Status'} dataIndex={'status'} render={(value) => getTag(value)}/>*/}
         </Table>
     </Card>
