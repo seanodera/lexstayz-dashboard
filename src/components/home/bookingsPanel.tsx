@@ -38,7 +38,7 @@ export default function BookingsPanel() {
     // Function to handle row click
     const handleRowClick = (record: any) => {
         console.log("Row clicked:", record);
-        router.push(`/bookings/${record.id}`);
+        router.push(`/reservations/${record.id}`);
     };
 
 
@@ -71,7 +71,7 @@ export default function BookingsPanel() {
             <Column className={'text-nowrap'} title={'Rooms'} dataIndex={'rooms'} render={value => value? getRooms(value): 0}/>
             <Column className={'text-nowrap'} title={'Guests'} dataIndex={'numGuests'}/>
             <Column className={'text-nowrap'} title={'Total'} dataIndex={'totalPrice'}
-                    render={(value) => '$' + toMoneyFormat(value)}/>
+                    render={(value) => 'USD' + toMoneyFormat(value)}/>
         </Table>
     </Card>
 }
