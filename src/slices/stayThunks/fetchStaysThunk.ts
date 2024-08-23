@@ -23,7 +23,7 @@ export const fetchStaysAsync = createAsyncThunk(
             const publicStaysRef = collection(firestore, 'stays');
             const stays: any[] = [];
             const serverTime = await getServerTime()
-            const queryPub = query(publicStaysRef, where('hostId', '==', user.uid))
+            const queryPub = query(publicStaysRef, where('hostId', '==', user.uid), where('published', '==', true))
             const queryLoc = query(staysRef, where('published', '==', false))
             const snapshotLocal = await getDocs(queryLoc);
             const snapshotPub = await getDocs(queryPub)
