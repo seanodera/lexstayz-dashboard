@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Image, Switch, Upload } from 'antd';
+import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
+import {Button, Image, Switch, Upload} from 'antd';
 import type { UploadFile } from 'antd';
 
 const getBase64 = (file: File): Promise<string> =>
@@ -66,8 +66,14 @@ const UploadImagesComponent = ({ onImageListChange, images = [] }: { images?: st
                 onChange={handleChange}
                 fileList={fileList}
                 directory={directory}
-                itemRender={(originNode, file, fileList) => {
-                    return <img src={file.url} alt={file.name} className={'aspect-video max-w-sm w-full object-cover col-span-2'}/>
+                itemRender={(originNode, file, fileList,actions) => {
+
+                    // return <img src={file.url} alt={file.name} className={'aspect-video max-w-sm w-full object-cover col-span-2'}/>
+                   return <div className={'aspect-video max-w-sm w-full bg-cover col-span-2 group'} style={{
+                       backgroundImage: 'url("'+file.url+'")',
+                   }}><div className={'hidden group-hover:flex bg-dark bg-opacity-45 justify-evenly items-center w-full h-full'}>
+                       <Button type={'primary'} danger icon={<DeleteOutlined />} onClick={() => actions.remove()}/>
+                   </div></div>;
                 }}
             >
                 {fileList.length >= 20 ? null : uploadButton}
