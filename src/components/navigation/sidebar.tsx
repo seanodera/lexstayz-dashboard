@@ -86,7 +86,7 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                 <Link href={'/'}
                       className={`flex items-center text-white gap-2 px-2 py-2 ${collapsed && 'justify-center'}`}>
                     <div className={`p-1 h-12 aspect-square bg-white bg-opacity-10 rounded-lg`}><img src={'/logo/lexstayz-logo-transparent-square.png'}
-                        className={'fill-primary'}/></div>
+                        className={'fill-primary object-contain aspect-square h-full w-full'}/></div>
                     <div className={`font-semibold text-lg  ${collapsed ? 'hidden' : ''}`}>LexStayz</div>
                 </Link>
 
