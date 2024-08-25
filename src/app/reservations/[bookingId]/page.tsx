@@ -27,17 +27,19 @@ export default function Page() {
     const [messageApi, contextHolder] = message.useMessage()
     const router = useRouter()
     useEffect(() => {
-        dispatch(setCurrentBookingById(bookingId.toString()));
+        if ( !booking || bookingId && booking.id !== bookingId){
+            dispatch(setCurrentBookingById(bookingId.toString()));
+        }
     }, [bookingId, dispatch]);
 
     useEffect(() => {
 
-        if (booking.accommodationId) {
+        if (booking && booking.accommodationId && booking.accommodationId !== stay.id) {
             dispatch(setCurrentStayFromId(booking.accommodationId));
         }
 
     }, [booking, dispatch]);
-    const guest = booking.user;
+
 
     //await updateRoomFirebase(roomData, stayId, room.id, poster, images);
 
@@ -100,7 +102,7 @@ export default function Page() {
                         booking={booking}
                         stay={stay}/>}</Col>
                 <Col span={8} className={'space-y-4'}>
-                    <ContactCard guest={guest} booking={booking}/>
+                    <ContactCard guest={booking.user} booking={booking}/>
                     <PriceSummary booking={booking} stay={stay}/>
                 </Col>
             </Row>

@@ -29,7 +29,7 @@ export default function BookingsPanel() {
     const menuItems = stays.map((item: any, index: number) => {
         return {
             key: index,
-            label: <div onClick={() => dispatch(setCurrentStayFromId(index))} className={''}>
+            label: <div onClick={() => dispatch(setCurrentStayFromId(item.id))} className={''}>
                 <div className={'font-semibold'}>{item.name}</div>
                 <div className={'text-gray-500 '}>{item.location.district}, {item.location.country}</div>
             </div>,

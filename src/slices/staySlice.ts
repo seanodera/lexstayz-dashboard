@@ -10,6 +10,10 @@ import {updateStayAsync} from "@/slices/stayThunks/updateStayThunk";
 import uploadStayAsync from "@/slices/stayThunks/uploadStayThunk";
 import {addRoomAsync} from "@/slices/stayThunks/addRoomThunk";
 import {RootState} from "@/data/store";
+import {collection, doc} from "@firebase/firestore";
+import {firestore} from "@/lib/firebase";
+import {getDoc} from "firebase/firestore";
+import {getCurrentUser} from "@/data/hotelsData";
 
 
 interface StayState {
@@ -20,10 +24,10 @@ interface StayState {
     hasError: boolean;
     errorMessage: string;
     hasRun: boolean;
-    occupancy : {
-    vacant: number,
+    occupancy: {
+        vacant: number,
         booked: number,
-}
+    }
 }
 
 const initialState: StayState = {
@@ -34,7 +38,7 @@ const initialState: StayState = {
     hasError: false,
     errorMessage: '',
     hasRun: false,
-    occupancy : {
+    occupancy: {
         vacant: 0,
         booked: 0,
     }
@@ -112,6 +116,35 @@ const initialState: StayState = {
 //     }
 // );
 
+export const setCurrentStayFromId = createAsyncThunk('stays/setCurrentStayFromId',
+    async (id: string, {getState, dispatch, rejectWithValue}) => {
+        try {
+            const user = getCurrentUser();
+            const {stay} = getState() as RootState
+
+            const currentStay = stay.stays.find((value) => value.id === id);
+            if (currentStay) {
+                console.log('Current Stay local')
+                return currentStay;
+            } else {
+                const staysRef = collection(firestore, 'hosts', user.uid, 'stays');
+                const snapshot = await getDoc(doc(staysRef, id));
+                const data = snapshot.data() as Stay
+                console.log('Gotten from firebase: ', data)
+                // dispatch(setAllStays([...stay.stays, data]))
+                //
+                return data;
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    })
+
+
 const staySlice = createSlice({
     name: "stay",
     initialState,
@@ -119,11 +152,6 @@ const staySlice = createSlice({
         setCurrentStay: (state, action: PayloadAction<Stay>) => {
             state.currentStay = action.payload;
             state.currentId = -1;
-        },
-        setCurrentStayFromId: (state, action: PayloadAction<string | number>) => {
-            const currentStay = state.stays.find((value) => value.id === action.payload);
-            state.currentId = action.payload;
-            state.currentStay = currentStay ? currentStay : ({} as Stay);
         },
         setAllStays: (state, action: PayloadAction<Stay[]>) => {
             state.stays = action.payload;
@@ -136,11 +164,23 @@ const staySlice = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder .addCase(uploadStayAsync.pending, (state) => {
+        builder.addCase(setCurrentStayFromId.pending, (state, action) => {
             state.isLoading = true;
-            state.hasError = false;
-            state.errorMessage = '';
         })
+            .addCase(setCurrentStayFromId.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.currentStay = action.payload as Stay
+            })
+            .addCase(setCurrentStayFromId.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.payload as string || 'Failed to set current stay';
+            })
+            .addCase(uploadStayAsync.pending, (state) => {
+                state.isLoading = true;
+                state.hasError = false;
+                state.errorMessage = '';
+            })
             .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
                 state.isLoading = false;
                 state.stays.push(action.payload);
@@ -158,7 +198,7 @@ const staySlice = createSlice({
             .addCase(addRoomAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId);
-                const stay = state.stays[stayIndex];
+                const stay = state.stays[ stayIndex ];
                 if (stay) {
                     stay.rooms.push(action.payload.room);
                 }
@@ -271,13 +311,20 @@ const staySlice = createSlice({
     }
 });
 
-export {updateStayAsync, deleteStayAsync, unPublishStayAsync, publishStayAsync, fetchStaysAsync, updateRoomAsync, uploadStayAsync,
-addRoomAsync }
+export {
+    updateStayAsync,
+    deleteStayAsync,
+    unPublishStayAsync,
+    publishStayAsync,
+    fetchStaysAsync,
+    updateRoomAsync,
+    uploadStayAsync,
+    addRoomAsync
+}
 
 export const {
     setCurrentStay,
     setAllStays,
-    setCurrentStayFromId,
     resetHasRun,
     setIsLoading,
 } = staySlice.actions;
@@ -285,10 +332,10 @@ export const {
 export const selectOccupancy = (state: RootState) => state.stay.occupancy
 export const selectCurrentStay = (state: RootState) => state.stay.currentStay;
 export const selectAllStays = (state: RootState) => state.stay.stays;
-export const selectCurrentId = (state:  RootState) => state.stay.currentId;
-export const selectIsLoading = (state:  RootState) => state.stay.isLoading;
-export const selectHasError = (state:  RootState) => state.stay.hasError;
+export const selectCurrentId = (state: RootState) => state.stay.currentId;
+export const selectIsLoading = (state: RootState) => state.stay.isLoading;
+export const selectHasError = (state: RootState) => state.stay.hasError;
 export const selectErrorMessage = (state: RootState) => state.stay.errorMessage;
-export const selectHasRun = (state:  RootState) => state.stay.hasRun;
+export const selectHasRun = (state: RootState) => state.stay.hasRun;
 
 export default staySlice.reducer;

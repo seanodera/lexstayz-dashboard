@@ -24,8 +24,9 @@ export default function Page() {
     const stay = useAppSelector(selectCurrentStay);
     useEffect(() => {
 
-        dispatch(setCurrentStayFromId(id.toString()));
-
+       if (id && id !== stay.id){
+           dispatch(setCurrentStayFromId(id.toString()));
+       }
     }, [id]);
 
     console.log(stay);
