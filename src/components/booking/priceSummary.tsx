@@ -38,9 +38,9 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
                     }
                 )}
                 </tbody>
-            </table> : <div>Hy</div>}
+            </table> : <div className={'flex justify-between '}></div>}
         </div>
-        <hr/>
+        <hr className={`${stay.type !== 'Hotel' && 'hidden'}`}/>
         <div className={'grid grid-cols-2'}>
             <h4 className={'w-full text-gray-500'}>Per Night</h4>
             <h4 className={'font-medium'}>{stay.currency}  {toMoneyFormat(pricePerNight)}</h4>
