@@ -55,7 +55,6 @@ export const updateBookingStatusAsync = createAsyncThunk(
 
 
                     if (stayData.type === 'Hotel') {
-
                         const {updatedRooms, fullyBookedDates} = reverseProcessHotelBooking(stayData, booking, checkIn, checkOut);
                         console.log('Unavailable: ',updatedRooms, fullyBookedDates);
                         batch.update(stayRef, {rooms: updatedRooms, fullyBookedDates});
