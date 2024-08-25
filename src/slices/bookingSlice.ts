@@ -7,13 +7,15 @@ import {
     orderBy,
     startAfter,
     limit as fbLimit,
-    getCountFromServer, getAggregateFromServer, average, sum, count
+    getCountFromServer, getAggregateFromServer, average, sum, count, getDoc
 } from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
 
 import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync";
-import fetchStatistics from "@/slices/bookingThunks/fetchStatistics"; // Adjust the import according to your project structure
+import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
+import {RootState} from "@/data/store";
+import {doc,} from "@firebase/firestore"; // Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -114,6 +116,28 @@ export const updateBookingCount = createAsyncThunk(
     }
 )
 
+export const setCurrentBookingById = createAsyncThunk('booking/id', async (id:string, {getState}) => {
+    const mainState = getState() as RootState
+    const state = mainState.booking
+    try {
+        const user = getCurrentUser()
+        let booking = state.bookings.find((booking) => booking.id.toString() === id);
+        if (booking){
+            return booking;
+        } else {
+            const bookingRef = doc(firestore, 'hosts', user.uid, 'bookings', id);
+            const bookingData = await getDoc(bookingRef);
+            if (!bookingData.exists()){
+                throw Error()
+            }
+            booking = bookingData.data();
+            return booking;
+        }
+    } catch (error) {
+
+    }
+})
+
 
 const bookingSlice = createSlice({
     name: "booking",
@@ -128,10 +152,6 @@ const bookingSlice = createSlice({
 
         setBookings: (state, action: PayloadAction<any[]>) => {
             state.bookings = action.payload;
-        },
-        setCurrentBookingById: (state, action: PayloadAction<string | number>) => {
-            const currentBooking = state.bookings.find((booking) => booking.id.toString() === action.payload.toString());
-            state.currentBooking = currentBooking ? currentBooking : {};
         },
 
         setIsLoading: (state, action: PayloadAction<boolean>) => {
@@ -206,6 +226,15 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
             }).addCase(fetchStatistics.rejected, (state, action) => {
             state.isLoading = false
+        }).addCase(setCurrentBookingById.pending, (state, action) => {
+            state.isLoading = true;
+        }).addCase(setCurrentBookingById.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.currentBooking = action.payload;
+        }).addCase(setCurrentBookingById.rejected, (state, action) => {
+            state.isLoading = false
+            state.errorMessage = 'Booking Not Found'
+            state.hasError = true
         });
     }
 });
@@ -216,7 +245,6 @@ export const {
     resetBooking,
     updateCart,
     setBookings,
-    setCurrentBookingById,
     setIsLoading,
     setPage,
 } = bookingSlice.actions;
