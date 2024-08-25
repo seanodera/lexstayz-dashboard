@@ -71,7 +71,7 @@ export default function Page() {
         })
     }
 
-    if (!booking || booking.id === undefined || !stay || stay.id === undefined) {
+    if (!booking || booking.id === undefined || !stay || stay.id === undefined || booking.accommodationId !== stay.id) {
         return <div className={'p-4'}><Skeleton active/></div>;
     } else {
         console.log(booking)

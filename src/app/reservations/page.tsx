@@ -15,6 +15,7 @@ import {useEffect, useState} from "react";
 import {getRooms, getTag} from "@/components/common";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {Input} from "@headlessui/react";
+import {useRouter} from "next/navigation";
 
 const {Column} = Table;
 
@@ -29,6 +30,7 @@ export default function BookingPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const bookingCount = useAppSelector(selectBookingsCount)
+    const router = useRouter();
     useEffect(() => {
         if (!fetchedPages.includes(page)) {
 
@@ -57,6 +59,10 @@ export default function BookingPage() {
         dispatch(setPage(pagination.current));
     };
     console.log(bookings.length)
+    const handleRowClick = (record: any) => {
+        console.log("Row clicked:", record);
+        router.push(`/reservations/${record.id}`);
+    }
     return (
         <div className="m-4">
             <div className="flex items-center justify-between">
@@ -80,6 +86,11 @@ export default function BookingPage() {
 
                     loading={isLoading}
                     onChange={handleTableChange}
+                    onRow={(record) => {
+                        return {
+                            onClick: () => handleRowClick(record), // Click row
+                        };
+                    }}
                 >
                     <Column
                         title="Guest"
