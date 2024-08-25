@@ -3,6 +3,7 @@ import {collection, query, where, getCountFromServer} from 'firebase/firestore';
 import {firestore} from '@/lib/firebase';
 import {getServerTime} from '@/lib/utils';
 import {getCurrentUser} from "@/data/hotelsData";
+import {addDays, subDays} from "date-fns";
 
 const FetchStatistics = createAsyncThunk(
     'booking/fetchStatistics',
@@ -26,19 +27,25 @@ const FetchStatistics = createAsyncThunk(
             const onGoingQuery = query(
                 bookingsRef,
                 where('checkInDate', '<=', currentDate.toISOString()),
-                where('checkOutDate', '>=', currentDate.toISOString())
+                where('checkOutDate', '>=', currentDate.toISOString()),
+                where('status', '==', 'Confirmed')
             );
             const checkInQuery = query(
                 bookingsRef,
-                where('checkInDate', '==', currentDate.toISOString())
+                where('checkInDate', '>=', addDays(currentDate, 1).toISOString()),
+                where('checkInDate', '<=', subDays(currentDate, 1).toISOString()),
+                where('status', '==', 'Confirmed')
             );
             const checkOutQuery = query(
                 bookingsRef,
-                where('checkOutDate', '==', currentDate.toISOString())
+                where('checkOutDate', '>', addDays(currentDate, 1).toISOString()),
+                where('checkOutDate', '<', subDays(currentDate, 1).toISOString()),
+                where('status', '==', 'Confirmed')
             );
             const pendingQuery = query(
                 bookingsRef,
                 where('status', '==', 'Pending')
+
             );
             const upComingQuery = query(
                 bookingsRef,
@@ -70,3 +77,4 @@ const FetchStatistics = createAsyncThunk(
 );
 
 export default FetchStatistics;
+

@@ -16,12 +16,14 @@ import {getRooms, getTag} from "@/components/common";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {Input} from "@headlessui/react";
 import {useRouter} from "next/navigation";
+import {selectAllStays, selectCurrentStay} from "@/slices/staySlice";
 
 const {Column} = Table;
 
 export default function BookingPage() {
     const dispatch = useAppDispatch();
     const bookings = useAppSelector(selectTotalBookings);
+    const stays = useAppSelector(selectAllStays)
     const page = useAppSelector(selectPage);
     const limit = useAppSelector(selectLimit);
     const isLoading = useAppSelector(selectIsBookingLoading);
@@ -96,13 +98,9 @@ export default function BookingPage() {
                         title="Guest"
                         dataIndex={['user']}
                         render={(value, record: any, index) => (
-                            <div key={record.id}>
-                                <div className="font-medium">{value.firstName} {value.lastName}</div>
-                                <div className="text-gray-500">{value.email}</div>
-                            </div>
+                            <div key={record.id} className="font-medium">{value.firstName.slice(0,1)}. {value.lastName}</div>
                         )}
-                        sorter={(a, b) => a.user.lastName.localeCompare(b.user.lastName)}
-                    />
+                        sorter={(a, b) => a.user.lastName.localeCompare(b.user.lastName)}></Column>
                     <Column
                         className="text-nowrap"
                         title="Booked at"
@@ -148,6 +146,9 @@ export default function BookingPage() {
                         dataIndex="rooms"
                         render={(value) => value? getRooms(value) : '1'}
                     />
+                    <Column className={'text-nowrap'} title={'Stay'} dataIndex={'accommodationId'} render={(value:string) => {
+                        return stays.find((stay) => stay.id === value)?.name || value;
+                    }}/>
                     <Column
                         className="text-nowrap"
                         title="Guests"
@@ -164,16 +165,16 @@ export default function BookingPage() {
                         }}
                         sorter={(a: any, b: any) => a.totalPrice - b.totalPrice}
                     />
-                    <Column
-                        title=""
-                        dataIndex="id"
-                        fixed={'right'}
-                        render={(value) => (
-                            <Link href={`/reservations/${value}`}>
-                                <Button type="primary">View</Button>
-                            </Link>
-                        )}
-                    />
+                    {/*<Column*/}
+                    {/*    title=""*/}
+                    {/*    dataIndex="id"*/}
+                    {/*    fixed={'right'}*/}
+                    {/*    render={(value) => (*/}
+                    {/*        <Link href={`/reservations/${value}`}>*/}
+                    {/*            <Button type="primary">View</Button>*/}
+                    {/*        </Link>*/}
+                    {/*    )}*/}
+                    {/*/>*/}
                 </Table>
             </Card>
         </div>

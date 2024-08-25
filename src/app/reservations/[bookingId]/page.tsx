@@ -34,7 +34,7 @@ export default function Page() {
 
     useEffect(() => {
 
-        if (booking && booking.accommodationId && booking.accommodationId !== stay.id) {
+        if (booking && booking.accommodationId && (!stay || booking.accommodationId !== stay.id)) {
             dispatch(setCurrentStayFromId(booking.accommodationId));
         }
 

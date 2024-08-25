@@ -58,7 +58,7 @@ const initialState: BookingState = {
         upComing: 0,
     },
     page: 1,
-    limit: 10,
+    limit: 15,
 };
 
 export const fetchBookingsAsync = createAsyncThunk(

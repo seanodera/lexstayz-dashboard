@@ -20,7 +20,7 @@ export default function BookingsPanel() {
 
     useEffect(() => {
         let localBookings = [...bookings];
-        let filtered = localBookings.sort((a: any, b: any) => dayjs(a.createdAt).diff(dayjs(b.createdAt)));
+        let filtered = localBookings.filter(value => value.status !== 'Rejected').sort((a: any, b: any) => dayjs(a.createdAt).diff(dayjs(b.createdAt)));
         setDisplayBookings(filtered)
     }, [bookings]);
     const dispatch = useAppDispatch();
