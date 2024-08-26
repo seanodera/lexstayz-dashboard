@@ -130,11 +130,15 @@ export const setCurrentStayFromId = createAsyncThunk('stays/setCurrentStayFromId
             } else {
                 const staysRef = collection(firestore, 'hosts', user.uid, 'stays');
                 const snapshot = await getDoc(doc(staysRef, id));
-                const data = snapshot.data() as Stay
-                console.log('Gotten from firebase: ', data)
-                // dispatch(setAllStays([...stay.stays, data]))
-                //
-                return data;
+
+               if (snapshot.exists()){
+                   const data = snapshot.data() as Stay
+                   console.log('Gotten from firebase: ', data)
+                   return data;
+               } else {
+                   throw new Error('')
+               }
+
             }
         } catch (error) {
             if (error instanceof Error) {
