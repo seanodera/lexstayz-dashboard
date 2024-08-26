@@ -41,10 +41,18 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                 if (user) {
                     if (!currentUser){
 
-                        dispatch(getUserDetailsAsync(user.uid));
+                        dispatch(getUserDetailsAsync(user.uid)).then((value) => {
+
+                            if (value.requestStatus === 'fulfilled'){
+                                if (!value.payload){
+                                    router.push("/user-information");
+                                }
+                            }
+                        });
                         setUserLoaded(true);
                     }
                 } else {
+
                     if (!isAuthRoute) {
                         console.log('Taking me to login: ContextProvider')
                         setUserLoaded(false);
