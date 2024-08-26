@@ -101,11 +101,11 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
             </div>
 
             <div className={` ${!collapsed && 'w-full'} mb-6`}>
-                <div
+                <Link href={'/accommodations/create'}
                     className={`m-2  flex flex-col justify-center items-center rounded-lg group hover:border-primary hover:border-solid ${!collapsed && 'aspect-video bg-[#f5f5f5] bg-opacity-40'} gap-3`}>
                     <Button type={'primary'} icon={ <PlusOutlined/>} shape={'circle'}/>
                     <div className={`text-current text-sm ${collapsed && 'hidden'}`}>Create Stay</div>
-                </div>
+                </Link>
                 <div className={'flex text-current gap-1 items-center mt-6 justify-center'}>
                     <Avatar shape="circle" className="bg-primary capitalize " >
                         {currentUser?.accountType === 'Individual' ? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}

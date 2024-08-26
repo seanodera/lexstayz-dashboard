@@ -5,13 +5,18 @@ import {auth, firestore} from "@/lib/firebase";
 import {doc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {updateDoc} from "@firebase/firestore";
+import {redirect} from "next/navigation";
+
 
 
 export const getUserDetailsAsync = createAsyncThunk('authentication/user',
     async (id: string) => {
         try {
             const userDetails = await getUserDetails(id)
-
+            if (!userDetails) {
+                redirect('/user-information');
+                throw Error('');
+            }
             return userDetails;
 
         } catch (error) {
@@ -25,6 +30,7 @@ export const signInUserAsync = createAsyncThunk('authentication/signIn',
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const payload = await dispatch(getUserDetailsAsync(userCredential.user.uid));
+
             console.log(payload);
             return userCredential;
         } catch (error) {

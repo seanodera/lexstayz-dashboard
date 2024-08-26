@@ -45,6 +45,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
 
                             if (value.meta.requestStatus === 'fulfilled'){
                                 if (!value.payload){
+                                    console.log(value)
                                     router.push("/user-information");
                                 }
                             }
