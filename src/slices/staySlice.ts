@@ -14,6 +14,7 @@ import {collection, doc} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
 import {getDoc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
+import {state} from "sucrase/dist/types/parser/traverser/base";
 
 
 interface StayState {
@@ -202,6 +203,9 @@ const staySlice = createSlice({
                 if (stay) {
                     stay.rooms.push(action.payload.room);
                 }
+                if (state.currentStay && state.currentStay.id === action.payload.stayId) {
+                    state.currentStay.rooms.push(action.payload);
+                }
             })
             .addCase(addRoomAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -235,7 +239,10 @@ const staySlice = createSlice({
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId);
                 const stay = state.stays[ stayIndex ];
                 if (stay) {
-                    stay.rooms = stay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
+                    state.stays[ stayIndex ].rooms = stay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
+                }
+                if ((state.currentStay && state.currentStay.id === action.payload.stayId) ){
+                    state.currentStay.rooms = state.currentStay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
                 }
             })
             .addCase(updateRoomAsync.rejected, (state, action) => {
@@ -254,6 +261,9 @@ const staySlice = createSlice({
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ].published = true;
                 }
+                if ((state.currentStay && state.currentStay.id === action.payload.id) ){
+                    state.currentStay.published = true;
+                }
             })
             .addCase(publishStayAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -270,6 +280,9 @@ const staySlice = createSlice({
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ].published = false;
+                }
+                if ((state.currentStay && state.currentStay.id === action.payload.id) ){
+                    state.currentStay.published = false;
                 }
             })
             .addCase(unPublishStayAsync.rejected, (state, action) => {
@@ -301,6 +314,9 @@ const staySlice = createSlice({
                 const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ] = action.payload;
+                }
+                if ((state.currentStay && state.currentStay.id === action.payload.id) ){
+                    state.currentStay = action.payload;
                 }
             })
             .addCase(updateStayAsync.rejected, (state, action) => {

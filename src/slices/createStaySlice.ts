@@ -5,7 +5,7 @@ import {doc} from "firebase/firestore";
 import {createFile} from "@/lib/utils";
 import {getCurrentUser, uploadImage} from "@/data/hotelsData";
 import {RootState} from "@/data/store";
-import {fetchStaysAsync} from "@/slices/staySlice";
+import {fetchStaysAsync, setAllStays} from "@/slices/staySlice";
 
 
 export interface Location {
@@ -104,7 +104,7 @@ export const uploadStayAsync = createAsyncThunk('createStay/uploadStay', async (
     dispatch,
     rejectWithValue
 }) => {
-    const {createStay} = getState() as RootState;
+    const {createStay, stay} = getState() as RootState;
     try {
         const user = getCurrentUser();
         const userDocRef = doc(firestore, 'hosts', user.uid);
@@ -123,7 +123,8 @@ export const uploadStayAsync = createAsyncThunk('createStay/uploadStay', async (
             return await uploadImage(imageFile, `${docRef.id}/image-${index}`);
         }));
         await updateDoc(docRef, {images: imageUrls});
-        await dispatch(fetchStaysAsync)
+        // dispatch(fetchStaysAsync)
+        dispatch(setAllStays([...stay.stays, {rooms: [],...processedStay, images: imageUrls, poster: posterURL}]))
         return {...processedStay, images: imageUrls, poster: posterURL};
     } catch (error) {
         if (error instanceof Error) {

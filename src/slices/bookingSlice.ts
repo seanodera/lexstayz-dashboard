@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {addDays, differenceInDays} from "date-fns";
 import {
     getDocs,
     collection,
@@ -7,7 +6,7 @@ import {
     orderBy,
     startAfter,
     limit as fbLimit,
-    getCountFromServer, getAggregateFromServer, average, sum, count, getDoc
+    getAggregateFromServer, average, sum, count, getDoc
 } from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
