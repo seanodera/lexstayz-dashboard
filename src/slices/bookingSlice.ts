@@ -14,7 +14,8 @@ import {firestore} from "@/lib/firebase";
 import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync";
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {RootState} from "@/data/store";
-import {doc,} from "@firebase/firestore"; // Adjust the import according to your project structure
+import {doc,} from "@firebase/firestore";
+import {state} from "sucrase/dist/types/parser/traverser/base"; // Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -198,6 +199,12 @@ const bookingSlice = createSlice({
                 if (index !== -1) {
                     state.bookings[ index ] = {
                         ...action.payload.booking,
+                        status: action.payload.status,
+                    };
+                }
+                if (state.currentBooking.id === action.payload.booking.id){
+                    state.currentBooking = {
+                        ...state.currentBooking,
                         status: action.payload.status,
                     };
                 }

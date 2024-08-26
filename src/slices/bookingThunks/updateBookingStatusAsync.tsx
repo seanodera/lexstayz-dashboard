@@ -87,12 +87,11 @@ export const updateBookingStatusAsync = createAsyncThunk(
                     })
                 }
             }
-            batch.update(hostDoc, {status: status, acceptedAt: new Date().toString(), paymentData: paymentData,})
-            batch.update(userDoc, {status: status, acceptedAt: new Date().toString(), paymentData: paymentData,})
+            batch.update(hostDoc, {status: status, acceptedAt: serverDate.toISOString(), paymentData: paymentData,})
+            batch.update(userDoc, {status: status, acceptedAt: serverDate.toISOString(), paymentData: paymentData,})
 
             await batch.commit();
-            let newBooking = {...booking};
-            newBooking.status = status
+            let newBooking = {...booking, status: status, acceptedAt: serverDate.toISOString(), paymentData: paymentData,};
             return {booking: newBooking, status}
         } catch (error) {
             if (error instanceof Error) {
