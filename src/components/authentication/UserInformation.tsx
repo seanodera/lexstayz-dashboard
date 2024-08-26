@@ -47,7 +47,6 @@ export default function UserInformation(){
             }
         }
         await createUser(details, user.uid);
-        dispatch(updateUserAsync({details: details}))
         router.push('/');
         }
     }

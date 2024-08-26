@@ -43,7 +43,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
 
                         dispatch(getUserDetailsAsync(user.uid)).then((value) => {
 
-                            if (value.requestStatus === 'fulfilled'){
+                            if (value.meta.requestStatus === 'fulfilled'){
                                 if (!value.payload){
                                     router.push("/user-information");
                                 }
