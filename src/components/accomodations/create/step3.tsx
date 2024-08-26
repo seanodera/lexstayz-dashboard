@@ -29,7 +29,7 @@ export default function CreateStep3() {
     // },);
     useEffect(() => {
         dispatch(updateRules({
-            checkInTime: checkOutTime,
+            checkInTime: checkInTime,
             checkOutTime: checkOutTime,
             minAge: minAge,
             smoking: smoking,
@@ -49,7 +49,10 @@ export default function CreateStep3() {
                 <div>
                     <h3 className={'text-nowrap'}>Check In Time</h3>
                     <TimePicker format={'HH:mm'} value={dayjs(stay.checkInTime, 'HH:mm')}
-                                onChange={(_value, timeString) => setCheckInTime(timeString.toString())}/>
+                                onChange={(_value, timeString) => {
+
+                                    setCheckInTime(timeString.toString());
+                                }}/>
                 </div>
                 <div>
                     <h3 className={'text-nowrap'}>Check Out Time</h3>
