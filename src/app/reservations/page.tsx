@@ -144,7 +144,7 @@ export default function BookingPage() {
                         className="text-nowrap"
                         title="Rooms"
                         dataIndex="rooms"
-                        render={(value) => value? getRooms(value) : '1'}
+                        render={(value) => value? getRooms(value) : 'Home'}
                     />
                     <Column className={'text-nowrap'} title={'Stay'} dataIndex={'accommodationId'} render={(value:string) => {
                         return stays.find((stay) => stay.id === value)?.name || value;
