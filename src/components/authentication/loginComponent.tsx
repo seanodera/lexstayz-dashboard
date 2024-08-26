@@ -17,7 +17,8 @@ export default function LoginComponent() {
 
     const handleLogin = () => {
         dispatch(signInUserAsync({email:email, password:password}))
-            .then((actionResult:any) => {
+            .then((actionResult) => {
+
                 router.push('/')
             }).catch((error:any) => {
 

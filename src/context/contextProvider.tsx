@@ -20,7 +20,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
 import {selectIsLoading} from "@/slices/staySlice";
 
-export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/user-information'];
 
 export default function ContextProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -65,6 +65,8 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         };
         if (!userLoaded){
         initializeAuth();
+        } else if (userLoaded && !currentUser){
+            router.push('/user-information');
         }
     });
 

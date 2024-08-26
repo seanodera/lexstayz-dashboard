@@ -13,10 +13,6 @@ export const getUserDetailsAsync = createAsyncThunk('authentication/user',
     async (id: string) => {
         try {
             const userDetails = await getUserDetails(id)
-            if (!userDetails) {
-                redirect('/user-information');
-                throw Error('');
-            }
             return userDetails;
 
         } catch (error) {
