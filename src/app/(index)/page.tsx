@@ -20,7 +20,7 @@ export default function Home() {
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
-    return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10 bg-white'}>
+    return <div className={'overflow-y-scroll overflow-x-hidden pt-4 pb-10 px-10 h-full bg-white'}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>
         <div className={'grid grid-cols-1 lg:grid-cols-3 gap-4'}>
@@ -78,7 +78,7 @@ export default function Home() {
             <Overview/>
         </div>
 
-        <div className={'grid grid-cols-3 mt-4 gap-4'}>
+        <div className={'grid grid-cols-3 mt-16 gap-4'}>
             <div className={'col-span-2'}>
                 <BookingsPanel/>
             </div>

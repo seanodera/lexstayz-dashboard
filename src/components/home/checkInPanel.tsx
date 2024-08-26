@@ -20,7 +20,7 @@ export default function CheckInPanel() {
             console.log('Check In: ' ,checkIn,' Today: ', today , checkIn === today)
             return checkIn === today;
         })
-        console.log(filtered)
+
         setDisplayBookings(filtered);
     }, [bookings]);
 
@@ -28,7 +28,7 @@ export default function CheckInPanel() {
         header: 'bg-lightGray'
     }} title={<h2 className={'mb-0'}>Check ins</h2>}>
 
-    <div className={'grid grid-cols-2 grid-rows-4'}>
+    <div className={'grid grid-cols-2 gap-4'}>
             {displayBookings.map((booking, index) => (<ListItem key={index} id={booking.id} user={booking.user} stay={stays.find((value:any) => value.id === booking.accommodationId)}/>))}
         </div>
     </Card>
@@ -36,7 +36,7 @@ export default function CheckInPanel() {
 
 
 function ListItem({ id, user, stay }: { id: string; user: any; stay: any }) {
-    console.log(stay);
+
     return (
         <div className="border border-solid border-gray-200 p-4 rounded-lg flex justify-between items-center group hover:border-primary">
             <div>

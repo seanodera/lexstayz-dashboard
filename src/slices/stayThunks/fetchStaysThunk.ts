@@ -11,13 +11,13 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import {getCurrentUser} from "@/data/hotelsData";
 import {query} from "firebase/firestore";
 import {getServerTime} from "@/lib/utils";
+import {firestore} from "@/lib/firebase";
 
 export const fetchStaysAsync = createAsyncThunk(
     'stay/fetchStays',
     async (_, {rejectWithValue}) => {
         try {
             const user = getCurrentUser();
-            const firestore = getFirestore();
             const userDocRef = doc(firestore, 'hosts', user.uid);
             const staysRef = collection(userDocRef, 'stays');
             const publicStaysRef = collection(firestore, 'stays');
@@ -43,7 +43,7 @@ export const fetchStaysAsync = createAsyncThunk(
             }
             pubStays.forEach((doc) => {
                 if (doc.type === 'Home') {
-                    if (doc.bookedDates > 0 && doc.bookedDates.includes(serverTime.toISOString().split('T')[ 0 ])) {
+                    if (doc.bookedDates && doc.bookedDates.includes(serverTime.toISOString().split('T')[ 0 ])) {
                         occupancy.booked += 1
                     } else {
                         occupancy.vacant += 1

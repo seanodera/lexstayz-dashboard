@@ -67,7 +67,6 @@ export const fetchPendingTransactions = createAsyncThunk(
                let pending = countData.data().totalAmount
                let transactions = pendingTransactions.filter((value) => {
                    const availableDate = new Date(value.availableDate)
-                   console.log(value)
                    if (isAfter( today, availableDate)){
                        batch.set(doc(availableRef, value.id),value)
                        batch.delete(doc(pendingRef, value.id))

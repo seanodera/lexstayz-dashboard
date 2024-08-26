@@ -57,10 +57,9 @@ export default function BookingsPanel() {
         }} >
             <Column title={'Guest'} dataIndex={['user']} render={(value, record: any, index) => {
 
-                return <div key={index}>
-                    <div className={'font-medium'}>{value.firstName} {value.lastName}</div>
-                    <div className={'text-gray-500'}>{value.email}</div>
-                </div>;
+                return (
+                    <div key={record.id} className="font-medium">{value.firstName.slice(0,1)}. {value.lastName}</div>
+                );
             }
             }/>
             <Column className={'text-nowrap'} title={'Check-In'} dataIndex={'checkInDate'}
