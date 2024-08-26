@@ -71,7 +71,14 @@ export default function CreateStep4() {
             <Field className={'col-span-1'}>
                 <Label className={'text-gray-500 font-bold  mb-0'}>Pre-Date Cancellation</Label>
                 <Select disabled={!(stay.cancellation.cancellation === 'Other')} value={String(stay.cancellation.preDate)}
-                        onChange={(value) => setPreDate(Boolean(value.target.value))}
+                        onChange={(e) => {
+                            let value = e.target.value
+                            if (value === 'true'){
+                                setPreDate(true);
+                            } else {
+                                setPreDate(false)
+                            }
+                        }}
                         className={'appearance-none py-1 rounded w-full active:border-primary disabled:bg-gray-100 disabled:border-gray-300 disabled:text-gray-400'}>
                     <option value={String(true)}>Before Check In</option>
                     <option value={String(false)}>After Booking Date</option>
