@@ -65,8 +65,6 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         };
         if (!userLoaded){
         initializeAuth();
-        } else if (userLoaded && !currentUser){
-            router.push('/user-information');
         }
     });
 
