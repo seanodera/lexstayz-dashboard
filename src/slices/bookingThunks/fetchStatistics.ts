@@ -32,16 +32,17 @@ const FetchStatistics = createAsyncThunk(
             );
             const checkInQuery = query(
                 bookingsRef,
-                where('checkInDate', '>=', addDays(currentDate, 1).toISOString()),
-                where('checkInDate', '<=', subDays(currentDate, 1).toISOString()),
+                where('checkInDate', '>=', subDays(currentDate, 1).toISOString()), // Past to today
+                where('checkInDate', '<=', addDays(currentDate, 1).toISOString()), // Today to future
                 where('status', '==', 'Confirmed')
             );
             const checkOutQuery = query(
                 bookingsRef,
-                where('checkOutDate', '>', addDays(currentDate, 1).toISOString()),
-                where('checkOutDate', '<', subDays(currentDate, 1).toISOString()),
+                where('checkOutDate', '>', subDays(currentDate, 1).toISOString()), // Past to today
+                where('checkOutDate', '<', addDays(currentDate, 1).toISOString()), // Today to future
                 where('status', '==', 'Confirmed')
             );
+
             const pendingQuery = query(
                 bookingsRef,
                 where('status', '==', 'Pending')
