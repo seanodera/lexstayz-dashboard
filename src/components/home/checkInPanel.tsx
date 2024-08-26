@@ -18,7 +18,7 @@ export default function CheckInPanel() {
             let checkIn = dayjs(value.checkInDate).toISOString().split("T")[0];
             let today = dayjs().toISOString().split("T")[0];
             console.log('Check In: ' ,checkIn,' Today: ', today , checkIn === today)
-            return checkIn === today;
+            return checkIn === today && value.status === 'Confirmed';
         })
 
         setDisplayBookings(filtered);
