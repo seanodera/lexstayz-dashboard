@@ -1,9 +1,8 @@
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {collection, query, where, getCountFromServer} from 'firebase/firestore';
-import {firestore} from '@/lib/firebase';
-import {getServerTime} from '@/lib/utils';
-import {getCurrentUser} from "@/data/hotelsData";
-import {format} from "date-fns";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { collection, query, where, getCountFromServer } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
+import { getServerTime } from '@/lib/utils';
+import { getCurrentUser } from "@/data/hotelsData";
 
 const FetchStatistics = createAsyncThunk(
     'booking/fetchStatistics',
@@ -28,8 +27,8 @@ const FetchStatistics = createAsyncThunk(
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
-                where('checkInDate', '<', currentDate.toISOString()),  // Ongoing if check-in was before today
-                where('checkOutDate', '>', currentDate.toISOString()),  // and check-out is after today
+                where('checkInDate', '<', `${todayDate}T00:00:00.000Z`),  // Ongoing if check-in was before today
+                where('checkOutDate', '>', `${todayDate}T23:59:59.999Z`),  // and check-out is after today
                 where('status', '==', 'Confirmed')
             );
 
@@ -49,11 +48,13 @@ const FetchStatistics = createAsyncThunk(
                 where('checkOutDate', '<=', `${todayDate}T23:59:59.999Z`)
             );
 
+            // Pending Query: Bookings with 'Pending' status
             const pendingQuery = query(
                 bookingsRef,
                 where('status', '==', 'Pending')
             );
 
+            // Upcoming Query: Bookings with a check-in date after today
             const upComingQuery = query(
                 bookingsRef,
                 where('checkInDate', '>', `${todayDate}T23:59:59.999Z`),
