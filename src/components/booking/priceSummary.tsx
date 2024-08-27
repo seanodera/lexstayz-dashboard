@@ -2,6 +2,7 @@
 import {Button, Card} from "antd";
 import {getCountry, getServerTime, toMoneyFormat} from "@/lib/utils";
 import {useEffect, useState} from "react";
+import {differenceInDays} from "date-fns";
 
 
 export default function PriceSummary({booking, stay}: { booking: any, stay: any }) {
@@ -17,9 +18,9 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
         }
         setPricePerNight(_pricePerNight);
     }, []);
-    return <Card title={'Price Summary'} className={'rounded-xl'}>
+    return <Card title={'Booking Summary'} className={'rounded-xl'}>
         <div className={''}>
-            {stay.type === 'Hotel'? <table className={'table-auto text-nowrap'}>
+            {stay.type === 'Hotel' ? <table className={'table-auto text-nowrap'}>
                 <thead>
                 <tr className={'border-0 border-b border-solid'}>
                     <th className={'w-full text-start'}>Room Name</th>
@@ -45,9 +46,11 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
             </table> : <div className={'flex justify-between '}></div>}
         </div>
         <hr className={`${stay.type !== 'Hotel' && 'hidden'}`}/>
-        <div className={'grid grid-cols-2'}>
+        <div className={'grid grid-cols-2 gap-4'}>
             <h4 className={'w-full text-gray-500'}>Per Night</h4>
-            <h4 className={'font-medium'}>{stay.currency}  {toMoneyFormat(pricePerNight)}</h4>
+            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.totalPrice / differenceInDays(booking.checkOutDate, booking.checkInDate))}</h4>
+            <h4 className={'text-gray-500'}>Subtotal({differenceInDays(booking.checkOutDate, booking.checkInDate)} Night)</h4>
+            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.totalPrice)}</h4>
             <h4 className={'text-gray-500'}>Lexstayz Fees</h4>
             <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.fees / booking.usedRate)}</h4>
             <h4 className={'text-gray-500'}>Total</h4>
