@@ -1,9 +1,9 @@
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {collection, query, where, getCountFromServer} from 'firebase/firestore';
-import {firestore} from '@/lib/firebase';
-import {getServerTime} from '@/lib/utils';
-import {getCurrentUser} from "@/data/hotelsData";
-import {addDays, subDays} from "date-fns";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { collection, query, where, getCountFromServer } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
+import { getServerTime } from '@/lib/utils';
+import { getCurrentUser } from "@/data/hotelsData";
+import { format } from "date-fns";
 
 const FetchStatistics = createAsyncThunk(
     'booking/fetchStatistics',
@@ -12,6 +12,9 @@ const FetchStatistics = createAsyncThunk(
             const user = getCurrentUser();
             const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
             const currentDate = await getServerTime();
+
+            // Extract date part from currentDate (YYYY-MM-DD)
+            const todayDate = format(currentDate, 'yyyy-MM-dd');
 
             // Initialize stats object
             let stats = {
@@ -22,7 +25,6 @@ const FetchStatistics = createAsyncThunk(
                 upComing: 0,
             };
 
-
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
@@ -30,37 +32,39 @@ const FetchStatistics = createAsyncThunk(
                 where('checkOutDate', '>=', currentDate.toISOString()),
                 where('status', '==', 'Confirmed')
             );
+
+            // Check-in Query: Match checkInDate to today's date
             const checkInQuery = query(
                 bookingsRef,
-                where('checkInDate', '>=', subDays(currentDate, 1).toISOString()), // Past to today
-                where('checkInDate', '<=', addDays(currentDate, 1).toISOString()), // Today to future
-                where('status', '==', 'Confirmed')
+                where('status', '==', 'Confirmed'),
+                where('checkInDate', '>=', `${todayDate}T00:00:00.000Z`),
+                where('checkInDate', '<=', `${todayDate}T23:59:59.999Z`)
             );
+
+            // Check-out Query: Match checkOutDate to today's date
             const checkOutQuery = query(
                 bookingsRef,
-                where('checkOutDate', '>', subDays(currentDate, 1).toISOString()), // Past to today
-                where('checkOutDate', '<', addDays(currentDate, 1).toISOString()), // Today to future
-                where('status', '==', 'Confirmed')
+                where('status', '==', 'Confirmed'),
+                where('checkOutDate', '>=', `${todayDate}T00:00:00.000Z`),
+                where('checkOutDate', '<=', `${todayDate}T23:59:59.999Z`)
             );
 
             const pendingQuery = query(
                 bookingsRef,
                 where('status', '==', 'Pending')
-
             );
+
             const upComingQuery = query(
                 bookingsRef,
                 where('checkInDate', '>', currentDate.toISOString())
             );
 
             // Aggregate counts from the server
-
             const onGoingCount = await getCountFromServer(onGoingQuery);
             const checkInCount = await getCountFromServer(checkInQuery);
             const checkOutCount = await getCountFromServer(checkOutQuery);
             const pendingCount = await getCountFromServer(pendingQuery);
             const upComingCount = await getCountFromServer(upComingQuery);
-
 
             // Set stats based on server results
             stats.onGoing = onGoingCount.data().count;
@@ -68,7 +72,8 @@ const FetchStatistics = createAsyncThunk(
             stats.checkOut = checkOutCount.data().count;
             stats.pending = pendingCount.data().count;
             stats.upComing = upComingCount.data().count;
-            console.log(stats)
+
+            console.log(stats);
             return stats;
         } catch (e) {
             console.error('Error fetching statistics:', e);
@@ -78,4 +83,3 @@ const FetchStatistics = createAsyncThunk(
 );
 
 export default FetchStatistics;
-

@@ -90,7 +90,7 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                     <div className={`font-semibold text-lg  ${collapsed ? 'hidden' : ''}`}>LexStayz</div>
                 </Link>
 
-                <div className={'mx-4 mb-4'}>
+                <div className={'mx-2 mb-4'}>
                     <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>
                 </div>
                 <Menu theme="dark" className={'flex flex-col h-full flex-1'} mode="inline"
@@ -104,7 +104,7 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                 <Link href={'/accommodations/create'}
                     className={`m-2  flex flex-col justify-center items-center rounded-lg group hover:border-primary hover:border-solid ${!collapsed && 'aspect-video bg-[#f5f5f5] bg-opacity-40'} gap-3`}>
                     <Button type={'primary'} icon={ <PlusOutlined/>} shape={'circle'}/>
-                    <div className={`text-current text-sm ${collapsed && 'hidden'}`}>Create Stay</div>
+                    <div className={`text-white text-sm ${collapsed && 'hidden'}`}>Create Stay</div>
                 </Link>
                 <div className={'flex text-current gap-1 items-center mt-6 justify-center'}>
                     <Avatar shape="circle" className="bg-primary capitalize " >

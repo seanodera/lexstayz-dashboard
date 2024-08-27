@@ -38,6 +38,137 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
             "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        // Dots patterns
+        'dots-light': 'radial-gradient(currentColor 0.5px, transparent 0.5px)',
+        'dots-regular': 'radial-gradient(currentColor 1px, transparent 1px)',
+        'dots-bold': 'radial-gradient(currentColor 2px, transparent 2px)',
+        'dots-display': 'radial-gradient(currentColor 8px, transparent 8px)',
+
+        // Cross dots patterns
+        'cross-dots-light': 'radial-gradient(currentColor 0.5px, transparent 0.5px), radial-gradient(currentColor 0.5px, transparent 0.5px)',
+        'cross-dots-regular': 'radial-gradient(currentColor 1px, transparent 1px), radial-gradient(currentColor 1px, transparent 1px)',
+        'cross-dots-bold': 'radial-gradient(currentColor 2px, transparent 2px), radial-gradient(currentColor 2px, transparent 2px)',
+        'cross-dots-display': 'radial-gradient(currentColor 8px, transparent 8px), radial-gradient(currentColor 8px, transparent 8px)',
+
+        // Diagonal lines patterns
+        'diagonal-lines-light': 'repeating-linear-gradient(-45deg, currentColor, currentColor 0.25px, transparent 0, transparent 50%)',
+        'diagonal-lines-regular': 'repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%)',
+        'diagonal-lines-bold': 'repeating-linear-gradient(-45deg, currentColor 0, currentColor 2px, transparent 0, transparent 50%)',
+        'diagonal-lines-display': 'repeating-linear-gradient(-45deg, currentColor 0, currentColor 8px, transparent 0, transparent 50%)',
+
+        // Cross grid patterns
+        'cross-grid-light': `
+          linear-gradient(180deg, white 80%, transparent 40%) 0 10px, 
+          linear-gradient(90deg, currentColor 1%, transparent 1%) 5px 0,
+          linear-gradient(90deg, white 80%, transparent 40%) 10px 0, 
+          linear-gradient(180deg, currentColor 1%, transparent 1%) 5px 5px
+        `,
+        'cross-grid-regular': `
+          linear-gradient(180deg, white 79%, transparent 0) 0 11px, 
+          linear-gradient(90deg, currentColor 3%, transparent 0) 5px 0,
+          linear-gradient(90deg, white 79%, transparent 0) 11px 0, 
+          linear-gradient(180deg, currentColor 3%, transparent 0) 5px 5px
+        `,
+        'cross-grid-bold': `
+          linear-gradient(180deg, white 77%, transparent 0) 0 12px, 
+          linear-gradient(90deg, currentColor 5%, transparent 0) 5px 0,
+          linear-gradient(90deg, white 77%, transparent 0) 12px 0, 
+          linear-gradient(180deg, currentColor 5%, transparent 0) 5px 5px
+        `,
+        'cross-grid-display': `
+          linear-gradient(180deg, white 70%, transparent 0) 0 15px, 
+          linear-gradient(90deg, currentColor 10%, transparent 0) 5px 0,
+          linear-gradient(90deg, white 70%, transparent 0) 15px 0, 
+          linear-gradient(180deg, currentColor 10%, transparent 0) 5px 5px
+        `,
+
+        // Dog ear patterns
+        'dog-ear-light': `
+          linear-gradient(180deg, white 70%, transparent 0) 0 20px, 
+          linear-gradient(90deg, currentColor 1%, transparent 1%) 5px 0,
+          linear-gradient(90deg, white 70%, transparent 0) 20px 0, 
+          linear-gradient(180deg, currentColor 1%, transparent 1%) 5px 5px
+        `,
+        'dog-ear-regular': `
+          linear-gradient(180deg, white 70%, transparent 0) 0 20px, 
+          linear-gradient(90deg, currentColor 3%, transparent 1%) 5px 0,
+          linear-gradient(90deg, white 70%, transparent 0) 20px 0, 
+          linear-gradient(180deg, currentColor 3%, transparent 1%) 5px 5px
+        `,
+        'dog-ear-bold': `
+          linear-gradient(180deg, white 70%, transparent 0) 0 20px, 
+          linear-gradient(90deg, currentColor 5%, transparent 1%) 5px 0,
+          linear-gradient(90deg, white 70%, transparent 0) 20px 0, 
+          linear-gradient(180deg, currentColor 5%, transparent 1%) 5px 5px
+        `,
+        'dog-ear-display': `
+          linear-gradient(180deg, white 70%, transparent 0) 0 20px, 
+          linear-gradient(90deg, currentColor 10%, transparent 1%) 5px 0,
+          linear-gradient(90deg, white 70%, transparent 0) 20px 0, 
+          linear-gradient(180deg, currentColor 10%, transparent 1%) 5px 5px
+        `,
+
+        // Line dots patterns
+        'line-dots-light': `
+          radial-gradient(currentColor 1.5px, transparent 1.5px),
+          linear-gradient(0deg, currentColor, currentColor 1%, transparent 0, transparent)
+        `,
+        'line-dots-regular': `
+          radial-gradient(currentColor 3.25px, transparent 3.5px),
+          linear-gradient(0deg, currentColor, currentColor 5%, transparent 0)
+        `,
+        'line-dots-bold': `
+          radial-gradient(currentColor 5px, transparent 5px),
+          linear-gradient(0deg, currentColor, currentColor 5%, transparent 0)
+        `,
+        'line-dots-display': `
+          radial-gradient(currentColor 8px, transparent 8px),
+          linear-gradient(0deg, currentColor, currentColor 10%, transparent 0)
+        `,
+      },
+      backgroundSize: {
+        // For Dots
+        'dots-light': '10px 10px',
+        'dots-regular': '10px 10px',
+        'dots-bold': '9px 9px',
+        'dots-display': '32px 32px',
+
+        // For Cross Dots
+        'cross-dots-light': '20px 20px',
+        'cross-dots-regular': '20px 20px',
+        'cross-dots-bold': '30px 30px',
+        'cross-dots-display': '40px 40px',
+
+        // For Diagonal Lines
+        'diagonal-lines-light': '12px 12px',
+        'diagonal-lines-regular': '12px 12px',
+        'diagonal-lines-bold': '12px 12px',
+        'diagonal-lines-display': '24px 24px',
+
+        // For Cross Grid
+        'cross-grid': '50px 50px',
+
+        // For Dog Ear
+        'dog-ear': '50px 50px',
+
+        // For Line Dots
+        'line-dots-light': '26px 26px',
+        'line-dots-regular': '26px 26px',
+        'line-dots-bold': '34px 34px',
+        'line-dots-display': '44px 44px',
+      },
+      backgroundPosition: {
+        // Cross Dots Position
+        'cross-dots-light': '0 0, 10px 10px',
+        'cross-dots-regular': '0 0, 10px 10px',
+        'cross-dots-bold': '0 0, 15px 15px',
+        'cross-dots-display': '0 0, 20px 20px',
+
+        // Line Dots Position
+        'line-dots-light': '-5px 0, 0 13px',
+        'line-dots-regular': '-5px 0, 0 14px',
+        'line-dots-bold': '-4px 0, 0 18px',
+        'line-dots-display': '-11px 0, 0 24px',
       },
       aspectRatio: {
         '20/7': '20 / 7'
@@ -46,7 +177,6 @@ const config: Config = {
         '1/4': '25%',
         '1/2': '50%',
         '3/4': '75%',
-        8: '8rem'
       },
       width: {
         '1/24': '4.16666666667%',

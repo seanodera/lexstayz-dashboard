@@ -24,18 +24,19 @@ export default function CheckInPanel() {
         setDisplayBookings(filtered);
     }, [bookings]);
 
-    return <Card classNames={{
-        header: 'bg-lightGray'
-    }} title={<h2 className={'mb-0'}>Check ins</h2>}>
-
-    <div className={'grid grid-cols-2 gap-4'}>
-            {displayBookings.map((booking, index) => (<ListItem key={index} id={booking.id} user={booking.user} stay={stays.find((value:any) => value.id === booking.accommodationId)}/>))}
+    return <Card className={'bg-white bg-opacity-70 shadow-md shadow-primary-100'} classNames={{
+        // header: 'bg-lightGray bg-opacity-70',
+    }}>
+        <h2 className={'mb-4'}>Check ins</h2>
+        <div className={'grid grid-cols-2 gap-4'}>
+            {displayBookings.map((booking, index) => (<ListItem key={index} id={booking.id} user={booking.user}
+                                                                stay={stays.find((value: any) => value.id === booking.accommodationId)}/>))}
         </div>
     </Card>
 }
 
 
-function ListItem({ id, user, stay }: { id: string; user: any; stay: any }) {
+function ListItem({id, user, stay }: { id: string; user: any; stay: any }) {
 
     return (
         <div className="border border-solid border-gray-200 p-4 rounded-lg flex justify-between items-center group hover:border-primary">
