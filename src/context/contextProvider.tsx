@@ -14,7 +14,7 @@ import {
     selectCurrentUser,
     selectIsAuthLoading
 } from "@/slices/authenticationSlice";
-import {browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
+import {browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
@@ -36,7 +36,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     useEffect(() => {
         const isAuthRoute = authRoutes.includes(pathname);
         const initializeAuth = async () => {
-            await setPersistence(auth, browserSessionPersistence);
+            await setPersistence(auth, browserLocalPersistence);
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     if (!currentUser){
