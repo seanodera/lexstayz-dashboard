@@ -14,7 +14,7 @@ const FetchStatistics = createAsyncThunk(
             const currentDate = await getServerTime();
 
             // Extract date part from currentDate (YYYY-MM-DD)
-            const todayDate = format(currentDate, 'yyyy-MM-dd');
+            const todayDate = currentDate.toISOString().split('T')[0];
 
             // Initialize stats object
             let stats = {
@@ -28,8 +28,8 @@ const FetchStatistics = createAsyncThunk(
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
-                where('checkInDate', '<=', currentDate.toISOString()),
-                where('checkOutDate', '>=', currentDate.toISOString()),
+                where('checkInDate', '<=',`${todayDate}T00:00:00.000Z` ),
+                where('checkOutDate', '>=', `${todayDate}T23:59:59.999Z`),
                 where('status', '==', 'Confirmed')
             );
 
@@ -56,7 +56,7 @@ const FetchStatistics = createAsyncThunk(
 
             const upComingQuery = query(
                 bookingsRef,
-                where('checkInDate', '>', currentDate.toISOString()),
+                where('checkInDate', '>', `${todayDate}T23:59:59.999Z`),
                 where('status', '==', 'Confirmed'),
             );
 
