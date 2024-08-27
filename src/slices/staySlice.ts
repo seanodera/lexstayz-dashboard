@@ -189,6 +189,9 @@ const staySlice = createSlice({
             .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
                 state.isLoading = false;
                 state.stays.push(action.payload);
+                if (state.currentStay.id === action.payload.id){
+                    state.currentStay = action.payload
+                }
             })
             .addCase(uploadStayAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -208,7 +211,7 @@ const staySlice = createSlice({
                     stay.rooms.push(action.payload.room);
                 }
                 if (state.currentStay && state.currentStay.id === action.payload.stayId) {
-                    state.currentStay.rooms.push(action.payload);
+                    state.currentStay.rooms.push(action.payload.room);
                 }
             })
             .addCase(addRoomAsync.rejected, (state, action) => {

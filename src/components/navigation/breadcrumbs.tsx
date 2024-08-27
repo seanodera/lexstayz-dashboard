@@ -1,7 +1,7 @@
 'use client'
 import {Breadcrumb} from 'antd';
 import Link from 'next/link';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 import {useAppSelector} from '@/hooks/hooks';
 import {selectCurrentBooking} from '@/slices/bookingSlice';
@@ -34,9 +34,7 @@ const Breadcrumbs: React.FC = () => {
                 path = currentBooking?.bookingCode || snippet.slice(0, 6).toUpperCase();
             }
         }
-        if (currentPath !== path) {
-            setCurrentPath(path);
-        }
+
         return {
             key: url,
             title: <Link href={url}>{path}</Link>,
@@ -50,12 +48,37 @@ const Breadcrumbs: React.FC = () => {
         },
         ...breadcrumbItems,
     ];
-    if (pathname === '/' && currentPath !== 'Dashboard') {
-        setCurrentPath('Dashboard');
-    }
+    useEffect(() => {
+        console.log(pathSnippets.length);
+        if (pathSnippets.length > 1) {
+
+            let snippet = pathSnippets[pathSnippets.length - 1];
+            let path = snippet;
+
+                const prevSnippet = pathSnippets[ pathSnippets.length - 2 ];
+                if (prevSnippet === 'accommodations' && snippet !== 'create') {
+                    path = currentStay?.name || 'Stay';
+                } else if (prevSnippet === 'rooms' && snippet !== 'create') {
+                    path = getRoomNameById(snippet);
+                } else if (prevSnippet === 'reservations') {
+                    path = currentBooking?.bookingCode || snippet.slice(0, 6).toUpperCase();
+                }
+            setCurrentPath(path);
+        } else if (pathSnippets.length === 1){
+            setCurrentPath(pathSnippets[0])
+        } else {
+            if (pathname === '/' && currentPath !== 'Dashboard') {
+                setCurrentPath('Dashboard');
+            } else {
+                setCurrentPath(pathname);
+            }
+        }
+
+    }, [pathname]);
+
     return (
         <div>
-            <h2 className={'font-semibold mb-0'}>{currentPath}</h2>
+            <h2 className={'font-semibold mb-0 capitalize'}>{currentPath}</h2>
             <Breadcrumb className="items-center" separator={<BsChevronRight/>} items={items}/>
         </div>
     );
