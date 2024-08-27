@@ -28,8 +28,8 @@ const FetchStatistics = createAsyncThunk(
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
-                where('checkInDate', '<=',`${todayDate}T00:00:00.000Z` ),
-                where('checkOutDate', '>=', `${todayDate}T23:59:59.999Z`),
+                where('checkInDate', '<', currentDate.toISOString()),  // Ongoing if check-in was before today
+                where('checkOutDate', '>', currentDate.toISOString()),  // and check-out is after today
                 where('status', '==', 'Confirmed')
             );
 
