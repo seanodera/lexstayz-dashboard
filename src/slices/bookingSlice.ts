@@ -15,7 +15,8 @@ import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStat
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {RootState} from "@/data/store";
 import {doc,} from "@firebase/firestore";
-import {state} from "sucrase/dist/types/parser/traverser/base"; // Adjust the import according to your project structure
+
+// Adjust the import according to your project structure
 
 interface BookingState {
     cart: any[];
@@ -246,7 +247,7 @@ const bookingSlice = createSlice({
 });
 
 
-export {updateBookingStatusAsync}
+export {updateBookingStatusAsync, fetchStatistics}
 export const {
     resetBooking,
     updateCart,

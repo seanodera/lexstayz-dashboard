@@ -8,13 +8,15 @@ import {RootState} from "@/data/store";
 import dayjs from "dayjs";
 import {addDays, isSameDay} from "date-fns";
 import {getServerTime} from "@/lib/utils";
+import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 
 
 export const updateBookingStatusAsync = createAsyncThunk(
     'booking/updateStatus',
     async ({status, booking}: { status: 'Pending' | 'Confirmed' | 'Canceled' | 'Rejected' | 'Completed', booking: any }, {
         getState,
-        rejectWithValue
+        rejectWithValue,
+        dispatch,
     }) => {
         const state = getState() as RootState
         const stayState = state.stay
@@ -92,6 +94,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
 
             await batch.commit();
             let newBooking = {...booking, status: status, acceptedAt: serverDate.toISOString(), paymentData: paymentData,};
+            dispatch(fetchStatistics)
             return {booking: newBooking, status}
         } catch (error) {
             if (error instanceof Error) {

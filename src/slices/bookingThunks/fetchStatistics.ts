@@ -1,9 +1,9 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { collection, query, where, getCountFromServer } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
-import { getServerTime } from '@/lib/utils';
-import { getCurrentUser } from "@/data/hotelsData";
-import { format } from "date-fns";
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {collection, query, where, getCountFromServer} from 'firebase/firestore';
+import {firestore} from '@/lib/firebase';
+import {getServerTime} from '@/lib/utils';
+import {getCurrentUser} from "@/data/hotelsData";
+import {format} from "date-fns";
 
 const FetchStatistics = createAsyncThunk(
     'booking/fetchStatistics',
@@ -56,7 +56,8 @@ const FetchStatistics = createAsyncThunk(
 
             const upComingQuery = query(
                 bookingsRef,
-                where('checkInDate', '>', currentDate.toISOString())
+                where('checkInDate', '>', currentDate.toISOString()),
+                where('status', '==', 'Confirmed'),
             );
 
             // Aggregate counts from the server

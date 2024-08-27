@@ -67,7 +67,7 @@ const Breadcrumbs: React.FC = () => {
         } else if (pathSnippets.length === 1){
             setCurrentPath(pathSnippets[0])
         } else {
-            if (pathname === '/' && currentPath !== 'Dashboard') {
+            if (pathname === '/') {
                 setCurrentPath('Dashboard');
             } else {
                 setCurrentPath(pathname);

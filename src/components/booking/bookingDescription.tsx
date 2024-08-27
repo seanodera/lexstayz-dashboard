@@ -2,6 +2,7 @@
 import {Button, Card, Image, Skeleton} from "antd";
 import {dateReader} from "@/lib/utils";
 import React from "react";
+import Link from "next/link";
 
 
 export default function BookingDescription({ booking, stay }: { booking: any, stay: any }) {
@@ -13,7 +14,7 @@ export default function BookingDescription({ booking, stay }: { booking: any, st
                 <Image className={'rounded-xl aspect-video'} src={stay.poster}/>
                 <h3 className={' font-bold mb-0'}>{stay.name}</h3>
                 <h4 className={'font-bold text-gray-500 mb-3'}>{stay.location.district}</h4>
-                <Button block type={'default'} size={'middle'}>View Stay</Button>
+                <Link href={`/accommodations/${stay.id}`}><Button block type={'default'} size={'middle'}>View Stay</Button></Link>
             </div>
             <div className={'col-span-3'}>
                 <h3 className={'font-semibold mb-0'}>Id</h3>
