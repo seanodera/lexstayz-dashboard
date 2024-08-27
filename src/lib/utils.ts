@@ -207,13 +207,17 @@ export function extractFirebaseStoragePath(downloadURL: string): string  {
 }
 
 export function calculateStayLength(date1:string, date2:string){
+    // Get the start of the day for both dates
+    const startOfDate1 = startOfDay(date1);
+    const startOfDate2 = startOfDay(date2);
+
     // Calculate the difference in milliseconds
-    const diffInMilliseconds = differenceInMilliseconds(date1, date2);
+    const diffInMs = differenceInMilliseconds(startOfDate1, startOfDate2);
 
-// Convert milliseconds to days
-    const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+    // Calculate the total difference in days
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
-// Round up to the nearest whole day
-    return Math.ceil(diffInDays)
+    // Round up if there's any partial day
+    return Math.ceil(diffInDays);
 }
 
