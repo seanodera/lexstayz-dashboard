@@ -1,4 +1,5 @@
 import {countries} from "country-data";
+import { differenceInMilliseconds } from "date-fns";
 
 
 export function getRandomInt({max, min = 0}: { max: number, min?: number }) {
@@ -204,3 +205,15 @@ export function extractFirebaseStoragePath(downloadURL: string): string  {
         throw Error("Invalid Firebase Storage URL")
     }
 }
+
+export function calculateStayLength(date1:string, date2:string){
+    // Calculate the difference in milliseconds
+    const diffInMilliseconds = differenceInMilliseconds(date1, date2);
+
+// Convert milliseconds to days
+    const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+
+// Round up to the nearest whole day
+    return Math.ceil(diffInDays)
+}
+

@@ -1,6 +1,6 @@
 'use client'
 import {Button, Card} from "antd";
-import {getCountry, getServerTime, toMoneyFormat} from "@/lib/utils";
+import {calculateStayLength, getCountry, getServerTime, toMoneyFormat} from "@/lib/utils";
 import {useEffect, useState} from "react";
 import {differenceInDays} from "date-fns";
 
@@ -49,7 +49,7 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
         <div className={'grid grid-cols-2 gap-4'}>
             <h4 className={'w-full text-gray-500'}>Per Night</h4>
             <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.totalPrice / differenceInDays(booking.checkOutDate, booking.checkInDate))}</h4>
-            <h4 className={'text-gray-500'}>Subtotal({differenceInDays(booking.checkOutDate, booking.checkInDate)} Night)</h4>
+            <h4 className={'text-gray-500'}>Subtotal({calculateStayLength(booking.checkOutDate, booking.checkInDate)} Night)</h4>
             <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.totalPrice)}</h4>
             <h4 className={'text-gray-500'}>Lexstayz Fees</h4>
             <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.fees / booking.usedRate)}</h4>
