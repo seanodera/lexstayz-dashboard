@@ -1,12 +1,8 @@
 'use client'
-import {Badge, Card, Col, Divider, Flex, Progress, Row, Statistic, Typography} from "antd";
-import {BookFilled, BookOutlined, WalletFilled, WalletOutlined} from "@ant-design/icons";
-import {toMoneyFormat} from "@/lib/utils";
+import {Card, Progress,} from "antd";
 import CountUp from "react-countup";
-import NotificationsPanel from "@/components/home/NotificationsPanel";
 import BookingsPanel from "@/components/home/bookingsPanel";
 import CheckInPanel from "@/components/home/checkInPanel";
-import ReviewsPanel from "@/components/home/ReviewsPanel";
 import {useAppSelector} from "@/hooks/hooks";
 
 import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} from "@/slices/transactionsSlice";
@@ -15,12 +11,10 @@ import {selectBookingStats} from "@/slices/bookingSlice";
 import {selectOccupancy} from "@/slices/staySlice";
 
 export default function Home() {
-    const pendingBalance = useAppSelector(selectPendingBalance)
-    const availableBalance = useAppSelector(selectAvailableBalance)
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
-    return <div className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-7 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
+    return <div className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-4 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>
         <div className={'grid grid-cols-1 lg:grid-cols-3 gap-4'}>

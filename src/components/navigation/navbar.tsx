@@ -9,7 +9,7 @@ import NavDrawer from "@/components/navigation/navDrawer";
 export default function Navbar() {
 const [showMenu, setShowMenu] = useState(false);
     return <Layout.Header
-        className="bg-white border-b border-[#f1f1f1] flex items-center justify-between sticky top-0 z-10 leading-none shadow-md shadow-primary-200 px-7">
+        className="bg-white border-b border-[#f1f1f1] flex items-center justify-between sticky top-0 z-10 leading-none shadow-md shadow-primary-200 px-4 md:px-10">
         <div className={'flex items-center justify-between w-full'}>
             <div className="flex items-center gap-2">
                 <Breadcrumbs/>
