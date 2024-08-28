@@ -20,7 +20,7 @@ export default function Home() {
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
-    return <div className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
+    return <div className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-7 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>
         <div className={'grid grid-cols-1 lg:grid-cols-3 gap-4'}>
@@ -78,8 +78,8 @@ export default function Home() {
             <Overview/>
         </div>
 
-        <div className={'grid grid-cols-3 mt-16 gap-4'}>
-            <div className={'col-span-2'}>
+        <div className={'grid grid-cols-1 md:grid-cols-3 mt-16 gap-4'}>
+            <div className={'md:col-span-2'}>
                 <BookingsPanel/>
             </div>
             <CheckInPanel/>
@@ -99,7 +99,7 @@ const Overview = () => {
                 <div className={'flex justify-between items-center'}>
                     <div className={''}>
                         <h3 className={'text-gray-500 text-lg'}>Total Balance</h3>
-                        <CountUp className={'font-semibold text-2xl'} start={0}
+                        <CountUp className={'font-semibold text-xl md:text-2xl'} start={0}
                                  end={pendingBalance + availableBalance}
                                  duration={2}
                                  separator=","
@@ -107,7 +107,7 @@ const Overview = () => {
                                  prefix="USD "
                         />
                     </div>
-                    <Divider type={'vertical'} className={'text-gray-500 h-full'}/>
+
                     <div>
                         <h3 className={'text-gray-500 font-medium'}>Available Balance</h3>
                         <CountUp className={'font-semibold text-xl'} start={0}
@@ -121,7 +121,7 @@ const Overview = () => {
                 </div>
                 <div className={'flex justify-between items-center'}>
                     <div>
-                        <h3 className={'text-gray-500 font-medium'}>Avg Earnings per Booking</h3>
+                        <h3 className={'text-gray-500 font-medium'}>Revenue per Booking</h3>
                         <CountUp className={'font-semibold text-xl'} start={0}
                                  end={averageEarnings}
                                  duration={2}
@@ -130,7 +130,7 @@ const Overview = () => {
                                  prefix="USD "
                         />
                     </div>
-                    <Divider type={'vertical'} className={'text-gray-500 h-full'}/>
+
                     <div>
                         <h3 className={'text-gray-500 font-medium'}>Pending Balance</h3>
                         <CountUp className={'font-semibold text-xl'} start={0}

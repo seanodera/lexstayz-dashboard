@@ -104,14 +104,16 @@ export default function FocusSelector() {
             }
         ]
     }}>
-        <div className="flex gap-1 text-dark px-2 py-2 items-center">
-            <Avatar shape="circle" className="bg-primary capitalize">
-                {currentUser?.accountType === 'Individual'? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}
-            </Avatar>
-            <div>
-                <div
-                    className="font-medium">{currentUser?.accountType === 'Individual' ? `${currentUser?.firstName} ${currentUser?.lastName}` : currentUser?.companyName}</div>
-                <div className="py-0 text-gray-500 text-sm">{currentStay?.name || 'All Stays'}</div>
+        <div className="flex max-md:w-full max-md:justify-between gap-1 text-dark px-2 py-2 items-center">
+            <div className={'flex gap-2'}>
+                <Avatar shape="circle" className="bg-primary capitalize">
+                    {currentUser?.accountType === 'Individual'? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}
+                </Avatar>
+                <div>
+                    <div
+                        className="font-medium">{currentUser?.accountType === 'Individual' ? `${currentUser?.firstName} ${currentUser?.lastName}` : currentUser?.companyName}</div>
+                    <div className="py-0 text-gray-500 text-sm">{currentStay?.name || 'All Stays'}</div>
+                </div>
             </div>
             <span className="text-end ms-2"><BsChevronDown/></span>
         </div>

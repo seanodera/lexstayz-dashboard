@@ -80,7 +80,7 @@ const renderMenuItem = (item: any) => (
 export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, setCollapsed: any}) {
     const pathname = usePathname();
     const currentUser = useAppSelector(selectCurrentUser);
-    return <Layout.Sider className={`h-screen flex flex-col flex-1  max-md:hidden z-10`} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
+    return <Layout.Sider className={`h-screen flex flex-col flex-1  max-md:hidden z-10`} breakpoint={'md'} collapsible theme={'dark'} collapsed={collapsed} onCollapse={(value: boolean) => {setCollapsed(value)}}>
         <div className={'flex flex-col justify-between h-screen pb-8  w-full'}>
             <div className={' w-full'}>
                 <Link href={'/'}
