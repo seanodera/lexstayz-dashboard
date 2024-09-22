@@ -83,12 +83,12 @@ export async function getCountry() {
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
         const ip = ipData.ip;
-
+        console.log(ipData);
         // Fetch the country using the IP address
         const countryResponse = await fetch(`https://ipapi.co/${ip}/json/`);
         const countryData = await countryResponse.json();
         const countryCode = countryData.country;
-
+        console.log(countryData);
         // Get country information from country-data package
         const country = countries[countryCode];
 
@@ -168,4 +168,14 @@ export const getExchangeRate = async (fromCurrency:string, toCurrency:string) =>
 };
 
 
-
+export async function getServerTime() {
+    try {
+        const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+        const data = await response.json();
+        console.log(data)
+        return new Date(data.utc_datetime);
+    } catch (error) {
+        console.error('Error fetching server time:', error);
+        return null;
+    }
+}

@@ -7,6 +7,7 @@ import {RootState} from "@/data/store";
 import {writeBatch} from "@firebase/firestore";
 import dayjs from "dayjs";
 import {isAfter} from "date-fns";
+import {getServerTime} from "@/lib/utils";
 
 interface Transaction {
     id: string,
@@ -56,24 +57,30 @@ export const fetchPendingTransactions = createAsyncThunk(
                 averageAmount: average('amount')
 
             })
-            const today = new Date()
-
-            const batch = writeBatch(firestore)
-            let pending = countData.data().totalAmount
-            let transactions = pendingTransactions.filter((value) => {
-                const availableDate = new Date(value.availableDate)
-                console.log(value)
-                if (isAfter( today, availableDate)){
-                    batch.set(doc(availableRef, value.id),value)
-                    batch.delete(doc(pendingRef, value.id))
-                    pending = pending - value.amount;
-                }
-                return !isAfter( today, availableDate)
-            })
-            await batch.commit()
-            if (transactions.length !== countData.data().countOfDocs){
-                dispatch(fetchPendingTransactions)
+            const today = await getServerTime()
+            if (!today){
+                throw new Error('Error Getting Server time')
             }
+
+               const batch = writeBatch(firestore)
+               let pending = countData.data().totalAmount
+               let transactions = pendingTransactions.filter((value) => {
+                   const availableDate = new Date(value.availableDate)
+                   console.log(value)
+                   if (isAfter( today, availableDate)){
+                       batch.set(doc(availableRef, value.id),value)
+                       batch.delete(doc(pendingRef, value.id))
+                       pending = pending - value.amount;
+                   }
+                   return !isAfter( today, availableDate)
+               })
+               await batch.commit()
+               if (transactions.length !== countData.data().countOfDocs){
+                   dispatch(fetchPendingTransactions)
+               }
+
+
+
             const availableSnapshot = await getDocs(availableRef)
             const availableTransactions = availableSnapshot.docs.map((doc) => doc.data())
             let availableData = await getAggregateFromServer(availableRef, {

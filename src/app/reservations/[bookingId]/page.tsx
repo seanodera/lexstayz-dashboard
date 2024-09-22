@@ -100,7 +100,7 @@ export default function Page() {
                         booking={booking}
                         stay={stay}/>}</Col>
                 <Col span={8} className={'space-y-4'}>
-                    <ContactCard guest={guest}/>
+                    <ContactCard guest={guest} booking={booking}/>
                     <PriceSummary booking={booking} stay={stay}/>
                 </Col>
             </Row>

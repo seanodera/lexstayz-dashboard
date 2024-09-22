@@ -1,6 +1,6 @@
 'use client'
-import {Card} from "antd";
-import {toMoneyFormat} from "@/lib/utils";
+import {Button, Card} from "antd";
+import {getCountry, getServerTime, toMoneyFormat} from "@/lib/utils";
 import {useEffect, useState} from "react";
 
 
@@ -30,9 +30,9 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
                             <td className={'capitalize'}><h4>{room.name}</h4></td>
                             <td className={'font-bold'}>{room.numRooms}</td>
                             <td className={'flex flex-col'}><span
-                                className={'text-gray-500 font-medium'}>${toMoneyFormat(room.price, {})}</span>
+                                className={'text-gray-500 font-medium'}>{stay.currency}{toMoneyFormat(room.price, {})}</span>
                                 <span
-                                    className={'text-primary font-medium'}>${toMoneyFormat(room.numRooms * room.price, {})}</span>
+                                    className={'text-primary font-medium'}>{stay.currency}{toMoneyFormat(room.numRooms * room.price, {})}</span>
                             </td>
                         </tr>
                     }
@@ -43,13 +43,13 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
         <hr/>
         <div className={'grid grid-cols-2'}>
             <h4 className={'w-full text-gray-500'}>Per Night</h4>
-            <h4 className={'font-medium'}>$  {toMoneyFormat(pricePerNight,{})}</h4>
+            <h4 className={'font-medium'}>{stay.currency}  {toMoneyFormat(pricePerNight,{})}</h4>
             <h4 className={'text-gray-500'}>Lexstayz Fees</h4>
-            <h4 className={'font-medium'}>$ {toMoneyFormat(0.035 * booking.totalPrice, {})}</h4>
+            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.fees / booking.usedRate, {})}</h4>
             <h4 className={'text-gray-500'}>Total</h4>
-            <h4 className={'font-medium'}>$ {toMoneyFormat(booking.totalPrice * 1.035, {})}</h4>
+            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.grandTotal / booking.usedRate, {})}</h4>
             <h4 className={'font-gray-500'}>Converted Amount</h4>
-            <h4 className={'font-medium'}>{booking.currency} {toMoneyFormat(booking.totalPrice * 1.035 * booking.usedRate, {})}</h4>
+            <h4 className={'font-medium'}>{booking.currency} {toMoneyFormat(booking.grandTotal, {})}</h4>
         </div>
     </Card>
 }

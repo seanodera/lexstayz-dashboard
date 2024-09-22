@@ -1,9 +1,9 @@
 'use client'
-import {Card} from "antd";
+import {Card, Skeleton} from "antd";
 import React from "react";
 
 
-export default function ContactCard({guest}: {guest: any}) {
+export default function ContactCard({guest, booking}: {guest: any, booking: any}) {
 
     return <Card className={'rounded-xl'} title={'Guest'}>
         <div className={'grid grid-cols-2'}>
@@ -17,7 +17,7 @@ export default function ContactCard({guest}: {guest: any}) {
             </div>
         </div>
         <h3 className={'text-gray-500 font-medium mb-0'}>Email</h3>
-        <p className={''}>{guest.email}</p>
+        {booking.status === 'Pending'? <Skeleton.Input /> : <p className={''}>{guest.email}</p>}
         <h3 className={'text-gray-500 font-medium mb-0'}>Phone Number</h3>
         <p className={''}>{guest.phone}</p>
         <h3 className={'text-gray-500 font-medium mb-0'}>Country</h3>
