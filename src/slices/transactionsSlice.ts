@@ -66,6 +66,7 @@ export const fetchPendingTransactions = createAsyncThunk(
                 }
                 return !dayjs(value.availableDate).isAfter(today)
             })
+            await batch.commit()
             if (transactions.length !== pendingTransactions.length){
                 dispatch(fetchPendingTransactions)
             }
