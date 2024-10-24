@@ -6,7 +6,7 @@ import {
     orderBy,
     startAfter,
     limit as fbLimit,
-    getAggregateFromServer, average, sum, count, getDoc
+    getAggregateFromServer, average, sum, count, getDoc, getCountFromServer
 } from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
@@ -14,7 +14,7 @@ import {firestore} from "@/lib/firebase";
 import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync";
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {RootState} from "@/data/store";
-import {doc,} from "@firebase/firestore";
+import {doc, where,} from "@firebase/firestore";
 
 // Adjust the import according to your project structure
 
@@ -23,7 +23,7 @@ interface BookingState {
     cartTotal: number;
     bookings: any[];
     currentBooking: any;
-    pendingTransactions:any[]
+    pendingTransactions: any[]
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
@@ -64,71 +64,53 @@ const initialState: BookingState = {
 
 export const fetchBookingsAsync = createAsyncThunk(
     'booking/fetchBookings',
-    async ({page, limit}: { page: number, limit: number }, {getState,dispatch}) => {
+    async ({page, limit}: { page: number, limit: number }, {getState, dispatch}) => {
         const state = getState() as { booking: BookingState };
-        dispatch(updateBookingCount())
         if (state.booking.fetchedPages.includes(page)) {
             return {bookings: [], page}; // Return empty if already fetched
         }
 
         const user = getCurrentUser();
-        const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
+        const bookingsRef = collection(firestore, 'bookings');
         let bookingsQuery;
 
         if (state.booking.bookings.length > 0) {
             const lastBooking = state.booking.bookings[ state.booking.bookings.length - 1 ];
             bookingsQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 orderBy('createdAt', 'desc'),
                 startAfter(lastBooking.createdAt),
                 fbLimit(limit)
             );
         } else {
-            bookingsQuery = query(bookingsRef, orderBy('createdAt', 'desc'), fbLimit(limit));
+            bookingsQuery = query(bookingsRef, where('hostId', '==', user.uid), orderBy('createdAt', 'desc'), fbLimit(limit));
         }
+        const hostsBookings = query(bookingsRef, where('hostId', '==', user.uid),)
 
         const snapshot = await getDocs(bookingsQuery);
-        const bookings = snapshot.docs.map(doc => doc.data());
+        const bookingCountData = await getCountFromServer(hostsBookings)
 
-        return {bookings, page};
+        const bookings = snapshot.docs.map(doc => doc.data());
+        console.log(bookings);
+        const bookingCount = bookingCountData.data().count
+        return {bookings, page, bookingCount};
     }
 );
 
 
-export const updateBookingCount = createAsyncThunk(
-    'booking/updateBookingCount',
-    async (_) => {
-
-        const user = getCurrentUser();
-        const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
-        let countData = await getAggregateFromServer(bookingsRef, {
-            countOfDocs: count(),
-            totalAmount: sum('totalPrice'),
-            averageAmount: average('totalPrice')
-
-        })
-
-        return {
-            bookingCount: countData.data().countOfDocs,
-            totalAmount: countData.data().totalAmount,
-            averageAmount: countData.data().averageAmount || 0,
-        };
-
-    }
-)
-
-export const setCurrentBookingById = createAsyncThunk('booking/id', async (id:string, {getState}) => {
+export const setCurrentBookingById = createAsyncThunk('booking/id', async (id: string, {getState}) => {
     const mainState = getState() as RootState
     const state = mainState.booking
     try {
         const user = getCurrentUser()
         let booking = state.bookings.find((booking) => booking.id.toString() === id);
-        if (booking){
+        if (booking) {
             return booking;
         } else {
-            const bookingRef = doc(firestore, 'hosts', user.uid, 'bookings', id);
+            const bookingRef = doc(firestore, 'bookings', id);
             const bookingData = await getDoc(bookingRef);
-            if (!bookingData.exists()){
+            if (!bookingData.exists()) {
                 throw Error()
             }
             booking = bookingData.data();
@@ -171,9 +153,13 @@ const bookingSlice = createSlice({
             })
             .addCase(fetchBookingsAsync.fulfilled, (state, action: PayloadAction<{
                 bookings: any[],
-                page: number
+                page: number,
+                bookingCount?: number,
             }>) => {
-                const {page, bookings} = action.payload;
+                const {page, bookings, bookingCount} = action.payload;
+               if (bookingCount) {
+                   state.bookingCount = bookingCount;
+               }
                 if (page === 1) {
                     state.bookings = bookings;
                 } else {
@@ -182,6 +168,7 @@ const bookingSlice = createSlice({
                 if (!state.fetchedPages.includes(page)) {
                     state.fetchedPages.push(page);
                 }
+
                 state.isLoading = false;
             })
             .addCase(fetchBookingsAsync.rejected, (state, action) => {
@@ -203,7 +190,7 @@ const bookingSlice = createSlice({
                         status: action.payload.status,
                     };
                 }
-                if (state.currentBooking.id === action.payload.booking.id){
+                if (state.currentBooking.id === action.payload.booking.id) {
                     state.currentBooking = {
                         ...state.currentBooking,
                         status: action.payload.status,
@@ -214,16 +201,6 @@ const bookingSlice = createSlice({
                 state.isLoading = false;
                 state.hasError = true;
                 state.errorMessage = action.error.message || 'Failed to update booking';
-            })
-            .addCase(updateBookingCount.pending, (state, action) => {
-                state.isLoading = true;
-            }).addCase(updateBookingCount.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.bookingCount = action.payload.bookingCount;
-
-            })
-            .addCase(updateBookingCount.rejected, (state, action) => {
-                state.isLoading = false
             })
             .addCase(fetchStatistics.pending, (state) => {
                 state.isLoading = true

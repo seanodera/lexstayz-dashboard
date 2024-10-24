@@ -9,7 +9,7 @@ const FetchStatistics = createAsyncThunk(
     async () => {
         try {
             const user = getCurrentUser();
-            const bookingsRef = collection(firestore, 'hosts', user.uid, 'bookings');
+            const bookingsRef = collection(firestore, 'bookings');
             const currentDate = await getServerTime();
 
             // Extract date part from currentDate (YYYY-MM-DD)
@@ -27,6 +27,7 @@ const FetchStatistics = createAsyncThunk(
             // Queries for statistics
             const onGoingQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 where('checkInDate', '<', `${todayDate}T00:00:00.000Z`),  // Ongoing if check-in was before today
                 where('checkOutDate', '>', `${todayDate}T23:59:59.999Z`),  // and check-out is after today
                 where('status', '==', 'Confirmed')
@@ -35,6 +36,7 @@ const FetchStatistics = createAsyncThunk(
             // Check-in Query: Match checkInDate to today's date
             const checkInQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 where('status', '==', 'Confirmed'),
                 where('checkInDate', '>=', `${todayDate}T00:00:00.000Z`),
                 where('checkInDate', '<=', `${todayDate}T23:59:59.999Z`)
@@ -43,6 +45,7 @@ const FetchStatistics = createAsyncThunk(
             // Check-out Query: Match checkOutDate to today's date
             const checkOutQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 where('status', '==', 'Confirmed'),
                 where('checkOutDate', '>=', `${todayDate}T00:00:00.000Z`),
                 where('checkOutDate', '<=', `${todayDate}T23:59:59.999Z`)
@@ -51,12 +54,14 @@ const FetchStatistics = createAsyncThunk(
             // Pending Query: Bookings with 'Pending' status
             const pendingQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 where('status', '==', 'Pending')
             );
 
             // Upcoming Query: Bookings with a check-in date after today
             const upComingQuery = query(
                 bookingsRef,
+                where('hostId', '==', user.uid),
                 where('checkInDate', '>', `${todayDate}T23:59:59.999Z`),
                 where('status', '==', 'Confirmed'),
             );

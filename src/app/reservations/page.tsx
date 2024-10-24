@@ -158,7 +158,7 @@ export default function BookingPage(){
             title={() => (
                 <div className="flex items-center justify-between">
                     <h1 className="font-semibold">Bookings</h1>
-                    <div className={'flex gap-2'}>
+                    <div className={'flex gap-2 '}>
                         <Input className={'rounded-lg'} placeholder="Search Bookings"
                                onChange={(e) => handleSearch(e.target.value)} />
                         {/*<Button type={'primary'} onClick={() => handleSearch()}>Search</Button>*/}

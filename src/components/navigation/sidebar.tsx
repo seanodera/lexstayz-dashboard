@@ -38,7 +38,7 @@ const menuItems = [
         href: "/reservations"
     },
     {
-        key: "Cashier",
+        key: "cashier",
         icon: <WalletOutlined />,
         label: "Cashier",
         href: "/cashier"
