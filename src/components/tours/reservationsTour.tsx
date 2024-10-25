@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {Tour, TourStepProps} from "antd";
+import {useTour} from "@/context/tourContext";
 
 
 const tourSteps = [
@@ -11,43 +12,43 @@ const tourSteps = [
     {
         title: 'Reservation',
         description: 'Click on a reservation to see more about it',
-        target: undefined
+        target: 'tour-reservation-row',
     },
     {
         title: 'Reservation',
         description: 'This is the reservation details. The email and phone become visible after you accept the reservation',
-        target: undefined,
+        target: 'tour-reservation-details',
     },
     {
         title: 'Booking Summary',
         description: 'This is the receipt of the transactions done',
-        target: undefined
+        target: 'tour-reservation-summary'
     },
     {
         title: 'Fees',
         description: 'This is the total fees for this booking paid to us',
-        target: undefined,
+        target: 'tour-reservation-fees',
     },
     {
         title: 'Total',
         description: 'This is the total amount including the lexstayz fees',
-        target: undefined,
+        target: 'tour-reservation-total',
     },
     {
         title: 'Converted Amount',
         description: 'This is the total amount converted to the users currency. Lexstayz shows the users the costs in their local currency',
-        target: undefined,
+        target: 'tour-reservation-converted',
     },
     {
         title: 'Actions',
         description: 'This are the available actions for this reservation. By confirming the reservation is then accountable to the defined cancellation policy',
-        target: undefined,
+        target: 'tour-reservation-actions',
     }
 ]
 
 
 export default function ReservationsTour(){
-    const [open, setOpen] = useState(true);
+    const { isReservationsOpen, closeReservationsTour } = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -56,16 +57,27 @@ export default function ReservationsTour(){
             ...step,
             target: step.target && document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
+        if (!processedSteps[currentStep].target && currentStep !== 0) {
+            const prevStepTarget = processedSteps[currentStep - 1].target;
+
+            if (prevStepTarget) {
+                const prevElement = prevStepTarget();
+
+                if (prevElement) {
+                    prevElement.click();
+                }
+            }
+        }
         console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
     }, [currentStep]);
 
 
-    return <Tour  open={open}
+    return <Tour  open={isReservationsOpen}
                   placement={'bottomLeft'}
                   current={currentStep}
                   onChange={(current) => setCurrentStep(current)}
                   steps={processed}
-                  onFinish={() => setOpen(false)}
-                  onClose={() => setOpen(false)}  />
+                  onFinish={closeReservationsTour}
+                  onClose={closeReservationsTour}  />
 }

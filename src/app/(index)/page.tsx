@@ -9,7 +9,6 @@ import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} fro
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {selectBookingStats} from "@/slices/bookingSlice";
 import {selectOccupancy} from "@/slices/staySlice";
-import DashboardTour from "@/components/tours/dashboardTour";
 
 export default function Home() {
     const userDetails = useAppSelector(selectCurrentUser)
@@ -79,7 +78,7 @@ export default function Home() {
             </div>
             <CheckInPanel/>
         </div>
-        <DashboardTour/>
+
     </div>;
 }
 

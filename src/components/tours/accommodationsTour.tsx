@@ -1,5 +1,7 @@
 import {Tour, TourStepProps} from "antd"
 import {useEffect, useState} from "react";
+import {usePathname} from "next/navigation";
+import {useTour} from "@/context/tourContext";
 
 
 const tourSteps = [
@@ -37,25 +39,36 @@ const tourSteps = [
 
 
 export default function AccommodationsTour(){
-    const [open, setOpen] = useState(true);
+    const { isAccommodationsOpen, closeAccommodationsTour } = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
-
+    const pathname = usePathname()
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
             target: document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
+        if (!processedSteps[currentStep].target && currentStep !== 0) {
+            const prevStepTarget = processedSteps[currentStep - 1].target;
+
+            if (prevStepTarget) {
+                const prevElement = prevStepTarget();
+
+                if (prevElement) {
+                    prevElement.click();
+                }
+            }
+        }
         console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
-    }, [currentStep]);
+    }, [currentStep,pathname]);
 
 
-    return <Tour  open={open}
+    return <Tour  open={isAccommodationsOpen}
                   placement={'bottomLeft'}
                   current={currentStep}
                   onChange={(current) => setCurrentStep(current)}
                   steps={processed}
-                  onFinish={() => setOpen(false)}
-                  onClose={() => setOpen(false)}  />
+                  onFinish={closeAccommodationsTour}
+                  onClose={closeAccommodationsTour}  />
 }

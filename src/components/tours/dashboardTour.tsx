@@ -1,5 +1,6 @@
 import {Tour, TourStepProps} from "antd";
 import {useEffect, useState} from "react";
+import {useTour} from "@/context/tourContext";
 
 
 const tourSteps = [
@@ -36,7 +37,7 @@ const tourSteps = [
 
 
 export default function DashboardTour(){
-    const [open, setOpen] = useState(true);
+    const { isDashboardOpen, closeDashboardTour } = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -50,11 +51,11 @@ export default function DashboardTour(){
     }, [currentStep]);
 
 
-    return <Tour  open={open}
-                  placement={'bottomLeft'}
-                  current={currentStep}
-                  onChange={(current) => setCurrentStep(current)}
-                  steps={processed}
-                  onFinish={() => setOpen(false)}
-                  onClose={() => setOpen(false)}  />
+    return <Tour   open={isDashboardOpen}
+                   placement={'bottomLeft'}
+                   current={currentStep}
+                   onChange={(current) => setCurrentStep(current)}
+                   steps={processed}
+                   onFinish={closeDashboardTour}
+                   onClose={closeDashboardTour} />
 }

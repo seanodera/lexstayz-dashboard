@@ -77,7 +77,7 @@ export default function Page() {
                         </div>
                         {getTag(booking.status)}
                     </div>
-                    <div className="flex gap-2 mt-4 md:mt-0">
+                    <div id={'tour-reservation-actions'} className="flex gap-2 mt-4 md:mt-0">
                         {booking.status === 'Pending' && (
                             <>
                                 <Button ghost danger icon={<CloseOutlined/>}

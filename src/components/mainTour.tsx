@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Tour, Button, TourStepProps} from 'antd';
+import {usePathname} from "next/navigation";
+import {useTour} from "@/context/tourContext";
 
 
 const tourSteps = [
@@ -36,27 +38,40 @@ const tourSteps = [
 ];
 
 const MainTour = () => {
-    const [open, setOpen] = useState(false);
+    const { openMainTour, isMainOpen, closeMainTour } = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
+    const pathname = usePathname()
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
             target: document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
+
+        if (!processedSteps[currentStep].target && currentStep !== 0) {
+            const prevStepTarget = processedSteps[currentStep - 1].target;
+
+            if (prevStepTarget) {
+                const prevElement = prevStepTarget();
+
+                if (prevElement) {
+                    prevElement.click();
+                }
+            }
+        }
         console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
-    }, [currentStep]);
+    }, [currentStep, pathname]);
     return (
         <>
             <Button type="primary" onClick={() => {
-                setOpen(true);
+                openMainTour();
                 setCurrentStep(0)
             }}>
                 Start Tour
             </Button>
-            <Tour open={open} placement={'bottomLeft'} current={currentStep}
-                  onChange={(current) => setCurrentStep(current)} steps={processed} onClose={() => setOpen(false)}
+            <Tour  open={isMainOpen} placement={'bottomLeft'} current={currentStep}
+                  onChange={(current) => setCurrentStep(current)} steps={processed} onClose={closeMainTour}
                   indicatorsRender={(current, total) => {
 
                       return (

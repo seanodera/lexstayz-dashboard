@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function BookingDescription({ booking, stay }: { booking: any, stay: any }) {
 
     return (
-        <Card className="rounded-xl">
+        <Card id={'tour-reservation-details'} className="rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {/* Left Column: Stay Information */}
                 <div className="md:col-span-2">
