@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Tour, Button, Menu } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, {useEffect, useState} from 'react';
+import { Tour, Button, TourStepProps } from 'antd';
+
 
 const tourSteps = [
     {
@@ -32,20 +32,32 @@ const tourSteps = [
 
 const MainTour = () => {
     const [open, setOpen] = useState(false);
-
+    const [processed, setProcessed] = useState<TourStepProps[]>([]);
+    const [currentStep,setCurrentStep] = useState(0);
+    useEffect(() => {
+        const processedSteps = tourSteps.map((step) => ({
+            ...step,
+            target: document.getElementById(step.target)? () => document.getElementById(step.target)! : undefined,
+        }));
+        console.log('processed steps', processedSteps);
+        setProcessed(processedSteps);
+    }, [currentStep]);
     return (
         <>
-            <Button type="primary" onClick={() => setOpen(true)}>
+            <Button type="primary" onClick={() => {
+                setOpen(true);
+                setCurrentStep(0)
+            }}>
                 Start Tour
             </Button>
-            <Tour open={open} steps={tourSteps.map((step) => ({
-                ...step,
-                target: document.getElementById(step.target)
-            }))} onClose={() => setOpen(false)} indicatorsRender={(current, total) => (
-                <span>
-            {current + 1} / {total}
-          </span>
-            )} />
+            <Tour open={open} placement={'bottomLeft'} current={currentStep} onChange={(current) => setCurrentStep(current)} steps={processed} onClose={() => setOpen(false)} indicatorsRender={(current, total) => {
+
+                return (
+                    <span>
+                {current + 1} / {total}
+              </span>
+                );
+            }} />
         </>
     );
 };
