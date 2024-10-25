@@ -18,18 +18,21 @@ import {useAppSelector} from "@/hooks/hooks";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {Input} from "@headlessui/react";
 
+
 const menuItems = [
     {
-        key: "",
+        key: "dashboard",
         icon: <DashboardOutlined />,
         label: "Dashboard",
-        href: "/"
+        href: "/",
+        id: "tour-dashboard", // Add id for Tour Target
     },
     {
         key: "accommodations",
         icon: <HomeOutlined />,
         label: "Accommodations",
-        href: "/accommodations"
+        href: "/accommodations",
+        id: "tour-accommodations", // Add id for Tour Target
     },
     {
         key: "reservations",
@@ -48,31 +51,14 @@ const menuItems = [
         icon: <MessageOutlined />,
         label: "Messages",
         href: "/messages"
-    },
-    // {
-    //     key: "guests",
-    //     icon: <UserOutlined />,
-    //     label: "Guests",
-    //     href: "/guests"
-    // },
-    // {
-    //     key: "reports",
-    //     icon: <BarChartOutlined />,
-    //     label: "Reports",
-    //     href: "/reports"
-    // },
-    // {
-    //     key: "help",
-    //     icon: <QuestionCircleOutlined />,
-    //     label: "Help",
-    //     href: "/help"
-    // },
+    }
 ];
+
 const renderMenuItem = (item: any) => (
     {
         key: item.key,
         icon: item.icon,
-        label: <Link href={item.href}>{item.label}</Link> ,
+        label: <Link id={item.id} href={item.href}>{item.label}</Link> ,
     }
 );
 

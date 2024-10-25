@@ -21,6 +21,7 @@ export default function ListingsPage() {
                     type='primary'
                     size='large'
                     icon={<PlusCircleOutlined />}
+                    id={'tour-create-stay'}
                 >
                     {'Create new'}
                 </Button>

@@ -33,10 +33,10 @@ export default function CreateDialog({isModalOpen, setIsModalOpen}: { isModalOpe
     return <Modal title={'New Accommodation'} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                   footer={<div/>}>
         <Form layout={'vertical'} >
-            <Form.Item label={'Accommodation Name'} className={'font-medium'} vertical>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={'Accommodation Name'}/></Form.Item>
+            <Form.Item  label={'Accommodation Name'} className={'font-medium'} vertical>
+                <Input id={'tour-accommodation-name'} value={name} onChange={(e) => setName(e.target.value)} placeholder={'Accommodation Name'}/></Form.Item>
             <Form.Item label={'Type'} vertical>
-                <Select defaultValue={'Hotel'} value={type} onChange={(value) => setType(value)} options={[{value: 'Hotel', label: 'Hotel'}, {
+                <Select id={'tour-accommodation-type'} defaultValue={'Hotel'} value={type} onChange={(value) => setType(value)} options={[{value: 'Hotel', label: 'Hotel'}, {
                                                            value: 'Home',
                                                            label: 'Home',
                                                        }]}/> </Form.Item>
