@@ -9,16 +9,17 @@ import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} fro
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {selectBookingStats} from "@/slices/bookingSlice";
 import {selectOccupancy} from "@/slices/staySlice";
+import DashboardTour from "@/components/tours/dashboardTour";
 
 export default function Home() {
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
-    return <div className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-4 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
+    return <div id={'tour-dashboard-screen'} className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-4 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>
         <div className={'grid grid-cols-1 lg:grid-cols-3 gap-4'}>
-            <Card className={'bg-lightGray bg-opacity-70 shadow shadow-primary-100'}>
+            <Card id={'tour-dashboard-reservations'} className={'bg-lightGray bg-opacity-70 shadow shadow-primary-100'}>
                 <h2>Reservations</h2>
                 <div className={'flex justify-between items-center'}>
                     <div>
@@ -45,7 +46,7 @@ export default function Home() {
                     </div>
                 </div>
             </Card>
-            <Card className={'bg-white bg-opacity-70 shadow shadow-primary-100'}>
+            <Card id={'tour-dashboard-Occupancy'} className={'bg-white bg-opacity-70 shadow shadow-primary-100'}>
                 <h2>Occupancy</h2>
                 <div className={'flex justify-start items-center gap-4'}>
                     <div>
@@ -78,6 +79,7 @@ export default function Home() {
             </div>
             <CheckInPanel/>
         </div>
+        <DashboardTour/>
     </div>;
 }
 
@@ -87,7 +89,7 @@ const Overview = () => {
     const availableBalance = useAppSelector(selectAvailableBalance)
     const averageEarnings = useAppSelector(selectAverageEarnings)
     return (
-        <Card className={'border-0 bg-white bg-opacity-60 shadow shadow-primary-100'}>
+        <Card id={'tour-dashboard-revenue'} className={'border-0 bg-white bg-opacity-60 shadow shadow-primary-100'}>
             <h2>Revenue</h2>
             <div className={' space-y-4'}>
                 <div className={'flex justify-between items-center'}>

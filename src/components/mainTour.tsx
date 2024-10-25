@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Tour, Button, TourStepProps } from 'antd';
+import {Tour, Button, TourStepProps} from 'antd';
 
 
 const tourSteps = [
@@ -27,17 +27,22 @@ const tourSteps = [
         title: 'Property Type',
         description: 'Select the type of accommodation here.',
         target: 'tour-accommodation-type',
+    },
+    {
+        title: 'Property Details',
+        description: 'Proceed with the details of the accommodation. I will meet you at the end!',
+        target: ''
     }
 ];
 
 const MainTour = () => {
     const [open, setOpen] = useState(false);
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
-    const [currentStep,setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(0);
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
-            target: document.getElementById(step.target)? () => document.getElementById(step.target)! : undefined,
+            target: document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
         console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
@@ -50,14 +55,16 @@ const MainTour = () => {
             }}>
                 Start Tour
             </Button>
-            <Tour open={open} placement={'bottomLeft'} current={currentStep} onChange={(current) => setCurrentStep(current)} steps={processed} onClose={() => setOpen(false)} indicatorsRender={(current, total) => {
+            <Tour open={open} placement={'bottomLeft'} current={currentStep}
+                  onChange={(current) => setCurrentStep(current)} steps={processed} onClose={() => setOpen(false)}
+                  indicatorsRender={(current, total) => {
 
-                return (
-                    <span>
+                      return (
+                          <span>
                 {current + 1} / {total}
               </span>
-                );
-            }} />
+                      );
+                  }}/>
         </>
     );
 };

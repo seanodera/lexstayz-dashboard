@@ -24,7 +24,7 @@ export default function CheckInPanel() {
         setDisplayBookings(filtered);
     }, [bookings]);
 
-    return <Card className={'bg-white bg-opacity-70 shadow-md shadow-primary-100'} classNames={{
+    return <Card id={'tour-dashboard-check-ins'} className={'bg-white bg-opacity-70 shadow-md shadow-primary-100'} classNames={{
         // header: 'bg-lightGray bg-opacity-70',
     }}>
         <h2 className={'mb-4'}>Check ins</h2>
