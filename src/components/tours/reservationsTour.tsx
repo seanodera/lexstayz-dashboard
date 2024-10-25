@@ -1,10 +1,12 @@
+import {useEffect, useState} from "react";
+import {Tour, TourStepProps} from "antd";
 
 
 const tourSteps = [
     {
         title: 'Reservations',
         description: 'Here you will see your bookings. You can sort by your needs but by default it uses the booking date',
-        target: undefined
+        target: ''
     },
     {
         title: 'Reservation',
@@ -42,3 +44,28 @@ const tourSteps = [
         target: undefined,
     }
 ]
+
+
+export default function ReservationsTour(){
+    const [open, setOpen] = useState(true);
+    const [processed, setProcessed] = useState<TourStepProps[]>([]);
+    const [currentStep, setCurrentStep] = useState(0);
+
+    useEffect(() => {
+        const processedSteps = tourSteps.map((step) => ({
+            ...step,
+            target: step.target && document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
+        }));
+        console.log('processed steps', processedSteps);
+        setProcessed(processedSteps);
+    }, [currentStep]);
+
+
+    return <Tour  open={open}
+                  placement={'bottomLeft'}
+                  current={currentStep}
+                  onChange={(current) => setCurrentStep(current)}
+                  steps={processed}
+                  onFinish={() => setOpen(false)}
+                  onClose={() => setOpen(false)}  />
+}

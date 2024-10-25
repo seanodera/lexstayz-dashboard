@@ -1,10 +1,12 @@
+import {Tour, TourStepProps} from "antd"
+import {useEffect, useState} from "react";
 
 
 const tourSteps = [
     {
         title: 'Accommodations',
         description: 'This is where you manage your properties',
-        target: undefined,
+        target: '',
     },
     {
         title: 'Published accommodations',
@@ -32,3 +34,28 @@ const tourSteps = [
         target: 'tour-accommodation-actions',
     }
 ]
+
+
+export default function AccommodationsTour(){
+    const [open, setOpen] = useState(true);
+    const [processed, setProcessed] = useState<TourStepProps[]>([]);
+    const [currentStep, setCurrentStep] = useState(0);
+
+    useEffect(() => {
+        const processedSteps = tourSteps.map((step) => ({
+            ...step,
+            target: document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
+        }));
+        console.log('processed steps', processedSteps);
+        setProcessed(processedSteps);
+    }, [currentStep]);
+
+
+    return <Tour  open={open}
+                  placement={'bottomLeft'}
+                  current={currentStep}
+                  onChange={(current) => setCurrentStep(current)}
+                  steps={processed}
+                  onFinish={() => setOpen(false)}
+                  onClose={() => setOpen(false)}  />
+}
