@@ -9,11 +9,20 @@ import {selectAvailableBalance, selectAverageEarnings, selectPendingBalance} fro
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {selectBookingStats} from "@/slices/bookingSlice";
 import {selectOccupancy} from "@/slices/staySlice";
+import {useEffect} from "react";
+import {useTour} from "@/context/tourContext";
 
 export default function Home() {
     const userDetails = useAppSelector(selectCurrentUser)
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
+    const {openDashboardTour,isMainOpen} = useTour()
+    const user = useAppSelector(selectCurrentUser)
+    useEffect(() => {
+        if (!isMainOpen && user?.onboarded?.includes('dashboard')) {
+            openDashboardTour();
+        }
+    }, []);
     return <div id={'tour-dashboard-screen'} className={'overflow-y-scroll overflow-x-hidden pt-6 pb-10 px-4 md:px-10 h-full bg-white bg-cross-dots-light bg-[length:30px_30px]  '}>
         <h3 className={'font-medium'}> Welcome back {userDetails?.firstName}</h3>
         <h2 className={'font-bold'}>Overview</h2>

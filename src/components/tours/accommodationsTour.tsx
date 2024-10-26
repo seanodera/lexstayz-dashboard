@@ -2,6 +2,9 @@ import {Tour, TourStepProps} from "antd"
 import {useEffect, useState} from "react";
 import {usePathname} from "next/navigation";
 import {useTour} from "@/context/tourContext";
+import {addOnboarded} from "@/data/usersData";
+import {getUserDetailsAsync} from "@/slices/authenticationSlice";
+import {useAppDispatch} from "@/hooks/hooks";
 
 
 const tourSteps = [
@@ -43,6 +46,7 @@ export default function AccommodationsTour(){
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
     const pathname = usePathname()
+    const dispatch = useAppDispatch()
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
@@ -69,6 +73,13 @@ export default function AccommodationsTour(){
                   current={currentStep}
                   onChange={(current) => setCurrentStep(current)}
                   steps={processed}
-                  onFinish={closeAccommodationsTour}
+                  onFinish={() => {
+                      closeAccommodationsTour();
+                      addOnboarded('accommodations').then((user) => {
+                          if (user) {
+                              dispatch(getUserDetailsAsync(user.uid))
+                          }
+                      })
+                  }}
                   onClose={closeAccommodationsTour}  />
 }

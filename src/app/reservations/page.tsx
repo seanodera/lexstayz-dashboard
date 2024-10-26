@@ -19,6 +19,7 @@ import {Input} from "@headlessui/react";
 import {useRouter} from "next/navigation";
 import {selectAllStays} from "@/slices/staySlice";
 import {useTour} from "@/context/tourContext";
+import {selectCurrentUser} from "@/slices/authenticationSlice";
 
 export default function BookingPage() {
     const dispatch = useAppDispatch();
@@ -32,9 +33,12 @@ export default function BookingPage() {
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const bookingCount = useAppSelector(selectBookingsCount);
     const router = useRouter();
-    const {openReservationsTour} = useTour()
+    const {openReservationsTour,isReservationsOpen} = useTour()
+    const user = useAppSelector(selectCurrentUser)
     useEffect(() => {
-        openReservationsTour()
+       if (!isReservationsOpen && !user?.onboarded?.includes('reservations')){
+           openReservationsTour()
+       }
     }, []);
     useEffect(() => {
         if (!fetchedPages.includes(page)) {

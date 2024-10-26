@@ -1,6 +1,9 @@
 import {useEffect, useState} from "react";
 import {Tour, TourStepProps} from "antd";
 import {useTour} from "@/context/tourContext";
+import {addOnboarded} from "@/data/usersData";
+import {getUserDetailsAsync} from "@/slices/authenticationSlice";
+import {useAppDispatch} from "@/hooks/hooks";
 
 
 const tourSteps = [
@@ -47,18 +50,18 @@ const tourSteps = [
 ]
 
 
-export default function ReservationsTour(){
-    const { isReservationsOpen, closeReservationsTour } = useTour();
+export default function ReservationsTour() {
+    const {isReservationsOpen, closeReservationsTour} = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
-
+    const dispatch = useAppDispatch()
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
             target: step.target && document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
-        if (!processedSteps[currentStep].target && currentStep !== 0) {
-            const prevStepTarget = processedSteps[currentStep - 1].target;
+        if (!processedSteps[ currentStep ].target && currentStep !== 0) {
+            const prevStepTarget = processedSteps[ currentStep - 1 ].target;
 
             if (prevStepTarget) {
                 const prevElement = prevStepTarget();
@@ -73,11 +76,18 @@ export default function ReservationsTour(){
     }, [currentStep]);
 
 
-    return <Tour  open={isReservationsOpen}
-                  placement={'bottomLeft'}
-                  current={currentStep}
-                  onChange={(current) => setCurrentStep(current)}
-                  steps={processed}
-                  onFinish={closeReservationsTour}
-                  onClose={closeReservationsTour}  />
+    return <Tour open={isReservationsOpen}
+                 placement={'bottomLeft'}
+                 current={currentStep}
+                 onChange={(current) => setCurrentStep(current)}
+                 steps={processed}
+                 onFinish={() => {
+                     closeReservationsTour();
+                     addOnboarded('reservations').then((user) => {
+                         if (user) {
+                             dispatch(getUserDetailsAsync(user.uid))
+                         }
+                     })
+                 }}
+                 onClose={closeReservationsTour}/>
 }

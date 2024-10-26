@@ -1,6 +1,9 @@
 import {Tour, TourStepProps} from "antd";
 import {useEffect, useState} from "react";
 import {useTour} from "@/context/tourContext";
+import {addOnboarded, getUserDetails} from "@/data/usersData";
+import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
+import {getUserDetailsAsync, selectCurrentUser} from "@/slices/authenticationSlice";
 
 
 const tourSteps = [
@@ -40,7 +43,7 @@ export default function DashboardTour(){
     const { isDashboardOpen, closeDashboardTour } = useTour();
     const [processed, setProcessed] = useState<TourStepProps[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
-
+    const dispatch = useAppDispatch()
     useEffect(() => {
         const processedSteps = tourSteps.map((step) => ({
             ...step,
@@ -56,6 +59,14 @@ export default function DashboardTour(){
                    current={currentStep}
                    onChange={(current) => setCurrentStep(current)}
                    steps={processed}
-                   onFinish={closeDashboardTour}
+
+                   onFinish={() => {
+                       closeDashboardTour()
+                       addOnboarded('dashboard').then((user) => {
+                           if (user) {
+                               dispatch(getUserDetailsAsync(user.uid))
+                           }
+                       })
+                   }}
                    onClose={closeDashboardTour} />
 }
