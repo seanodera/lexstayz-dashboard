@@ -48,7 +48,7 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
             fetchData(); // Fetch data if the user is authenticated
         }
     }, [dispatch, hasRun]);
-
+    console.log(isLoading , isBookingLoading , isMessagesLoading)
     if (isLoading || isBookingLoading || isMessagesLoading) {
         // Show loading screen while data is being fetched
         return <div><LoadingScreen /></div>;

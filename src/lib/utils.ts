@@ -1,6 +1,7 @@
 import {countries} from "country-data";
 import {differenceInMilliseconds, startOfDay} from "date-fns";
 
+export const handler_url = process.env.NEXT_PUBLIC_HANDLER || 'http://localhost:4500';
 
 export function getRandomInt({max, min = 0}: { max: number, min?: number }) {
     return Math.floor(Math.random() * (max - min + 1) + min);
