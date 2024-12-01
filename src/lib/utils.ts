@@ -180,7 +180,6 @@ export async function getServerTime() {
     try {
         const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
         const data = await response.json();
-        console.log(data)
         return new Date(data.utc_datetime);
     } catch (error) {
         throw Error('Error fetching server time');

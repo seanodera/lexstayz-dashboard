@@ -63,7 +63,6 @@ export const fetchStaysAsync = createAsyncThunk(
                 }
             })
 
-            console.log(stays);
             return {
                 stays: [...pubStays, ...stays],
                 occupancy,

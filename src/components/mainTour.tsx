@@ -59,7 +59,6 @@ const MainTour = () => {
                 }
             }
         }
-        console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
     }, [currentStep, pathname]);
     return (

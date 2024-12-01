@@ -63,7 +63,6 @@ export default function AccommodationsTour(){
                 }
             }
         }
-        console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
     }, [currentStep,pathname]);
 

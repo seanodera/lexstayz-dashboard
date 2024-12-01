@@ -49,7 +49,7 @@ export default function DashboardTour(){
             ...step,
             target: document.getElementById(step.target) ? () => document.getElementById(step.target)! : undefined,
         }));
-        console.log('processed steps', processedSteps);
+
         setProcessed(processedSteps);
     }, [currentStep]);
 

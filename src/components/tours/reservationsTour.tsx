@@ -71,7 +71,6 @@ export default function ReservationsTour() {
                 }
             }
         }
-        console.log('processed steps', processedSteps);
         setProcessed(processedSteps);
     }, [currentStep]);
 

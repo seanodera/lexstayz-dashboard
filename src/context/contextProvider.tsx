@@ -73,7 +73,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         }
     }, [hasError, errorMessage]);
 
-    if (!userLoaded || isLoading || isBookingLoading || isAuthLoading) {
+    if ( isLoading || isBookingLoading || isAuthLoading) {
         // Show loading screen while waiting for user details or if any loading is happening
         return <div className="h-screen w-screen"><LoadingScreen /></div>;
     }
