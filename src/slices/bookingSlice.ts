@@ -15,6 +15,7 @@ import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStat
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {RootState} from "@/data/store";
 import {doc, where,} from "@firebase/firestore";
+import {Stay} from "@/lib/types";
 
 // Adjust the import according to your project structure
 
@@ -99,7 +100,7 @@ export const fetchBookingsAsync = createAsyncThunk(
 );
 
 
-export const setCurrentBookingById = createAsyncThunk('booking/id', async (id: string, {getState}) => {
+export const setCurrentBookingById = createAsyncThunk('booking/id', async (id: string, {getState,dispatch, rejectWithValue}) => {
     const mainState = getState() as RootState
     const state = mainState.booking
     try {
@@ -111,13 +112,33 @@ export const setCurrentBookingById = createAsyncThunk('booking/id', async (id: s
             const bookingRef = doc(firestore, 'bookings', id);
             const bookingData = await getDoc(bookingRef);
             if (!bookingData.exists()) {
-                throw Error()
+                throw Error('Booking not found')
             }
             booking = bookingData.data();
             return booking;
         }
     } catch (error) {
 
+    }
+})
+
+export const findBookingByUserId = createAsyncThunk('booking/userId', async (id: string,{getState,dispatch}) => {
+    const mainState = getState() as RootState
+    const state = mainState.booking
+    try {
+        let booking = state.bookings.find((booking) => booking.accountId === id)
+        if (booking) {
+            return booking;
+        } else {
+            const bookingRef = query(collection(firestore, 'bookings'),where('accountId', '==', id), orderBy('createdAt', 'desc'));
+            const snapshot = await getDocs(bookingRef);
+           if (snapshot.docs.length > 0) {
+               dispatch(setBookings([snapshot.docs[0],state.bookings]))
+               return snapshot.docs[0];
+           }
+        }
+    } catch (error) {
+        console.error('Error finding booking by userId ', id);
     }
 })
 
@@ -219,7 +240,28 @@ const bookingSlice = createSlice({
             state.isLoading = false
             state.errorMessage = 'Booking Not Found'
             state.hasError = true
-        });
+        }).
+        addCase(findBookingByUserId.pending, (state) => {
+            state.isLoading = true;
+            state.hasError = false;
+            state.errorMessage = '';
+        })
+            .addCase(findBookingByUserId.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (action.payload) {
+                    if (state.currentBooking.id === action.payload.id) {
+                        state.currentBooking = action.payload;
+                    }
+                } else {
+                    state.errorMessage = 'No booking found for the given user ID';
+                    state.hasError = true;
+                }
+            })
+            .addCase(findBookingByUserId.rejected, (state) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = 'Error finding booking by user ID';
+            });
     }
 });
 
