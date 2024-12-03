@@ -34,7 +34,9 @@ export default function BookingBox() {
                 setBooking(_booking)
                 setStay(stay)
             } else {
-                dispatch(findBookingByUserId(currentChatUser))
+                if (currentChatUser){
+                    dispatch(findBookingByUserId(currentChatUser))
+                }
             }
 
     }, [bookings, currentChatUser, stays]);

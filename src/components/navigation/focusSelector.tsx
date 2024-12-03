@@ -40,7 +40,7 @@ export function FocusSelectorOld({stays, currentStay}:{stays:any, currentStay: a
                     <div onClick={() => dispatch(setCurrentStayFromId(item.id))}
                          className="bg-primary-50 border-2 border-black rounded-xl">
                         <div className="flex gap-1 text-dark px-2 py-2 items-center">
-                            <Avatar shape="square" className="bg-primary">
+                            <Avatar shape="square" className="bg-primary" src={item.poster}>
                                 {item.name.split(' ').slice(1).map((value: any) => value.charAt(0).toUpperCase())}
                             </Avatar>
                             <div>

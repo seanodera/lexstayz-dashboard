@@ -62,7 +62,6 @@ export const fetchStaysAsync = createAsyncThunk(
                     })
                 }
             })
-
             return {
                 stays: [...pubStays, ...stays],
                 occupancy,
