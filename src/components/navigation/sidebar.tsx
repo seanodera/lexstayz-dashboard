@@ -76,9 +76,9 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                     <div className={`font-semibold text-lg  ${collapsed ? 'hidden' : ''}`}>LexStayz</div>
                 </Link>
 
-                <div className={'mx-2 mb-4'}>
-                    <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>
-                </div>
+                {/*<div className={'mx-2 mb-4'}>*/}
+                {/*    <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>*/}
+                {/*</div>*/}
                 <Menu theme="dark" className={'flex flex-col h-full flex-1'} mode="inline"
                       selectedKeys={[pathname.split('/')[ 1 ]]} items={
                     menuItems.map(item => renderMenuItem(item))

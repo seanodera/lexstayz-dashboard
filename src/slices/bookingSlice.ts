@@ -164,6 +164,10 @@ const bookingSlice = createSlice({
         setPage: (state, action: PayloadAction<number>) => {
             state.page = action.payload;
         },
+        resetBookingError: (state) => {
+            state.hasError = false;
+            state.errorMessage = '';
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -273,6 +277,7 @@ export const {
     setBookings,
     setIsLoading,
     setPage,
+    resetBookingError
 } = bookingSlice.actions;
 
 export const selectCart = (state: any) => state.booking.cart;

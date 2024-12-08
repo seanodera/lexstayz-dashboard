@@ -1,7 +1,7 @@
 'use client'
 import {Modal} from "antd";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
-import {resetError, selectAuthErrorMessage, selectAuthHasError} from "@/slices/authenticationSlice";
+import {resetAuthError, selectAuthErrorMessage, selectAuthHasError} from "@/slices/authenticationSlice";
 import {ExclamationCircleFilled} from "@ant-design/icons";
 
 
@@ -12,7 +12,7 @@ export default function AuthErrorDialog() {
     const dispatch = useAppDispatch()
 
     const handleOk = () => {
-        dispatch(resetError())
+        dispatch(resetAuthError())
     };
 
 

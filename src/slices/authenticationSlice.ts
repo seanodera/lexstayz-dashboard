@@ -85,7 +85,7 @@ const AuthenticationSlice = createSlice({
         logoutUser: (state, action) => {
             state.isAuthenticated = false;
         },
-        resetError: (state) => {
+        resetAuthError: (state) => {
             state.hasError = false;
             state.errorMessage = ''
         }
@@ -142,5 +142,5 @@ export const selectIsAuthLoading = (state: any) => state.authentication.isLoadin
 export const selectAuthHasError = (state: any) => state.authentication.hasError;
 export const selectAuthErrorMessage = (state: any) => state.authentication.errorMessage;
 
-export const {loginUser, logoutUser,resetError} = AuthenticationSlice.actions;
+export const {loginUser, logoutUser,resetAuthError} = AuthenticationSlice.actions;
 export default AuthenticationSlice.reducer

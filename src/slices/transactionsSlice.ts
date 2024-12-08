@@ -115,7 +115,12 @@ export const updateTransactions = createAsyncThunk('transactions', async (_, {re
 const transactionsSlice = createSlice({
         name: 'transactions',
         initialState: initialState,
-        reducers: {},
+        reducers: {
+            resetTransactionsError: (state) => {
+                state.hasError = false;
+                state.errorMessage = '';
+            }
+        },
         extraReducers: builder => {
             builder.addCase(fetchPendingTransactions.pending, (state, action) => {
                 state.isLoading = true;
@@ -135,6 +140,7 @@ const transactionsSlice = createSlice({
     }
 )
 
+export const {resetTransactionsError} = transactionsSlice.actions;
 export const selectPendingTransactions = (state: RootState) => state.transactions.pendingTransactions;
 export const selectPendingBalance = (state: RootState) => state.transactions.pendingBalance;
 export const selectCompletedTransactions = (state: RootState) => state.transactions.completedTransactions;
