@@ -1,11 +1,12 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {average, collection, count, doc, getAggregateFromServer, getDocs, sum} from "firebase/firestore";
+import {average, collection, count, doc, getAggregateFromServer, getDocs, query, sum} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
 import {RootState} from "@/data/store";
-import {writeBatch} from "@firebase/firestore";
+import {setDoc, writeBatch} from "@firebase/firestore";
 import {isAfter} from "date-fns";
-import {getServerTime} from "@/lib/utils";
+import {getServerTime, handler_url} from "@/lib/utils";
+import axios from "axios";
 
 interface Transaction {
     id: string,
@@ -15,7 +16,37 @@ interface Transaction {
     date: string,
     availableDate: string
 }
-
+export interface IPaystackBank {
+    name: string;
+    slug: string;
+    code: string;
+    longcode: string;
+    gateway: string | null;
+    pay_with_bank: boolean;
+    active: boolean;
+    is_deleted: boolean;
+    country: string;
+    currency: string;
+    type: string;
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+}
+export interface IWithdrawalAccount {
+    userId: string; // MongoDB ObjectId is stored as a string
+    type: string;
+    name: string;
+    accountNumber: string;
+    bankCode?: string;
+    currency?: string;
+    bankName?: string;
+    recipient_code?: string;
+    service: 'Pawapay' | 'Paystack' | 'Paystack_KE';
+    createdAt?: Date; // Date with a default value
+    active?: boolean; // Boolean with a default value
+    flagged?: boolean; // Boolean with a default value
+    reason?: string; // String with a default value
+}
 interface TransactionsState {
     pendingTransactions: Transaction[];
     completedTransactions: Transaction[];
@@ -26,7 +57,8 @@ interface TransactionsState {
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
-
+    banks: IPaystackBank[];
+    withdrawalAccounts: IWithdrawalAccount[]
 
 }
 
@@ -40,6 +72,8 @@ const initialState: TransactionsState = {
     hasError: false,
     averageEarnings: 0,
     errorMessage: '',
+    banks: [],
+    withdrawalAccounts: [],
 }
 
 export const fetchPendingTransactions = createAsyncThunk(
@@ -111,6 +145,80 @@ export const updateTransactions = createAsyncThunk('transactions', async (_, {re
     }
 })
 
+export const addWithdrawalAccount = createAsyncThunk(
+    'payout/addWithdrawalAccount',
+    async (withdrawalData: {
+        type: string,
+        name: string,
+        accountNumber: string,
+        bankCode: string,
+        currency: string,
+        bankName: string
+    }, {rejectWithValue}) => {
+        try {
+            const user = getCurrentUser();
+            const response = await axios.post(`${handler_url}/payments/createWithdrawalAccount`, {
+                userId: user.uid,
+                ...withdrawalData
+            })
+            const hostsRef = collection(firestore, 'hosts', user.uid, 'accounts');
+            const accountDoc = doc(hostsRef)
+            await setDoc(accountDoc, {
+                id: user.uid,
+                type: withdrawalData.type,
+                name: withdrawalData.name,
+                userId: user.uid,
+                accountNumber:withdrawalData.accountNumber,
+                bankCode:withdrawalData.bankCode,
+                currency:withdrawalData.currency,
+                bankName:withdrawalData.bankName,
+            })
+        } catch (error: unknown) {
+            console.log(error);
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Error adding withdrawal account');
+            }
+        }
+    }
+);
+export const getPaystackBanks = createAsyncThunk(
+    'payout/getPaystackBanks',
+    async (currency: string, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`${handler_url}/api/payments/banks`, {
+                params: {currency},
+            });
+            console.log(response.data.data);
+            return response.data.data;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Error getting Paystack banks');
+            }
+        }
+    }
+);
+
+
+export const fetchWithdrawalAccounts = createAsyncThunk(
+    'transactions/getAccounts',
+    async (_, { rejectWithValue }) => {
+        try {
+            let accounts: Array<any> = [];
+            const user = getCurrentUser();
+           const hostsRef = collection(firestore, 'hosts', user.uid, 'accounts');
+            const accountSnapshot = await getDocs(hostsRef);
+
+            accountSnapshot.docs.map(value => accounts.push(value.data()));
+            return accounts;
+        } catch (error) {
+            return rejectWithValue('Failed to fetch withdrawal accounts');
+        }
+    }
+);
 
 const transactionsSlice = createSlice({
         name: 'transactions',
@@ -136,9 +244,32 @@ const transactionsSlice = createSlice({
                 state.hasError = true;
                 state.errorMessage = action.payload as string;
             })
+                .addCase(getPaystackBanks.pending, (state) => {
+                    state.isLoading = true;
+                }).addCase(getPaystackBanks.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.banks = action.payload as IPaystackBank[];
+            }).addCase(getPaystackBanks.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.payload as string;
+            })
+
+                .addCase(fetchWithdrawalAccounts.pending, (state) => {
+                    state.isLoading = true;
+                }).addCase(fetchWithdrawalAccounts.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.withdrawalAccounts = action.payload;
+            }).addCase(fetchWithdrawalAccounts.rejected, (state, action) => {
+                state.isLoading = false;
+                state.hasError = true;
+                state.errorMessage = action.payload as string;
+            })
+
         }
     }
 )
+
 
 export const {resetTransactionsError} = transactionsSlice.actions;
 export const selectPendingTransactions = (state: RootState) => state.transactions.pendingTransactions;
