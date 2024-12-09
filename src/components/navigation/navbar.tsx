@@ -5,6 +5,7 @@ import FocusSelector from "@/components/navigation/focusSelector";
 import Breadcrumbs from "@/components/navigation/breadcrumbs";
 import {useState} from "react";
 import NavDrawer from "@/components/navigation/navDrawer";
+import MainTour from "@/components/mainTour";
 
 export default function Navbar() {
 const [showMenu, setShowMenu] = useState(false);
@@ -14,7 +15,8 @@ const [showMenu, setShowMenu] = useState(false);
             <div className="flex items-center gap-2">
                 <Breadcrumbs/>
             </div>
-            <div className="md:flex items-center hidden">
+            <div className="md:flex items-center hidden gap-2">
+                <MainTour/>
                 <Button  icon={<MessageOutlined/>} />
                 <Divider type={'vertical'} className={'text-gray-500'}/>
                 <FocusSelector/>

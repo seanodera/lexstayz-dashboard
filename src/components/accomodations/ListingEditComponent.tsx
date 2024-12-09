@@ -26,6 +26,13 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     const [checkInTime, setCheckInTime] = useState<string>('12:00');
     const [checkOutTime, setCheckOutTime] = useState<string>('14:00');
     const [currency, setCurrency] = useState<string>('USD')
+
+    const [bedrooms, setBedrooms] = useState(0)
+    const [bathrooms, setBathrooms] = useState(0)
+    const [beds, setBeds] = useState(0)
+    const [price, setPrice] = useState(0)
+    const [maxGuests, setMaxGuests] = useState(1)
+
     const router = useRouter();
 
     const [country, setCountry] = useState<string>('Kenya');
@@ -85,40 +92,14 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             setCancellationTime(stay.cancellation?.time || 0);
             setTimeSpace(stay.cancellation?.timeSpace || 'Days');
             setPreDate(stay.cancellation?.preDate ?? true); // Using ?? to ensure boolean handling
-        } else if (partial) {
-            setName(partial.name || '');
-            setType(partial.type || '');
-        }
-    }, [stay, partial]);
-    useEffect(() => {
-        if (stay) {
-            setName(stay.name || '');
-            setType(stay.type || '');
-            setPoster(stay.poster || '');
-            setImages(stay.images || []);
-            setDescription(stay.description || '');
-            setFacilities(stay.facilities || []);
-            setCheckInTime(stay.checkInTime || '12:00');
-            setCheckOutTime(stay.checkOutTime || '14:00');
-            setCurrency(stay.currency || 'USD');
 
-            setCountry(stay.location?.country || 'Kenya');
-            setCity(stay.location?.city || '');
-            setDistrict(stay.location?.district || '');
-            setStreet(stay.location?.street || '');
-            setStreet2(stay.location?.street2 || '');
-            setZipCode(stay.location?.zipCode || '');
-
-            setMinAge(stay.minAge || 18);
-            setSmoking(stay.smoking || 'Designated Smoking Areas');
-            setParties(stay.parties || 'Yes');
-            setPets(stay.pets || 'No');
-
-            setCancellation(stay.cancellation?.cancellation || 'Free');
-            setCancellationRate(stay.cancellation?.rate || 20);
-            setCancellationTime(stay.cancellation?.time || 0);
-            setTimeSpace(stay.cancellation?.timeSpace || 'Days');
-            setPreDate(stay.cancellation?.preDate ?? true); // Using ?? to ensure boolean handling
+            if (stay.type === 'Home'){
+                setPrice(stay.price || 0);
+                setBedrooms(stay.bedrooms || 0);
+                setBathrooms(stay.bathrooms || 0);
+                setMaxGuests(stay.maxGuests || 0);
+                setBeds(stay.beds || 0);
+            }
         } else if (partial) {
             setName(partial.name || '');
             setType(partial.type || '');
@@ -127,6 +108,13 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
 
 
     async function SaveStay() {
+        const homeSpecific = (type === 'Home')? {
+            bedrooms: bedrooms,
+            bathrooms: bathrooms,
+            beds: beds,
+            price: price,
+            maxGuests: maxGuests
+        } : {}
         const newStay = {
             name: name,
             type: type,
@@ -156,7 +144,9 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             pets: pets,
             rating: 0,
             currency: currency,
+            ...homeSpecific
         }
+
         if (partial) {
 
             dispatch(uploadStayAsync({stay: newStay, poster, images})).then(() => {
@@ -211,13 +201,39 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                         </div>
                     </div>
                     <div className={'mt-2'}>
-                        <h3 className={'text-nowrap'}>Stay Currency</h3>
-                        <Select value={currency} onChange={(value) => setCurrency(value.target.value)} className={'appearance-none py-1 rounded active:border-primary'}>
-                            <option value={'GHS'}>GHS</option>
-                            <option value={'USD'}>USD</option>
-                            <option value={'GBP'}>GBP</option>
-                            <option value={'EUR'}>EUR</option>
-                        </Select>
+                        {stay.type === 'Home' && <div>
+                            <Fieldset>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Price</Label>
+                                    <Input className={'w-full'} type={'number'} value={price} min={1} onChange={(e) => setPrice(parseInt(e.target.value))}/>
+                                </Field>
+                                <div className={'grid grid-cols-2 gap-3'}>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Max Guests</Label>
+                                    <Input className={'w-full'} type={'number'} value={maxGuests} min={1} onChange={(e) => setMaxGuests(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Bedrooms</Label>
+                                    <Input className={'w-full'} type={'number'} value={bedrooms} min={1} onChange={(e) => setBedrooms(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Beds</Label>
+                                    <Input className={'w-full'} type={'number'} value={beds} min={1} onChange={(e) => setBeds(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Baths</Label>
+                                    <Input className={'w-full'} type={'number'} value={bathrooms} min={1} onChange={(e) => setBathrooms(parseInt(e.target.value))}/>
+                                </Field>
+                            </div>
+                            </Fieldset>
+                        </div>}
+                        {/*<h3 className={'text-nowrap'}>Stay Currency</h3>*/}
+                        {/*<Select value={currency} onChange={(value) => setCurrency(value.target.value)} className={'appearance-none py-1 rounded active:border-primary'}>*/}
+                        {/*    <option value={'GHS'}>GHS</option>*/}
+                        {/*    <option value={'USD'}>USD</option>*/}
+                        {/*    <option value={'GBP'}>GBP</option>*/}
+                        {/*    <option value={'EUR'}>EUR</option>*/}
+                        {/*</Select>*/}
                     </div>
                 </Col>
                 <Col span={18} className={'space-y-8'}>

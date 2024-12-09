@@ -166,6 +166,10 @@ const staySlice = createSlice({
         },
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
+        },
+        resetStayError: (state) => {
+            state.hasError = false;
+            state.errorMessage = '';
         }
     },
     extraReducers: (builder) => {
@@ -350,6 +354,7 @@ export const {
     setAllStays,
     resetHasRun,
     setIsLoading,
+    resetStayError
 } = staySlice.actions;
 
 export const selectOccupancy = (state: RootState) => state.stay.occupancy

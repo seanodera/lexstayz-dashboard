@@ -31,7 +31,6 @@ export default function RootLayout({
             <ConfigProvider theme={theme}><ContextProvider>
                 <div>{children}</div>
             </ContextProvider>
-            <AuthErrorDialog/>
             </ConfigProvider>
         </AntdRegistry>
 

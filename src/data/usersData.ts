@@ -1,6 +1,7 @@
 import {auth, firestore} from "@/lib/firebase";
-import {doc, getDoc, setDoc} from "firebase/firestore";
+import {arrayUnion, doc, getDoc, setDoc} from "firebase/firestore";
 import { sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
+import {updateDoc} from "@firebase/firestore";
 
 
 export async function createUser(user: any, id: string) {
@@ -53,3 +54,18 @@ export async function passwordReset(code: string, newPassword: string) {
     }
 }
 
+
+export async function addOnboarded(name: string) {
+    try {
+        const user = auth.currentUser;
+        if (user) {
+            const docRef = doc(firestore, 'hosts', user.uid);
+            await updateDoc(docRef, {
+                onboarded: arrayUnion(name),
+            });
+        }
+        return user
+    } catch (error) {
+        console.error("Error updating onboarded list: ", error);
+    }
+}

@@ -1,8 +1,8 @@
 'use client'
 import {Button, Card, Skeleton} from "antd";
-import {useAppSelector} from "@/hooks/hooks";
+import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {selectFocusChat} from "@/slices/messagingSlice";
-import {selectBookings} from "@/slices/bookingSlice";
+import {findBookingByUserId, selectBookings} from "@/slices/bookingSlice";
 import {useEffect, useState} from "react";
 import {dateReader, toMoneyFormat} from "@/lib/utils";
 
@@ -18,24 +18,28 @@ export default function BookingBox() {
     const [booking, setBooking] = useState<any>(undefined)
     const [stay, setStay] = useState<any>(undefined)
     const [currentChatUser, setCurrentChatUser] = useState<string>('')
+    const dispatch = useAppDispatch();
     useEffect(() => {
         if (chat){
-            if (chat.hostId !== currentChatUser){
+            if (chat.userId !== currentChatUser){
                 setCurrentChatUser(chat.userId)
             }
         }
     }, [chat]);
     useEffect(() => {
-
-            const _booking = bookings.find((booking: any) => booking.hostId == currentChatUser)
+            const _booking = bookings.find((booking: any) => booking.accountId == currentChatUser)
             console.log(bookings)
             if (_booking) {
                 const stay = stays.find((stay: any) => stay.id === _booking.accommodationId);
                 setBooking(_booking)
                 setStay(stay)
+            } else {
+                if (currentChatUser){
+                    dispatch(findBookingByUserId(currentChatUser))
+                }
             }
 
-    }, [currentChatUser]);
+    }, [bookings, currentChatUser, stays]);
 
     if (!booking || !stay) {
         return <Skeleton active/>

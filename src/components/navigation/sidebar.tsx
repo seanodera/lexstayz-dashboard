@@ -18,18 +18,21 @@ import {useAppSelector} from "@/hooks/hooks";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {Input} from "@headlessui/react";
 
+
 const menuItems = [
     {
-        key: "",
+        key: "dashboard",
         icon: <DashboardOutlined />,
         label: "Dashboard",
-        href: "/"
+        href: "/",
+        id: "tour-dashboard", // Add id for Tour Target
     },
     {
         key: "accommodations",
         icon: <HomeOutlined />,
         label: "Accommodations",
-        href: "/accommodations"
+        href: "/accommodations",
+        id: "tour-accommodations", // Add id for Tour Target
     },
     {
         key: "reservations",
@@ -38,7 +41,7 @@ const menuItems = [
         href: "/reservations"
     },
     {
-        key: "Cashier",
+        key: "cashier",
         icon: <WalletOutlined />,
         label: "Cashier",
         href: "/cashier"
@@ -48,31 +51,14 @@ const menuItems = [
         icon: <MessageOutlined />,
         label: "Messages",
         href: "/messages"
-    },
-    // {
-    //     key: "guests",
-    //     icon: <UserOutlined />,
-    //     label: "Guests",
-    //     href: "/guests"
-    // },
-    // {
-    //     key: "reports",
-    //     icon: <BarChartOutlined />,
-    //     label: "Reports",
-    //     href: "/reports"
-    // },
-    // {
-    //     key: "help",
-    //     icon: <QuestionCircleOutlined />,
-    //     label: "Help",
-    //     href: "/help"
-    // },
+    }
 ];
+
 const renderMenuItem = (item: any) => (
     {
         key: item.key,
         icon: item.icon,
-        label: <Link href={item.href}>{item.label}</Link> ,
+        label: <Link id={item.id} href={item.href}>{item.label}</Link> ,
     }
 );
 
@@ -90,9 +76,9 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                     <div className={`font-semibold text-lg  ${collapsed ? 'hidden' : ''}`}>LexStayz</div>
                 </Link>
 
-                <div className={'mx-2 mb-4'}>
-                    <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>
-                </div>
+                {/*<div className={'mx-2 mb-4'}>*/}
+                {/*    <Input className={`rounded-lg w-full border-0 bg-gray-300 bg-opacity-40 placeholder-white  ${collapsed && 'hidden'}`} placeholder={'Enter ID'}/>*/}
+                {/*</div>*/}
                 <Menu theme="dark" className={'flex flex-col h-full flex-1'} mode="inline"
                       selectedKeys={[pathname.split('/')[ 1 ]]} items={
                     menuItems.map(item => renderMenuItem(item))

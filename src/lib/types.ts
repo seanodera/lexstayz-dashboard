@@ -25,3 +25,16 @@ export interface Withdraw {
     account: WithdrawAccount;
     withdrawals: any[];
 }
+
+export interface Host{
+    organization?: string;
+    "email": string,
+    "phone": string,
+    "uid": string,
+    "firstName": string,
+    "published": string[],
+    "accountType": "Individual" | "Organization",
+    "lastName": string,
+    "wishlist": string[]
+    onboarded: string[],
+}

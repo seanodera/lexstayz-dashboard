@@ -14,7 +14,7 @@ import {
     selectCurrentUser,
     selectIsAuthLoading
 } from "@/slices/authenticationSlice";
-import {browserLocalPersistence, browserSessionPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
+import {browserLocalPersistence, onAuthStateChanged, setPersistence} from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
@@ -31,58 +31,59 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
     const router = useRouter();
-    const [userLoaded, setUserLoaded] = useState(false);
-    const currentUser = useAppSelector(selectCurrentUser);
+    const [userLoaded, setUserLoaded] = useState(false); // Track if user is loaded
+    const currentUser = useAppSelector(selectCurrentUser); // Select current user from state
+
     useEffect(() => {
-        const isAuthRoute = authRoutes.includes(pathname);
+        const isAuthRoute = authRoutes.includes(pathname); // Check if current route is an auth-related route
+
         const initializeAuth = async () => {
-            await setPersistence(auth, browserLocalPersistence);
+            await setPersistence(auth, browserLocalPersistence); // Ensure Firebase persistence
+
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    if (!currentUser){
-
+                    if (!currentUser) {
+                        // If Firebase user exists but no user details, fetch them
                         dispatch(getUserDetailsAsync(user.uid)).then((value) => {
-
-                            if (value.meta.requestStatus === 'fulfilled'){
-                                if (!value.payload){
-                                    console.log(value)
-                                    router.push("/user-information");
-                                }
+                            if (value.meta.requestStatus === 'fulfilled' && !value.payload) {
+                                router.push("/user-information"); // Redirect if user details are missing
                             }
                         });
-                        setUserLoaded(true);
                     }
+                    setUserLoaded(true); // Mark user as loaded
                 } else {
-
+                    // Redirect to login if no Firebase user and not on an auth route
                     if (!isAuthRoute) {
-                        console.log('Taking me to login: ContextProvider')
-                        setUserLoaded(false);
                         dispatch(logoutUser({}));
                         router.push('/login');
                     }
+                    setUserLoaded(false);
                 }
             });
         };
-        if (!userLoaded){
-        initializeAuth();
+
+        if (!userLoaded) {
+            initializeAuth(); // Run auth initialization if user is not yet loaded
         }
-    });
+    }, [userLoaded, currentUser, pathname, dispatch, router]);
 
     useEffect(() => {
         if (hasError) {
-            message.error(errorMessage);
+            message.error(errorMessage); // Display error message if there's an error
         }
     }, [hasError, errorMessage]);
 
-    if (isLoading || isBookingLoading || isAuthLoading) {
-        return <div className="h-screen w-screen">
-            <LoadingScreen />
-        </div>;
+    if ( isLoading || isBookingLoading || isAuthLoading) {
+
+        console.log(isLoading,isBookingLoading,isAuthLoading);
+        return <div className="h-screen w-screen"><LoadingScreen /></div>;
     }
 
     if (authRoutes.includes(pathname)) {
+        // Render children directly if on an auth route
         return <div>{children}</div>;
     } else {
+        // Otherwise, wrap in the main app shell
         return <MainAppShell>{children}</MainAppShell>;
     }
 }

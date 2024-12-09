@@ -169,6 +169,10 @@ const createStaySlice = createSlice({
         },
         updateCurrency: (state, action: PayloadAction<string>) => {
             state.stay.currency = action.payload;
+        },
+        resetCreateStayError: (state) => {
+            state.hasError = false;
+            state.errorMessage = '';
         }
     },
     extraReducers: builder => {
@@ -196,6 +200,6 @@ export const selectPartialHasError = (state: any) => state.createStay.hasError;
 export const selectPartialErrorMessage = (state: any) => state.createStay.errorMessage;
 export const {
     setStayPartial, updateLocation, updateImages, updateRules, updateCancellation,
-    updateFacilities, updateCurrency
+    updateFacilities, updateCurrency,resetCreateStayError
 } = createStaySlice.actions;
 export default createStaySlice.reducer

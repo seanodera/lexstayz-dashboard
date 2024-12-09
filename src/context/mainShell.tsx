@@ -7,9 +7,7 @@ import {
     fetchBookingsAsync,
     selectErrorMessage,
     selectHasError, selectIsBookingLoading,
-
 } from "@/slices/bookingSlice";
-
 import { auth } from "@/lib/firebase";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { selectIsAuthenticated } from "@/slices/authenticationSlice";
@@ -23,11 +21,11 @@ import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 const { Content } = Layout;
 
 export default function MainAppShell({ children }: { children: React.ReactNode }) {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(false); // Sidebar collapse state
     const dispatch = useAppDispatch();
-    const isAuthenticated = useAppSelector(selectIsAuthenticated);
+    const isAuthenticated = useAppSelector(selectIsAuthenticated); // Check if user is authenticated
     const isLoading = useAppSelector(selectIsLoading);
-    const isBookingLoading = useAppSelector(selectIsBookingLoading)
+    const isBookingLoading = useAppSelector(selectIsBookingLoading);
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
     const isMessagesLoading = useAppSelector(selectIsBookingLoading);
@@ -37,34 +35,27 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchData = async () => {
             if (!hasRun) {
-                console.log('Function is running and hasRun: ', hasRun)
-
                 dispatch(fetchStaysAsync());
-                dispatch(fetchPendingTransactions())
-                dispatch(fetchBookingsAsync({page: 1, limit: 10}));
-                dispatch(fetchStatistics(),)
-                dispatch(fetchUserChatsAsync())
-
-
+                dispatch(fetchPendingTransactions());
+                dispatch(fetchBookingsAsync({ page: 1, limit: 10 }));
+                dispatch(fetchStatistics());
+                dispatch(fetchUserChatsAsync());
             }
         };
 
         const user = auth.currentUser;
-
         if (user) {
-            fetchData();
-
+            fetchData(); // Fetch data if the user is authenticated
         }
-
-      });
-
-
-
+    }, [dispatch, hasRun]);
+    console.log(isLoading , isBookingLoading , isMessagesLoading)
     if (isLoading || isBookingLoading || isMessagesLoading) {
-        return <div><LoadingScreen/></div>;
+        // Show loading screen while data is being fetched
+        return <div><LoadingScreen /></div>;
     }
 
     if (hasError) {
+        // Display error message if there's an error
         return <div>Error: {errorMessage}</div>;
     }
 

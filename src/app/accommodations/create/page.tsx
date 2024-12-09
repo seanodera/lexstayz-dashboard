@@ -191,7 +191,7 @@ export default function Page() {
                 </Card> :
                 <Card className={'max-lg:max-w-xl max-w-2xl w-full'}>
                     <div className={'mb-4'}>
-                        {items[current].content}
+                        {(items[current]) && items[current].content}
                     </div>
                     <div className={'flex justify-between'}>
                         {current > 0 && (

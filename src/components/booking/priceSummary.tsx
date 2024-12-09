@@ -17,7 +17,7 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
         }
         setPricePerNight(_pricePerNight);
     }, []);
-    return <Card title={'Booking Summary'} className={'rounded-xl'}>
+    return <Card id={'tour-reservation-summary'} title={'Booking Summary'} className={'rounded-xl'}>
         <div className={''}>
             {stay.type === 'Hotel' ? <table className={'table-auto text-nowrap'}>
                 <thead>
@@ -51,11 +51,11 @@ export default function PriceSummary({booking, stay}: { booking: any, stay: any 
             <h4 className={'text-gray-500'}>Subtotal({calculateStayLength(booking.checkOutDate, booking.checkInDate)} Night)</h4>
             <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.totalPrice)}</h4>
             <h4 className={'text-gray-500'}>Lexstayz Fees</h4>
-            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.fees / booking.usedRate)}</h4>
+            <h4 id={'tour-reservation-fees'} className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.fees / booking.usedRate)}</h4>
             <h4 className={'text-gray-500'}>Total</h4>
-            <h4 className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.grandTotal / booking.usedRate)}</h4>
+            <h4 id={'tour-reservation-total'} className={'font-medium'}>{stay.currency} {toMoneyFormat(booking.grandTotal / booking.usedRate)}</h4>
             <h4 className={'font-gray-500'}>Converted Amount</h4>
-            <h4 className={'font-medium'}>{booking.currency} {toMoneyFormat(booking.grandTotal)}</h4>
+            <h4 id={'tour-reservation-converted'} className={'font-medium'}>{booking.currency} {toMoneyFormat(booking.grandTotal)}</h4>
         </div>
     </Card>
 }

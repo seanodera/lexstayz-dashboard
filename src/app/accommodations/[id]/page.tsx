@@ -39,7 +39,7 @@ export default function Page() {
                         <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl">{stay.name}</h1>
                         <span>{!stay.published ? getTag('Draft') : getTag('Published')}</span>
                     </div>
-                    <div className="mt-4 lg:mt-0">
+                    <div id={'tour-accommodation-actions'} className="mt-4 lg:mt-0">
                         <FunctionButtons stay={stay} />
                     </div>
                 </div>

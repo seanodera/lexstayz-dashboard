@@ -98,6 +98,7 @@ export default function BookingsPanel() {
 
     return (
         <Table
+            id={'tour-dashboard-recent'}
             className={'bg-transparent rounded-xl overflow-hidden bg-cross-dots-light shadow shadow-primary-100'}
             scroll={{ x: true }}
             dataSource={displayBookings.slice(0, 8)}

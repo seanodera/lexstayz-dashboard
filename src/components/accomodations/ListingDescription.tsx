@@ -6,7 +6,7 @@ export default function ListingDescription({ stay }: { stay: any }) {
     console.log(stay);
 
     return (
-        <Card className="rounded-2xl gap-y-8 space-y-16">
+        <Card id={'tour-accommodation-details'} className="rounded-2xl gap-y-8 space-y-16">
             <div>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} md={8}>

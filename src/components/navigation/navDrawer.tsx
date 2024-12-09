@@ -4,15 +4,12 @@ import Link from "next/link";
 import React, {useEffect} from "react";
 import {menuItems} from "@/components/navigation/sidebar";
 import {usePathname} from "next/navigation";
-import {useAppSelector} from "@/hooks/hooks";
-import {selectCurrentUser} from "@/slices/authenticationSlice";
 import FocusSelector from "@/components/navigation/focusSelector";
 import Image from "next/image";
 
 
 export default function NavDrawer({show, setShow}: {show: boolean, setShow: any}) {
     const pathname = usePathname();
-    useAppSelector(selectCurrentUser);
     const collapsed = false;
     const renderMenuItem = (item: any) => (
         {
