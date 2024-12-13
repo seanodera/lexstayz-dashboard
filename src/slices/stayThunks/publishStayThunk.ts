@@ -1,17 +1,8 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch
-} from "@firebase/firestore";
-import { auth, firestore, storage } from "@/lib/firebase";
-import { createFile } from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
+import {doc, setDoc, updateDoc} from "@firebase/firestore";
+import {firestore} from "@/lib/firebase";
+import {getDoc} from "firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {deleteImage, getCurrentUser, uploadImage} from "@/data/hotelsData";
+import {getCurrentUser} from "@/data/hotelsData";
 import {Stay} from "@/lib/types";
 
 export const publishStayAsync = createAsyncThunk(
@@ -19,7 +10,6 @@ export const publishStayAsync = createAsyncThunk(
     async (stay: Stay, { rejectWithValue }) => {
         try {
             const user = getCurrentUser();
-            const firestore = getFirestore();
             const publicStaysRef = doc(firestore, 'stays', stay.id);
             const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
             const timestamp = new Date().toISOString();

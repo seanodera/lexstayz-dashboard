@@ -1,15 +1,6 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch
-} from "@firebase/firestore";
-import { auth, firestore, storage } from "@/lib/firebase";
+import {doc, writeBatch} from "@firebase/firestore";
+import {firestore} from "@/lib/firebase";
 import {createFile, extractFirebaseStoragePath} from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {deleteImage, getCurrentUser, uploadImage} from "@/data/hotelsData";
 

@@ -1,17 +1,7 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch
-} from "@firebase/firestore";
-import { auth, firestore, storage } from "@/lib/firebase";
-import { createFile } from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
+import {doc, writeBatch} from "@firebase/firestore";
+import {firestore} from "@/lib/firebase";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {deleteImage, getCurrentUser, uploadImage} from "@/data/hotelsData";
+import {deleteImage, getCurrentUser} from "@/data/hotelsData";
 import {Stay} from "@/lib/types";
 
 export const deleteStayAsync = createAsyncThunk(
@@ -19,9 +9,8 @@ export const deleteStayAsync = createAsyncThunk(
     async (stay: Stay, { rejectWithValue }) => {
         try {
             const user = getCurrentUser();
-            const firestore = getFirestore();
             const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
-            const userDocRef = doc(firestore, 'hosts', user.uid);
+            const publicStaysRef = doc(firestore, 'stays', stay.id);
 
             if (stay.published) {
                 throw new Error('You have to unpublish the stay before deleting it.');
@@ -46,6 +35,7 @@ export const deleteStayAsync = createAsyncThunk(
 
             // Delete stay document
             batch.delete(originStayRef);
+            batch.delete(publicStaysRef)
             await batch.commit();
 
             return stay.id;

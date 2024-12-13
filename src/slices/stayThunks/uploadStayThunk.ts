@@ -1,12 +1,4 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch
-} from "@firebase/firestore";
+import {collection, doc, setDoc, updateDoc} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
 import {createFile} from "@/lib/utils";
 import {createAsyncThunk} from "@reduxjs/toolkit";
