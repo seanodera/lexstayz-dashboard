@@ -21,9 +21,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const firestore = initializeFirestore(app, {localCache:
-        persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager()})
-});
+const isDev = process.env.NEXT_PUBLIC_STAGE === 'dev';
+const firestore = isDev
+    ? initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    }, 'development')
+    : initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
 const storage = getStorage(app);
 
 export { app, auth, firestore, storage };
