@@ -1,7 +1,7 @@
 'use client';
 
-import {Table} from "antd";
-import {dateReader, timeFromDate, toMoneyFormat} from "@/lib/utils";
+import {Button, Table} from "antd";
+import {dateReader, handler_url, timeFromDate, toMoneyFormat} from "@/lib/utils";
 import {
     selectTotalBookings,
     selectPage,
@@ -171,6 +171,7 @@ export default function BookingPage() {
                     <div className="flex items-center justify-between">
                         <h1 className="font-semibold">Bookings</h1>
                         <div className={'flex gap-2 '}>
+                            <Button size={'large'} type={'primary'} href={`${handler_url}/api/calendar/${user.uid}.ics`}>Sync your calendar</Button>
                             <Input className={'rounded-lg'} placeholder="Search Bookings"
                                    onChange={(e) => handleSearch(e.target.value)}/>
                             {/*<Button type={'primary'} onClick={() => handleSearch()}>Search</Button>*/}
@@ -198,6 +199,7 @@ export default function BookingPage() {
                 rowClassName={'bg-white bg-opacity-70 hover:bg-primary hover:bg-opacity-100 hover:text-white my-2 rounded-xl'}
                 rowHoverable={false}
                 tableLayout={'auto'}
+
             />
 
         </>
