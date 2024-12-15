@@ -171,7 +171,7 @@ export default function BookingPage() {
                     <div className="flex items-center justify-between">
                         <h1 className="font-semibold">Bookings</h1>
                         <div className={'flex gap-2 '}>
-                            <Button size={'large'} type={'primary'} href={`${handler_url}/api/calendar/${user.uid}.ics`}>Sync your calendar</Button>
+                            <Button disabled={!user} size={'large'} type={'primary'} href={`${handler_url}/api/calendar/${user?.uid}.ics`}>Sync your calendar</Button>
                             <Input className={'rounded-lg'} placeholder="Search Bookings"
                                    onChange={(e) => handleSearch(e.target.value)}/>
                             {/*<Button type={'primary'} onClick={() => handleSearch()}>Search</Button>*/}
