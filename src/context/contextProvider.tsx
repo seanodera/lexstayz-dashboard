@@ -20,7 +20,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import MainAppShell from "@/context/mainShell";
 import {selectIsLoading} from "@/slices/staySlice";
 
-export const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/user-information'];
+export const authRoutes = ['/checkout','/login', '/register', '/forgot-password', '/reset-password', '/user-information'];
 
 export default function ContextProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -35,7 +35,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
     const currentUser = useAppSelector(selectCurrentUser); // Select current user from state
 
     useEffect(() => {
-        const isAuthRoute = authRoutes.includes(pathname); // Check if current route is an auth-related route
+        const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
         const initializeAuth = async () => {
             await setPersistence(auth, browserLocalPersistence); // Ensure Firebase persistence
@@ -79,7 +79,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
         return <div className="h-screen w-screen"><LoadingScreen /></div>;
     }
 
-    if (authRoutes.includes(pathname)) {
+    if (authRoutes.some((route) => pathname.startsWith(route))) {
         // Render children directly if on an auth route
         return <div>{children}</div>;
     } else {

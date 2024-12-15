@@ -26,7 +26,7 @@ export interface Withdraw {
     withdrawals: any[];
 }
 
-export interface Host{
+export interface Host {
     organization?: string;
     "email": string,
     "phone": string,
@@ -38,3 +38,37 @@ export interface Host{
     "wishlist": string[]
     onboarded: string[],
 }
+
+export interface IPromotion {
+    id: string,
+    hostId: string,
+    poster: string;
+    name: string;
+    startDate: string | Date,
+    endDate: string | Date,
+    createdAt:string;
+    description: string,
+    stays: string[],
+    currency: string,
+    amount: number,
+    status: string
+}
+
+export interface OperationType {
+    operationType: string;
+    minTransactionLimit: string;
+    maxTransactionLimit: string;
+}
+
+export interface Correspondent {
+    correspondent: string;
+    currency: string;
+    ownerName: string;
+    operationTypes: OperationType[];
+}
+
+export interface PawaPayCountryData {
+    country: string;
+    correspondents: Correspondent[];
+}
+

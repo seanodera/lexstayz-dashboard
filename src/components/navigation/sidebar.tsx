@@ -17,6 +17,7 @@ import LogoIcon from "@/components/LogoIcon";
 import {useAppSelector} from "@/hooks/hooks";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {Input} from "@headlessui/react";
+import {MdCampaign} from "react-icons/md";
 
 
 const menuItems = [
@@ -39,6 +40,12 @@ const menuItems = [
         icon: <BookOutlined />,
         label: "Reservations",
         href: "/reservations"
+    },
+    {
+        key: "promotions",
+        icon: <MdCampaign/>,
+        label: "Promotions",
+        href: "/promotions",
     },
     {
         key: "cashier",
