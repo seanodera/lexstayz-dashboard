@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-import {Stay} from "@/lib/types";
+import {Home, Hotel, Room, Stay} from "@/lib/types";
 import {fetchStaysAsync} from "@/slices/stayThunks/fetchStaysThunk";
 import {updateRoomAsync} from "@/slices/stayThunks/updateRoomThunk";
 import {publishStayAsync} from "@/slices/stayThunks/publishStayThunk";
@@ -18,8 +18,8 @@ import {state} from "sucrase/dist/types/parser/traverser/base";
 
 
 interface StayState {
-    stays: Stay[];
-    currentStay: Stay;
+    stays: (Home | Hotel)[];
+    currentStay: (Home | Hotel);
     currentId: number | string;
     isLoading: boolean;
     hasError: boolean;
@@ -33,7 +33,7 @@ interface StayState {
 
 const initialState: StayState = {
     stays: [],
-    currentStay: {} as Stay,
+    currentStay: {} as (Home | Hotel),
     currentId: -1,
     isLoading: false,
     hasError: false,
@@ -154,11 +154,11 @@ const staySlice = createSlice({
     name: "stay",
     initialState,
     reducers: {
-        setCurrentStay: (state, action: PayloadAction<Stay>) => {
+        setCurrentStay: (state, action: PayloadAction<(Home | Hotel)>) => {
             state.currentStay = action.payload;
             state.currentId = -1;
         },
-        setAllStays: (state, action: PayloadAction<Stay[]>) => {
+        setAllStays: (state, action: PayloadAction<any[]>) => {
             state.stays = action.payload;
         },
         resetHasRun: (state) => {
@@ -178,7 +178,7 @@ const staySlice = createSlice({
         })
             .addCase(setCurrentStayFromId.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.currentStay = action.payload as Stay
+                state.currentStay = action.payload as (Home | Hotel);
             })
             .addCase(setCurrentStayFromId.rejected, (state, action) => {
                 state.isLoading = false;
@@ -190,11 +190,15 @@ const staySlice = createSlice({
                 state.hasError = false;
                 state.errorMessage = '';
             })
-            .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
+            .addCase(uploadStayAsync.fulfilled, (state, action: PayloadAction<(Home | Hotel)>) => {
                 state.isLoading = false;
+
+                // Add the new stay to the stays array
                 state.stays.push(action.payload);
-                if (state.currentStay.id === action.payload.id){
-                    state.currentStay = action.payload
+
+                // Update the currentStay if the uploaded stay matches its ID
+                if (state.currentStay && state.currentStay.id === action.payload.id) {
+                    state.currentStay = action.payload;
                 }
             })
             .addCase(uploadStayAsync.rejected, (state, action) => {
@@ -209,13 +213,13 @@ const staySlice = createSlice({
             })
             .addCase(addRoomAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId);
+                const stayIndex = state.stays.findIndex((stay:Stay) => stay.id === action.payload.stayId);
                 const stay = state.stays[ stayIndex ];
                 if (stay) {
-                    stay.rooms.push(action.payload.room);
+                    (stay as Hotel).rooms.push(action.payload.room);
                 }
                 if (state.currentStay && state.currentStay.id === action.payload.stayId) {
-                    state.currentStay.rooms.push(action.payload.room);
+                    (state.currentStay as Hotel).rooms.push(action.payload.room);
                 }
             })
             .addCase(addRoomAsync.rejected, (state, action) => {
@@ -229,7 +233,7 @@ const staySlice = createSlice({
                 state.errorMessage = '';
                 state.hasRun = true;
             })
-            .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<{ stays: Stay[ ], occupancy: any }>) => {
+            .addCase(fetchStaysAsync.fulfilled, (state, action: PayloadAction<{ stays: any[ ], occupancy: any }>) => {
                 state.isLoading = false;
                 state.stays = action.payload.stays;
                 state.occupancy = action.payload.occupancy;
@@ -245,15 +249,25 @@ const staySlice = createSlice({
                 state.hasError = false;
                 state.errorMessage = '';
             })
-            .addCase(updateRoomAsync.fulfilled, (state, action) => {
+            .addCase(updateRoomAsync.fulfilled, (state, action: PayloadAction<{ room: Room; stayId: string }>) => {
                 state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.stayId);
-                const stay = state.stays[ stayIndex ];
-                if (stay) {
-                    state.stays[ stayIndex ].rooms = stay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
+
+                // Find the stay index in the stays array
+                const stayIndex = state.stays.findIndex((stay: Home | Hotel) => stay.id === action.payload.stayId);
+                const stay = state.stays[stayIndex];
+
+                if (stay && (stay as Hotel).type === 'Hotel') {
+                    // Ensure stay is a Hotel and update the room
+                    (state.stays[stayIndex] as Hotel).rooms = (stay as Hotel).rooms.map((room: Room) =>
+                        room.id === action.payload.room.id ? action.payload.room : room
+                    );
                 }
-                if ((state.currentStay && state.currentStay.id === action.payload.stayId) ){
-                    state.currentStay.rooms = state.currentStay.rooms.map((room) => room.id === action.payload.room.id ? action.payload.room : room);
+
+                // Update the currentStay if it matches the updated stayId
+                if (state.currentStay && state.currentStay.id === action.payload.stayId) {
+                    (state.currentStay as Hotel).rooms = (state.currentStay as Hotel).rooms.map((room: Room) =>
+                        room.id === action.payload.room.id ? action.payload.room : room
+                    );
                 }
             })
             .addCase(updateRoomAsync.rejected, (state, action) => {
@@ -268,7 +282,7 @@ const staySlice = createSlice({
             })
             .addCase(publishStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
                 state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
+                const stayIndex = state.stays.findIndex((stay:Stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ].published = true;
                 }
@@ -288,7 +302,7 @@ const staySlice = createSlice({
             })
             .addCase(unPublishStayAsync.fulfilled, (state, action: PayloadAction<Stay>) => {
                 state.isLoading = false;
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
+                const stayIndex = state.stays.findIndex((stay:Stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ].published = false;
                 }
@@ -308,7 +322,7 @@ const staySlice = createSlice({
             })
             .addCase(deleteStayAsync.fulfilled, (state, action: PayloadAction<string>) => {
                 state.isLoading = false;
-                state.stays = state.stays.filter((stay) => stay.id !== action.payload);
+                state.stays = state.stays.filter((stay:Stay) => stay.id !== action.payload);
             })
             .addCase(deleteStayAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -322,7 +336,7 @@ const staySlice = createSlice({
             })
             .addCase(updateStayAsync.fulfilled, (state, action) => {
                 state.isLoading = false
-                const stayIndex = state.stays.findIndex((stay) => stay.id === action.payload.id);
+                const stayIndex = state.stays.findIndex((stay:Stay) => stay.id === action.payload.id);
                 if (stayIndex !== -1) {
                     state.stays[ stayIndex ] = action.payload;
                 }

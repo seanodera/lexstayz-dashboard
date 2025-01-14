@@ -26,6 +26,7 @@ export default function WithdrawalBankModal({ show, setShow }: {show: boolean,se
 
     const handleFinish = (values: any) => {
         const selectedBank = banks.find(bank => bank.code === values.bank_code);
+        console.log('selectedBank', selectedBank, user);
         if (!user) return;
         const accountPayload = {
             accountNumber: values.account_number,
@@ -35,7 +36,9 @@ export default function WithdrawalBankModal({ show, setShow }: {show: boolean,se
             name: values.account_name,
             type: currency === 'GHS' && selectedBank ? selectedBank.type : 'MSISDN',
         };
-        dispatch(addWithdrawalAccount(accountPayload));
+        dispatch(addWithdrawalAccount(accountPayload)).then((value) => {
+            console.log(value)
+        });
     };
 
     return (

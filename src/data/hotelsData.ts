@@ -9,7 +9,7 @@ import {
 import { auth,firestore,  storage } from "@/lib/firebase";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 import { createFile } from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
+import {arrayUnion, getDoc} from "firebase/firestore";
 
 
 export async function uploadImage(file: File, path: string): Promise<string> {

@@ -7,6 +7,7 @@ import {useAppSelector} from '@/hooks/hooks';
 import {selectCurrentBooking} from '@/slices/bookingSlice';
 import {BsChevronRight} from 'react-icons/bs';
 import {selectCurrentStay} from "@/slices/staySlice";
+import {Hotel} from "@/lib/types";
 
 const Breadcrumbs: React.FC = () => {
     const pathname = usePathname();
@@ -17,7 +18,7 @@ const Breadcrumbs: React.FC = () => {
 
     // Helper function to find the room name by ID
     const getRoomNameById = (id: string) => {
-        return currentStay?.rooms?.find((room: any) => room.id === id)?.name || 'Room';
+        return (currentStay as Hotel)?.rooms?.find((room: any) => room.id === id)?.name || 'Room';
     };
 
     const breadcrumbItems = pathSnippets.map((snippet, index) => {

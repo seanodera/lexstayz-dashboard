@@ -15,7 +15,12 @@ import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
 import {fetchStaysAsync, selectHasRun, selectIsLoading} from "@/slices/staySlice";
 import {fetchUserChatsAsync} from "@/slices/messagingSlice";
-import {fetchExchangeRates, fetchPawaPayConfigs, fetchPendingTransactions} from "@/slices/transactionsSlice";
+import {
+    fetchExchangeRates,
+    fetchPawaPayConfigs,
+    fetchPendingTransactions,
+    fetchWithdrawalAccounts
+} from "@/slices/transactionsSlice";
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {getOngoingFeatures, getPastAdverts, getUpcomingAdverts} from "@/slices/promotionSlice";
 
@@ -37,16 +42,19 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     useEffect(() => {
         const fetchData = async () => {
             if (!hasRun) {
-                dispatch(fetchStaysAsync());
-                dispatch(fetchPendingTransactions());
-                dispatch(fetchBookingsAsync({ page: 1, limit: 10 }));
-                dispatch(fetchStatistics());
-                dispatch(fetchUserChatsAsync());
-                dispatch(fetchExchangeRates());
-                dispatch(fetchPawaPayConfigs());
-                dispatch(getOngoingFeatures())
-                dispatch(getUpcomingAdverts())
-                dispatch(getPastAdverts())
+                await Promise.all([
+                    dispatch(fetchStaysAsync()),
+                dispatch(fetchPendingTransactions()),
+                dispatch(fetchBookingsAsync({ page: 1, limit: 10 })),
+                dispatch(fetchStatistics()),
+                dispatch(fetchUserChatsAsync()),
+                dispatch(fetchExchangeRates()),
+                dispatch(fetchPawaPayConfigs()),
+                dispatch(getOngoingFeatures()),
+                dispatch(getUpcomingAdverts()),
+                dispatch(getPastAdverts()),
+                dispatch(fetchWithdrawalAccounts()),
+                ])
             }
         };
 

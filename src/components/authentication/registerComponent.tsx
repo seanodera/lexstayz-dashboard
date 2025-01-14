@@ -33,7 +33,8 @@ export default function RegisterComponent() {
                 lastName: lastName,
                 email: email,
                 accountType: accountType,
-
+                joined: new Date().getUTCFullYear().toString(),
+                createdAt: new Date().toISOString()
             }
         } else {
             details = {
@@ -41,6 +42,8 @@ export default function RegisterComponent() {
                 companyName: companyName,
                 email: email,
                 accountType: accountType,
+                joined: new Date().getUTCFullYear().toString(),
+                createdAt: new Date().toISOString()
             }
         }
         await createUser(details, userCredentials.user.uid)

@@ -3,11 +3,12 @@ import {average, collection, count, doc, getAggregateFromServer, getDocs, query,
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
 import {RootState} from "@/data/store";
-import {setDoc, writeBatch} from "@firebase/firestore";
+import {setDoc, where, writeBatch} from "@firebase/firestore";
 import {isAfter} from "date-fns";
 import {getServerTime, handler_url} from "@/lib/utils";
 import axios from "axios";
-import {PawaPayCountryData} from "@/lib/types";
+import {IPayout, IWithdrawalAccount, PawaPayCountryData} from "@/lib/types";
+import {requestPayoutAsync} from "@/slices/requestPayoutAsync";
 
 interface Transaction {
     id: string,
@@ -33,28 +34,14 @@ export interface IPaystackBank {
     createdAt: string;
     updatedAt: string;
 }
-export interface IWithdrawalAccount {
-    userId: string; // MongoDB ObjectId is stored as a string
-    type: string;
-    name: string;
-    accountNumber: string;
-    bankCode?: string;
-    currency?: string;
-    bankName?: string;
-    recipient_code?: string;
-    service: 'Pawapay' | 'Paystack' | 'Paystack_KE';
-    createdAt?: Date; // Date with a default value
-    active?: boolean; // Boolean with a default value
-    flagged?: boolean; // Boolean with a default value
-    reason?: string; // String with a default value
-}
+
 interface TransactionsState {
     pendingTransactions: Transaction[];
     completedTransactions: Transaction[];
     pendingBalance: number;
     availableBalance: number;
     averageEarnings: number;
-    withdrawList: Transaction[];
+    withdrawList: IPayout[];
     isLoading: boolean;
     hasError: boolean;
     errorMessage: string;
@@ -66,6 +53,7 @@ interface TransactionsState {
     paymentMethod: string;
     paymentCurrency: string;
     paymentRate: number;
+    payouts: IPayout[];
 
 }
 
@@ -82,7 +70,8 @@ const initialState: TransactionsState = {
     errorMessage: '',
     banks: [],
     withdrawalAccounts: [],
-    pawapayConfigs:[]
+    pawapayConfigs:[],
+    payouts: []
 }
 
 export const fetchPendingTransactions = createAsyncThunk(
@@ -166,10 +155,11 @@ export const addWithdrawalAccount = createAsyncThunk(
     }, {rejectWithValue}) => {
         try {
             const user = getCurrentUser();
-            const response = await axios.post(`${handler_url}/payments/createWithdrawalAccount`, {
+            const response = await axios.post(`${handler_url}/api/payments/createWithdrawalAccount`, {
                 userId: user.uid,
                 ...withdrawalData
             })
+            const withdrawalAccount = response.data.data;
             const hostsRef = collection(firestore, 'hosts', user.uid, 'accounts');
             const accountDoc = doc(hostsRef)
             await setDoc(accountDoc, {
@@ -181,6 +171,7 @@ export const addWithdrawalAccount = createAsyncThunk(
                 bankCode:withdrawalData.bankCode,
                 currency:withdrawalData.currency,
                 bankName:withdrawalData.bankName,
+                ...withdrawalAccount
             })
         } catch (error: unknown) {
             console.log(error);
@@ -259,6 +250,33 @@ export const fetchPawaPayConfigs = createAsyncThunk(
         }
     }
 )
+
+export const fetchPayoutRequestsAsync = createAsyncThunk(
+    'transactions/fetchPayouts',
+    async (_, { rejectWithValue }) => {
+        try {
+            const user = getCurrentUser();
+            if (!user || !user.uid) {
+                throw new Error('User not authenticated');
+            }
+
+            const payoutsRef = collection(firestore, 'payouts'); // Use `collection` instead of `doc` for fetching multiple documents
+            const q = query(payoutsRef, where('hostId', '==', user.uid)); // Query for payouts matching the user's UID
+
+            const querySnapshot = await getDocs(q);
+
+            const payouts = querySnapshot.docs.map((doc) => ({
+                id: doc.id, // Firestore document ID
+                ...doc.data(), // Spread document data
+            }));
+
+            return payouts; // Return the fetched payouts array
+        } catch (error) {
+            console.error('Error fetching payout requests:', error);
+            return rejectWithValue('Error fetching payout requests');
+        }
+    }
+);
 
 const transactionsSlice = createSlice({
         name: 'transactions',
@@ -346,6 +364,30 @@ const transactionsSlice = createSlice({
                 .addCase(fetchPawaPayConfigs.rejected, (state, action) => {
                     state.hasError = true;
                     state.errorMessage = action.payload as string || 'Error fetching PawaPay payment configs';
+                })
+                .addCase(requestPayoutAsync.pending, (state, action) => {
+                    state.isLoading = true;
+                })
+                .addCase(requestPayoutAsync.fulfilled, (state, action) => {
+                    state.isLoading = false;
+                    state.payouts = [...state.payouts, action.payload];
+                    state.withdrawList = [...state.withdrawList, action.payload];
+                })
+                .addCase(requestPayoutAsync.rejected, (state, action) => {
+                    state.isLoading = false;
+                    state.errorMessage = action.payload as string || 'Error requesting payout';
+                })
+                .addCase(fetchPayoutRequestsAsync.pending, (state,action) => {
+                    state.isLoading = true;
+                })
+                .addCase(fetchPayoutRequestsAsync.fulfilled, (state,action) => {
+                    state.isLoading = true;
+                    state.payouts = action.payload as IPayout[];
+                    state.withdrawList = action.payload as IPayout[];
+                })
+                .addCase(fetchPayoutRequestsAsync.rejected, (state,action) => {
+                    state.isLoading = false;
+                    state.errorMessage = action.payload as string || 'Error requesting payout';
                 })
 
         }

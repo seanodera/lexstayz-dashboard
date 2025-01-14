@@ -56,7 +56,7 @@ export default function AddStayModal({ show, setShow, stays, setStays }: {show: 
                     style={{ width: "100%" }}
                     onChange={handleChange}
                 >
-                    {allStays.map((stay) => (
+                    {allStays.filter((stay) => stay.published === true).map((stay) => (
                         <Option
                             key={stay.id}
                             value={stay.id}

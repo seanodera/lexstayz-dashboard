@@ -2,7 +2,7 @@ import {doc, writeBatch} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {deleteImage, getCurrentUser} from "@/data/hotelsData";
-import {Stay} from "@/lib/types";
+import {Hotel, Stay} from "@/lib/types";
 
 export const deleteStayAsync = createAsyncThunk(
     'stay/deleteStay',
@@ -18,13 +18,14 @@ export const deleteStayAsync = createAsyncThunk(
 
             const batch = writeBatch(firestore);
 
-            // Delete room images and documents
-            for (const room of stay.rooms) {
-                await deleteImage(`${stay.id}/${room.id}/poster`);
-                await Promise.all(room.images.map((_:string, index: number) => deleteImage(`${stay.id}/${room.id}/image-${index}`)));
+            if (stay.type === 'Hotel'){  // Delete room images and documents
+                for (const room of (stay as Hotel).rooms) {
+                    await deleteImage(`${stay.id}/${room.id}/poster`);
+                    await Promise.all(room.images.map((_: string, index: number) => deleteImage(`${stay.id}/${room.id}/image-${index}`)));
 
-                const roomRef = doc(originStayRef, 'rooms', room.id);
-                batch.delete(roomRef);
+                    const roomRef = doc(originStayRef, 'rooms', room.id);
+                    batch.delete(roomRef);
+                }
             }
 
             // Delete stay images

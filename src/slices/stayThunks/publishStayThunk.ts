@@ -1,6 +1,6 @@
 import {doc, setDoc, updateDoc} from "@firebase/firestore";
 import {firestore} from "@/lib/firebase";
-import {getDoc} from "firebase/firestore";
+import {arrayUnion, getDoc} from "firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {getCurrentUser} from "@/data/hotelsData";
 import {Stay} from "@/lib/types";
@@ -27,6 +27,7 @@ export const publishStayAsync = createAsyncThunk(
             }
 
             await updateDoc(originStayRef, { published: true, publishedDate: timestamp });
+            await updateCollectedProperties(stay)
             return { ...stay, published: true, publishedDate: timestamp, hostId: user.uid }
         } catch (error) {
             if (error instanceof Error) {
@@ -37,3 +38,38 @@ export const publishStayAsync = createAsyncThunk(
         }
     }
 );
+
+
+async function updateCollectedProperties(stay: any) {
+    const docRef = doc(firestore, "general", "collectedProperties");
+
+    const { location, rooms, ...otherProps } = stay;
+
+    const updateData: { [key: string]: any } = {};
+
+    // Process other properties
+    for (let key in otherProps) {
+        updateData[key] = arrayUnion(otherProps[key]);
+    }
+
+    // Process location properties
+    for (let subKey in location) {
+        if (location[subKey] !== "") {
+            updateData[`location.${subKey}`] = arrayUnion(location[subKey]);
+        }
+    }
+
+    // Process room prices
+    if (rooms) {
+        for (let room of rooms) {
+            if (room.price) {
+                updateData["price"] = arrayUnion(room.price);
+            }
+        }
+    }
+
+    // Update the Firestore document
+    await updateDoc(docRef, updateData);
+
+    console.log("Collected properties updated successfully using arrayUnion!");
+}
