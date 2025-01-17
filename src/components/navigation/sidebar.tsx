@@ -41,12 +41,12 @@ const menuItems = [
         label: "Reservations",
         href: "/reservations"
     },
-    {
-        key: "promotions",
-        icon: <MdCampaign/>,
-        label: "Promotions",
-        href: "/promotions",
-    },
+    // {
+    //     key: "promotions",
+    //     icon: <MdCampaign/>,
+    //     label: "Promotions",
+    //     href: "/promotions",
+    // },
     {
         key: "cashier",
         icon: <WalletOutlined />,

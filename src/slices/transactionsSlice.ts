@@ -8,7 +8,7 @@ import {isAfter} from "date-fns";
 import {getServerTime, handler_url} from "@/lib/utils";
 import axios from "axios";
 import {IPayout, IWithdrawalAccount, PawaPayCountryData} from "@/lib/types";
-import {requestPayoutAsync} from "@/slices/requestPayoutAsync";
+import {requestPayoutAsync} from "@/slices/transactionThunks/requestPayoutAsync";
 
 interface Transaction {
     id: string,
@@ -38,8 +38,6 @@ export interface IPaystackBank {
 interface TransactionsState {
     pendingTransactions: Transaction[];
     completedTransactions: Transaction[];
-    pendingBalance: number;
-    availableBalance: number;
     averageEarnings: number;
     withdrawList: IPayout[];
     isLoading: boolean;
@@ -61,8 +59,6 @@ const initialState: TransactionsState = {
     currency: "USD", exchangeRates: {}, paymentCurrency: "KES", paymentMethod: "", paymentRate: 0,
     pendingTransactions: [],
     completedTransactions: [],
-    pendingBalance: 0,
-    availableBalance: 0,
     withdrawList: [],
     isLoading: false,
     hasError: false,
@@ -303,9 +299,7 @@ const transactionsSlice = createSlice({
             }).addCase(fetchPendingTransactions.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.pendingTransactions = action.payload.pendingTransactions as Transaction[];
-                state.pendingBalance = action.payload.pendingBalance;
                 state.completedTransactions = action.payload.availableTransactions as Transaction[];
-                state.availableBalance = action.payload.availableBalance;
                 state.averageEarnings = action.payload.averageEarnings;
             }).addCase(fetchPendingTransactions.rejected, (state, action) => {
                 state.isLoading = false;
@@ -397,9 +391,7 @@ const transactionsSlice = createSlice({
 
 export const {resetTransactionsError,setPaymentCurrency,setPaymentMethod} = transactionsSlice.actions;
 export const selectPendingTransactions = (state: RootState) => state.transactions.pendingTransactions;
-export const selectPendingBalance = (state: RootState) => state.transactions.pendingBalance;
 export const selectCompletedTransactions = (state: RootState) => state.transactions.completedTransactions;
-export const selectAvailableBalance = (state: RootState) => state.transactions.availableBalance;
 export const selectWithdrawList = (state: RootState) => state.transactions.withdrawList;
 export const selectAverageEarnings = (state: RootState) => state.transactions.averageEarnings;
 

@@ -1,6 +1,6 @@
 import {auth, firestore} from "@/lib/firebase";
 import {arrayUnion, doc, getDoc, setDoc} from "firebase/firestore";
-import { sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
+import {confirmPasswordReset, sendPasswordResetEmail, verifyPasswordResetCode} from "firebase/auth";
 import {updateDoc} from "@firebase/firestore";
 
 
@@ -15,9 +15,23 @@ export async function getUserDetails(id: string) {
         const userDoc = doc(firestore, 'hosts', id);
         const docSnap = await getDoc(userDoc);
         console.log(docSnap.data());
-        return docSnap.data();
-    } catch (error) {
-        console.error(error);
+        const user = docSnap.data();
+        if (user) {
+            if (!user.balance){
+                user.balance = {
+                    available: 0,
+                    prevAvailable: 0,
+                    pending: 0,
+                    prevPending: 0
+                }
+            }
+        } else {
+            throw Error("User not found.");
+        }
+
+        return user;
+    } catch (error:any) {
+        throw Error(error.message);
     }
 }
 

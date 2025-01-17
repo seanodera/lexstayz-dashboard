@@ -10,18 +10,22 @@ export  const requestPayoutAsync = createAsyncThunk('transactions/requestPayout'
     try {
         const state = getState() as RootState;
         const docRef = doc(firestore,'payouts');
-        const {withdrawalAccounts, exchangeRates, availableBalance} = state.transactions;
+        const {withdrawalAccounts, exchangeRates} = state.transactions;
+        const {user: host} = state.authentication
         const user = getCurrentUser()
         const account = withdrawalAccounts[0];
         const id = docRef.id;
+        if (!host){
+            return rejectWithValue("No account found.");
+        }
         const payoutDocument = {
             id: id,
             hostId: user.uid,
             account: account,
             currency: account.currency,
             method: account.service,
-            amount: exchangeRates[account.currency] * availableBalance,
-            originalAmount: availableBalance,
+            amount: exchangeRates[account.currency] * host.balance.available,
+            originalAmount: host.balance.available,
             approved: false,
             flagged: false,
             createdAt: (new Date).toISOString(),

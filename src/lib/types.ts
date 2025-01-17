@@ -86,7 +86,9 @@ export interface Dates {
 
 export interface Balance {
     available: number;
+    prevAvailable: number;
     pending: number;
+    prevPending: number;
 }
 
 export interface WithdrawAccount {
@@ -110,6 +112,7 @@ export interface Host {
     "lastName": string,
     "wishlist": string[]
     onboarded: string[],
+    balance: Balance,
 }
 
 export interface IPayout {

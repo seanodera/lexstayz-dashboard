@@ -6,6 +6,7 @@ import {doc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {updateDoc} from "@firebase/firestore";
 import {redirect} from "next/navigation";
+import {Host} from "@/lib/types";
 
 
 
@@ -56,7 +57,7 @@ export const updateUserAsync = createAsyncThunk('authentication/updateUser',
 
 interface AuthenticationState {
     isAuthenticated: boolean,
-    user?: any,
+    user?: Host,
 
     isLoading: boolean,
     hasError: boolean,
