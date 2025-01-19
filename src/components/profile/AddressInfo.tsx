@@ -9,7 +9,7 @@ export default function AddressInfo() {
     const userDetails = useAppSelector(selectCurrentUser)
     const [editMode, setEditMode] = useState<boolean>(false)
     const dispatch = useAppDispatch();
-    const address = userDetails?.address ? userDetails.address : {};
+    const address = userDetails?.address;
     const [country, setCountry] = useState<string>('');
     const [city, setCity] = useState<string>('');
     const [district, setDistrict] = useState<string>('');
@@ -18,22 +18,22 @@ export default function AddressInfo() {
     const [zipCode, setZipCode] = useState<string>('');
 
     const handleEditMode = () => {
-        setStreet(address.street || '');
-        setStreet2(address.street2 || '');
-        setCity(address.city || '');
-        setDistrict(address.district || '');
-        setCountry(address.country || '');
-        setZipCode(address.zipCode || '');
+        setStreet(address?.street || '');
+        setStreet2(address?.street2 || '');
+        setCity(address?.city || '');
+        setDistrict(address?.district || '');
+        setCountry(address?.country || '');
+        setZipCode(address?.zipCode || '');
         setEditMode(true)
     }
 
     const handleCancel = () => {
-        setStreet(address.street || '');
-        setStreet2(address.street2 || '');
-        setCity(address.city || '');
-        setDistrict(address.district || '');
-        setCountry(address.country || '');
-        setZipCode(address.zipCode || '');
+        setStreet(address?.street || '');
+        setStreet2(address?.street2 || '');
+        setCity(address?.city || '');
+        setDistrict(address?.district || '');
+        setCountry(address?.country || '');
+        setZipCode(address?.zipCode || '');
         setEditMode(false)
     }
 
@@ -62,16 +62,16 @@ export default function AddressInfo() {
                 <div>
                     <h3 className={'mb-0'}>Street Address 1</h3>
 
-                    {editMode ? <Input className={'w-full lg:w-1/2'} value={street} defaultValue={address.street}
+                    {editMode ? <Input className={'w-full lg:w-1/2'} value={street} defaultValue={address?.street}
                                        onChange={(e) => setStreet(e.target.value)}/> :
-                        <h3 className={'font-bold'}>{address.street}</h3>}
+                        <h3 className={'font-bold'}>{address?.street}</h3>}
                 </div>
                 <div>
                     <h3 className={'mb-0'}>Street Address 2</h3>
 
-                    {editMode ? <Input className={'w-full lg:w-1/2'} value={street2} defaultValue={address.street2}
+                    {editMode ? <Input className={'w-full lg:w-1/2'} value={street2} defaultValue={address?.street2}
                                        onChange={(e) => setStreet2(e.target.value)}/> :
-                        <h3 className={'font-bold'}>{address.street2}</h3>}
+                        <h3 className={'font-bold'}>{address?.street2}</h3>}
                 </div>
             </div>
             <div className={'grid grid-cols-2 gap-4'}>
@@ -79,16 +79,16 @@ export default function AddressInfo() {
                     <h3 className={'mb-0'}>City</h3>
 
                     {editMode ?
-                        <Input value={city} className={'w-full'} defaultValue={address.city}
+                        <Input value={city} className={'w-full'} defaultValue={address?.city}
                                onChange={(e) => setCity(e.target.value)}/> :
-                        <h3 className={'font-bold'}>{address.city}</h3>}
+                        <h3 className={'font-bold'}>{address?.city}</h3>}
                 </div>
                 <div>
                     <h3 className={'mb-0'}>District</h3>
 
                     {editMode ?
                         <Input className={'w-full'} value={district} onChange={(e) => setDistrict(e.target.value)}/> :
-                        <h3 className={'font-bold'}>{address.district}</h3>}
+                        <h3 className={'font-bold'}>{address?.district}</h3>}
                 </div>
                 <div>
                     <h3 className={'mb-0'}>Country</h3>
@@ -98,13 +98,13 @@ export default function AddressInfo() {
                                 label: `${value.emoji ? value.emoji : ''} ${value.name}`,
                                 value: value.name,
                             }))
-                        }/> : <h3 className={'font-bold'}>{address.country}</h3>}
+                        }/> : <h3 className={'font-bold'}>{address?.country}</h3>}
                 </div>
                 <div>
                     <h3 className={'mb-0'}>Postal Code</h3>
                     {editMode ?
                         <Input className={'w-full'} value={zipCode} onChange={(e) => setZipCode(e.target.value)}/> :
-                        <h3 className={'font-bold'}>{address.zipCode}</h3>}
+                        <h3 className={'font-bold'}>{address?.zipCode}</h3>}
                 </div>
             </div>
         </Card>

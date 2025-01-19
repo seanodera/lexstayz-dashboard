@@ -5,38 +5,52 @@ import {Radio, RadioGroup} from "@headlessui/react";
 import {CiCreditCard2} from "react-icons/ci";
 import {toMoneyFormat} from "@/lib/utils";
 import {AiOutlineMobile} from "react-icons/ai";
-import {Select, Typography} from "antd";
+import {Select, Skeleton, Typography} from "antd";
 import {useEffect, useState} from "react";
 import {setPaymentCurrency, setPaymentMethod} from "@/slices/transactionsSlice";
 import {BsUiChecksGrid} from "react-icons/bs";
 import {WalletOutlined} from "@ant-design/icons";
+import {selectCurrentUser} from "@/slices/authenticationSlice";
 
 // Define the types for the user's payment methods
-const { Title,Text } = Typography;
-export default function PaymentMethods({totalInUsd}:{totalInUsd:number}) {
+const {Title, Text} = Typography;
+export default function PaymentMethods({totalInUsd}: { totalInUsd: number }) {
 
-    const [supportedCurrencies,setSupportedCurrencies] = useState(['GHS', 'KES'])
-    const cardCurrencies = ['GHS', 'KES']
-    ;
-    const {pawapayConfigs,paymentCurrency,paymentRate,currency,paymentMethod,availableBalance} = useAppSelector(state => state.transactions)
+    const [supportedCurrencies, setSupportedCurrencies] = useState(['GHS', 'KES'])
+    const cardCurrencies = ['GHS', 'KES'];
+    const user = useAppSelector(selectCurrentUser)
+    const {
+        pawapayConfigs,
+        paymentCurrency,
+        paymentRate,
+        currency,
+        paymentMethod
+    } = useAppSelector(state => state.transactions)
+
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        let data:string[] = ['GHS', 'KES'];
+        let data: string[] = ['GHS', 'KES'];
         pawapayConfigs.forEach((config) => {
             config.correspondents.forEach((value) => {
-                if (!data.includes(value.currency)){
+                if (!data.includes(value.currency)) {
                     data.push(value.currency);
                 }
             })
         })
         setSupportedCurrencies(data)
     }, [pawapayConfigs]);
+    if (!user) {
+        return <Skeleton active className={''}/>
+
+    }
+    const {available, pending} = user.balance
     return (
         <div>
             <div className={'flex justify-between'}>
                 <Title level={4} className="font-semibold">Payment Methods</Title>
-                <Select value={paymentCurrency} onChange={(value) => dispatch(setPaymentCurrency(value))} options={supportedCurrencies.map((currency) => ({value: currency, label: currency}))}/>
+                <Select value={paymentCurrency} onChange={(value) => dispatch(setPaymentCurrency(value))}
+                        options={supportedCurrencies.map((currency) => ({value: currency, label: currency}))}/>
             </div>
             {paymentCurrency !== currency && <div>
                 <div className={'flex gap-2'}>
@@ -54,10 +68,10 @@ export default function PaymentMethods({totalInUsd}:{totalInUsd:number}) {
                     onChange={(value) => dispatch(setPaymentMethod(value))}
                     className="grid grid-cols-2 gap-4"
                 >
-                    <Radio disabled={totalInUsd > availableBalance} value={'balance'}>
+                    <Radio disabled={totalInUsd > available} value={'balance'}>
                         {({checked}) => (
                             <div
-                                className={`w-full ${checked ? 'border-primary ' : totalInUsd > availableBalance? 'border-danger':'border-gray-400'} flex gap-2 border-solid py-3 px-2 rounded-xl `}>
+                                className={`w-full ${checked ? 'border-primary ' : totalInUsd > available ? 'border-danger' : 'border-gray-400'} flex gap-2 border-solid py-3 px-2 rounded-xl `}>
                                 <div className={'text-3xl'}>
                                     <WalletOutlined/>
                                 </div>
@@ -68,7 +82,8 @@ export default function PaymentMethods({totalInUsd}:{totalInUsd:number}) {
                                     <div
                                         className={'font-bold text-lg'}>{currency} {toMoneyFormat(totalInUsd)}</div>
                                     <div>
-                                        <h5 className={`font-semibold ${totalInUsd > availableBalance && 'text-danger' }`}>Available Balance: USD ${availableBalance}</h5>
+                                        <h5 className={`font-semibold ${totalInUsd > available && 'text-danger'}`}>Available
+                                            Balance: USD ${available}</h5>
                                     </div>
                                 </div>
 

@@ -12,7 +12,7 @@ export default function InitPayoutModal({show, setShow}:{show:boolean,setShow:(s
     const account = (accounts.length >= 1) && accounts[0] ;
     const {exchangeRates} = useAppSelector(state => state.transactions)
     const [convertedAmount, setConvertedAmount] = useState(0);
-    const availableBalance = user.balance?.available || 0;
+    const availableBalance = user?.balance.available || 0;
     useEffect(() => {
     if (account){
         setConvertedAmount(exchangeRates[account.currency] * availableBalance);

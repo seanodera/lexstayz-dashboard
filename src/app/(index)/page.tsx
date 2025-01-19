@@ -1,5 +1,5 @@
 'use client'
-import {Card, Progress,} from "antd";
+import {Card, Progress, Skeleton,} from "antd";
 import CountUp from "react-countup";
 import BookingsPanel from "@/components/home/bookingsPanel";
 import CheckInPanel from "@/components/home/checkInPanel";
@@ -17,9 +17,8 @@ export default function Home() {
     const bookingStats = useAppSelector(selectBookingStats)
     const occupancy = useAppSelector(selectOccupancy)
     const {openDashboardTour,isMainOpen} = useTour()
-    const user = useAppSelector(selectCurrentUser)
     useEffect(() => {
-        if (!isMainOpen && user?.onboarded?.includes('dashboard')) {
+        if (!isMainOpen && userDetails?.onboarded?.includes('dashboard')) {
             openDashboardTour();
         }
     }, []);
@@ -95,6 +94,11 @@ export default function Home() {
 const Overview = () => {
     const user = useAppSelector(selectCurrentUser)
     const averageEarnings = useAppSelector(selectAverageEarnings)
+    if (!user){
+        return <Skeleton active className={'border-0 bg-white bg-opacity-60 shadow shadow-primary-100'} />
+
+    }
+
     return (
         <Card id={'tour-dashboard-revenue'} className={'border-0 bg-white bg-opacity-60 shadow shadow-primary-100'}>
             <h2>Revenue</h2>
@@ -103,7 +107,7 @@ const Overview = () => {
                     <div className={''}>
                         <h3 className={'text-gray-500 text-lg'}>Total Balance</h3>
                         <CountUp className={'font-semibold text-xl md:text-2xl'} start={0}
-                                 end={(user.balance?.pending || 0) + (user.balance?.available || 0)}
+                                 end={(user.balance.pending || 0) + (user.balance.available || 0)}
                                  duration={2}
                                  separator=","
                                  decimals={2}
@@ -114,7 +118,7 @@ const Overview = () => {
                     <div>
                         <h3 className={'text-gray-500 font-medium'}>Available Balance</h3>
                         <CountUp className={'font-semibold text-xl'} start={0}
-                                 end={user.balance?.available || 0}
+                                 end={user.balance.available || 0}
                                  duration={2}
                                  separator=","
                                  decimals={2}
@@ -137,7 +141,7 @@ const Overview = () => {
                     <div>
                         <h3 className={'text-gray-500 font-medium'}>Pending Balance</h3>
                         <CountUp className={'font-semibold text-xl'} start={0}
-                                 end={user.balance?.pending || 0}
+                                 end={user.balance.pending || 0}
                                  duration={2}
                                  separator=","
                                  decimals={2}

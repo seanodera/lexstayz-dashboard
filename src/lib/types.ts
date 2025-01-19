@@ -102,7 +102,7 @@ export interface Withdraw {
 }
 
 export interface Host {
-    organization?: string;
+    companyName?: string;
     "email": string,
     "phone": string,
     "uid": string,
@@ -113,6 +113,18 @@ export interface Host {
     "wishlist": string[]
     onboarded: string[],
     balance: Balance,
+    dob?: string,
+    avatar?:string,
+    gender?: string,
+    address?: {
+        zipCode: string;
+        street2: string;
+        fullAddress: string;
+        district: string;
+        country: string;
+        street: string;
+        city: string;
+    },
 }
 
 export interface IPayout {

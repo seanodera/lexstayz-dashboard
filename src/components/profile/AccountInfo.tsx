@@ -19,17 +19,17 @@ export default function AccountInfo() {
     const [gender, setGender] = useState("");
 
     const handleCancel = () => {
-        setFirstName(user.firstName || "");
-        setLastName(user.lastName || "");
-        setPhone(user.phone || "");
-        setDateOfBirth(user.dob || "");
+        setFirstName(user?.firstName || "");
+        setLastName(user?.lastName || "");
+        setPhone(user?.phone || "");
+        setDateOfBirth(user?.dob || "");
         setEditMode(false);
     }
     const handleEditMode = () => {
-        setFirstName(user.firstName || "");
-        setLastName(user.lastName || "");
-        setPhone(user.phone || "");
-        setDateOfBirth(user.dob || "");
+        setFirstName(user?.firstName || "");
+        setLastName(user?.lastName || "");
+        setPhone(user?.phone || "");
+        setDateOfBirth(user?.dob || "");
         setEditMode(true);
     }
     const handleApply = () => {
@@ -87,8 +87,8 @@ export default function AccountInfo() {
                             <h3 className={'mb-0'}>Date Of Birth</h3>
                             {editMode ? <DatePicker className={'w-full'} format={'DD MMMM YYYY'} value={dateOfBirth && dayjs(dateOfBirth)}
                                                     defaultValue={user.dob && dayjs(user.dob)}
-                                                    onChange={(e) => setDateOfBirth(e.toISOString())}/> :
-                                <h3 className={'font-bold'}>{user.dob ? dateReader({date: user.dob}) : '-'}</h3>}
+                                                    onChange={(e) => e && setDateOfBirth(e.toISOString())}/> :
+                                <h3 className={'font-bold'}>{user.dob ? dateReader({date: new Date(user.dob)}) : '-'}</h3>}
                         </div>
                         <div>
                             <h3 className={'mb-0'}>Gender</h3>
@@ -105,7 +105,7 @@ export default function AccountInfo() {
                                     },
                                     {
                                         label: 'I prefer not to say',
-                                        value: '-'
+                                        value: undefined
                                     }
                                 ]}/> :
                                 <h3 className={'font-bold'}>{user.gender ? user.gender : '-'}</h3>}

@@ -150,10 +150,12 @@ export const checkAvailabilitySync = createAsyncThunk(
 export const createPromotionAsync = createAsyncThunk('promotion/create',
     async ({promotion, poster}:{promotion: IPromotion, poster: File}, {getState, rejectWithValue}) => {
         try {
-            const user = getCurrentUser()
-            const {transactions} = getState() as RootState;
-            const {pawapayConfigs,paymentCurrency,paymentRate,currency,paymentMethod,availableBalance} = transactions
-            const country =
+            const user = getCurrentUser();
+
+            const {transactions, authentication} = getState() as RootState;
+            const {pawapayConfigs,paymentCurrency,paymentRate,currency,paymentMethod,} = transactions;
+            const host = authentication.user
+                const country =
                 paymentCurrency === "KES" ? "Kenya" :
                     paymentCurrency === "GHS" ? "Ghana" :
                         pawapayConfigs.find((value) =>
@@ -172,7 +174,7 @@ export const createPromotionAsync = createAsyncThunk('promotion/create',
                 country: country,
                 currency: paymentCurrency,
                 paymentMethod,
-                availableBalance,
+                availableBalance: host?.balance.available,
                 reference: id,
                 callbackUrl: `${hostUrl}/checkout/${id}`
             })
