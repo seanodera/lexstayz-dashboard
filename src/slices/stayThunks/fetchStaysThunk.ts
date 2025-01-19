@@ -59,7 +59,7 @@ export const fetchStaysAsync = createAsyncThunk(
                 occupancy,
             };
         } catch (error) {
-
+            console.log(error);
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
             } else {
