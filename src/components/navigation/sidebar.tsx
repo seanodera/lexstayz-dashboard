@@ -17,6 +17,7 @@ import LogoIcon from "@/components/LogoIcon";
 import {useAppSelector} from "@/hooks/hooks";
 import {selectCurrentUser} from "@/slices/authenticationSlice";
 import {Input} from "@headlessui/react";
+import {MdCampaign} from "react-icons/md";
 
 
 const menuItems = [
@@ -40,6 +41,12 @@ const menuItems = [
         label: "Reservations",
         href: "/reservations"
     },
+    // {
+    //     key: "promotions",
+    //     icon: <MdCampaign/>,
+    //     label: "Promotions",
+    //     href: "/promotions",
+    // },
     {
         key: "cashier",
         icon: <WalletOutlined />,
@@ -94,7 +101,7 @@ export default function Sidebar({collapsed, setCollapsed}: {collapsed: boolean, 
                 </Link>
                 <div className={'flex text-current gap-1 items-center mt-6 justify-center'}>
                     <Avatar shape="circle" className="bg-primary capitalize " >
-                        {currentUser?.accountType === 'Individual' ? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}
+                        {currentUser?.accountType === 'Individual' ? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName?.charAt(0)}
                     </Avatar>
                     <div className={`${collapsed && 'hidden'}`}>
                         <h4 className={'mb-0 text-sm font-medium'}>{currentUser?.firstName} {currentUser?.lastName}</h4>

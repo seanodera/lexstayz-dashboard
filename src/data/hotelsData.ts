@@ -4,13 +4,12 @@ import {
     setDoc,
     updateDoc,
     getDocs,
-    getFirestore,
     writeBatch
 } from "@firebase/firestore";
-import { auth, firestore, storage } from "@/lib/firebase";
+import { auth,firestore,  storage } from "@/lib/firebase";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "@firebase/storage";
 import { createFile } from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
+import {arrayUnion, getDoc} from "firebase/firestore";
 
 
 export async function uploadImage(file: File, path: string): Promise<string> {
@@ -166,7 +165,6 @@ export async function addRoomFirebase(room: any, stayId: string, images: string[
 export async function getStaysFirebase(): Promise<any[]> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const staysRef = collection(userDocRef, 'stays');
 
@@ -195,7 +193,6 @@ export async function getStaysFirebase(): Promise<any[]> {
 async function getRoomsFirebase(stayId: string): Promise<any[]> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const roomsRef = collection(userDocRef, 'stays', stayId, 'rooms');
 
@@ -215,7 +212,6 @@ export async function updateRoomFirebase(room: any, previousRoom: any, stayId: s
     try {
         console.log('Here', 'room: ', room, 'prev: ', previousRoom, 'stay: ', stayId, 'room: ', roomId, 'poster: ', poster);
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const staysRef = collection(userDocRef, 'stays');
         const stayRef = doc(staysRef, stayId);
@@ -266,7 +262,7 @@ export async function updateRoomFirebase(room: any, previousRoom: any, stayId: s
 export async function publishStayFirebase(stay: any): Promise<void> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
+
         const publicStaysRef = doc(firestore, 'stays', stay.id);
         const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
         const timestamp = new Date().toString();
@@ -296,7 +292,6 @@ export async function publishStayFirebase(stay: any): Promise<void> {
 export async function unPublishStay(stay: any): Promise<void> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const publicStaysRef = doc(firestore, 'stays', stay.id);
         const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
 
@@ -316,7 +311,7 @@ export async function unPublishStay(stay: any): Promise<void> {
 export async function deleteStay(stay: any): Promise<void> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
+
         const originStayRef = doc(firestore, 'hosts', user.uid, 'stays', stay.id);
         const userDocRef = doc(firestore, 'hosts', user.uid);
 

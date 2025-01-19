@@ -5,6 +5,7 @@ import { selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import React, {useEffect} from "react";
 import RoomEditComponent from "@/components/accomodations/RoomEditComponent";
 import {Button} from "antd";
+import {Hotel} from "@/lib/types";
 
 
 export default function Page() {
@@ -24,7 +25,7 @@ export default function Page() {
     if (!stay || stay.id === undefined) {
         return <div></div>;
     } else {
-        const room = stay.rooms.find((value: any) => value.id.toString() === roomId.toString())
+        const room = (stay as Hotel).rooms.find((value: any) => value.id.toString() === roomId.toString())
 
         return <div className={'pt-4 pb-10 px-10'}>
             <div className={'flex justify-between mb-4 items-center'}>

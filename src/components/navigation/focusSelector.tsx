@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {selectAllStays, selectCurrentStay, setCurrentStayFromId, setCurrentStay} from "@/slices/staySlice";
 import {BsChevronDown} from "react-icons/bs";
-import {Stay} from "@/lib/types";
+import {Home, Hotel, Stay} from "@/lib/types";
 import {logoutUser, selectCurrentUser} from "@/slices/authenticationSlice";
 import Link from "next/link";
 import {signOut} from "firebase/auth";
@@ -23,7 +23,7 @@ export function FocusSelectorOld({stays, currentStay}:{stays:any, currentStay: a
             {
                 key: 'all',
                 label: (
-                    <div onClick={() => dispatch(setCurrentStay({} as Stay))}
+                    <div onClick={() => dispatch(setCurrentStay({} as (Hotel | Home)))}
                          className="bg-primary-50 border-2 border-black rounded-xl">
                         <div className="flex gap-1 text-dark px-2 py-2 items-center">
                             <Avatar shape="square" className="bg-primary">A</Avatar>
@@ -107,7 +107,7 @@ export default function FocusSelector() {
         <div className="flex max-md:w-full max-md:justify-between gap-1 text-dark px-2 py-2 items-center">
             <div className={'flex gap-2'}>
                 <Avatar shape="circle" className="bg-primary capitalize">
-                    {currentUser?.accountType === 'Individual'? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName.charAt(0)}
+                    {currentUser?.accountType === 'Individual'? `${currentUser?.firstName.charAt(0).toUpperCase()}${currentUser?.lastName.charAt(0).toUpperCase()}` : currentUser?.companyName?.charAt(0)}
                 </Avatar>
                 <div>
                     <div

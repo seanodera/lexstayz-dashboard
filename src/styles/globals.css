@@ -89,3 +89,6 @@ body {
     text-wrap: balance;
   }
 }
+div.ant-upload{
+  width: 100%;
+}

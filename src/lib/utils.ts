@@ -178,12 +178,12 @@ export const getExchangeRate = async (fromCurrency: string, toCurrency: string) 
 
 export async function getServerTime() {
     try {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+        const response = await fetch('http://worldclockapi.com/api/json/est/now');
         const data = await response.json();
-        return new Date(data.utc_datetime);
+        return new Date(data.currentDateTime);
     } catch (error) {
-        throw Error('Error fetching server time');
-
+        //throw Error('Error fetching server time');
+        return new Date();
     }
 }
 

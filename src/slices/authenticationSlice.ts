@@ -6,6 +6,8 @@ import {doc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {updateDoc} from "@firebase/firestore";
 import {redirect} from "next/navigation";
+import {Host} from "@/lib/types";
+import {RootState} from "@/data/store";
 
 
 
@@ -56,7 +58,7 @@ export const updateUserAsync = createAsyncThunk('authentication/updateUser',
 
 interface AuthenticationState {
     isAuthenticated: boolean,
-    user?: any,
+    user: Host | undefined,
 
     isLoading: boolean,
     hasError: boolean,
@@ -67,7 +69,6 @@ interface AuthenticationState {
 const initialState: AuthenticationState = {
     isAuthenticated: false,
     user: undefined,
-
     isLoading: false,
     hasError: false,
     errorMessage: '',
@@ -136,7 +137,7 @@ const AuthenticationSlice = createSlice({
     }
 })
 
-export const selectCurrentUser = (state: any) => state.authentication.user;
+export const selectCurrentUser = (state: RootState) => state.authentication.user;
 export const selectIsAuthenticated = (state: any) => state.authentication.isAuthenticated;
 export const selectIsAuthLoading = (state: any) => state.authentication.isLoading;
 export const selectAuthHasError = (state: any) => state.authentication.hasError;

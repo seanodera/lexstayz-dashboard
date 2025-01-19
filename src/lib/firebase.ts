@@ -1,12 +1,12 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import {initializeApp} from 'firebase/app';
+import {getAuth} from 'firebase/auth';
 import {
-    getFirestore,
     initializeFirestore,
+    memoryLocalCache,
     persistentLocalCache,
     persistentMultipleTabManager
 } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import {getStorage} from 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,9 +21,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const firestore = initializeFirestore(app, {localCache:
-        persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager()})
-});
+const isDev = process.env.NEXT_PUBLIC_STAGE === 'dev';
+console.log('is Dev', isDev)
+const firestore = isDev
+    ? initializeFirestore(app, {
+        localCache: memoryLocalCache()
+    }, 'development')
+    : initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
 const storage = getStorage(app);
 
 export { app, auth, firestore, storage };

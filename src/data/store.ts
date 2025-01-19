@@ -5,6 +5,7 @@ import AuthenticationReducer from '@/slices/authenticationSlice'
 import createStayReducer from "@/slices/createStaySlice";
 import messagingReducer from "@/slices/messagingSlice";
 import transactionsReducer from "@/slices/transactionsSlice";
+import promotionReducer from "@/slices/promotionSlice";
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,9 @@ const store = configureStore({
         createStay: createStayReducer,
         stay: stayReducer,
         messaging: messagingReducer,
-        transactions: transactionsReducer
+        transactions: transactionsReducer,
+        promotion: promotionReducer, // Add promotion reducer to the store
+
     }
 });
 export type RootState = ReturnType<typeof store.getState>;

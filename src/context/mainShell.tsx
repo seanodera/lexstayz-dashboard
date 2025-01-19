@@ -15,8 +15,14 @@ import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
 import {fetchStaysAsync, selectHasRun, selectIsLoading} from "@/slices/staySlice";
 import {fetchUserChatsAsync} from "@/slices/messagingSlice";
-import {fetchPendingTransactions} from "@/slices/transactionsSlice";
+import {
+    fetchExchangeRates,
+    fetchPawaPayConfigs,
+    fetchPendingTransactions,
+    fetchWithdrawalAccounts
+} from "@/slices/transactionsSlice";
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
+import {getOngoingFeatures, getPastAdverts, getUpcomingAdverts} from "@/slices/promotionSlice";
 
 const { Content } = Layout;
 
@@ -29,17 +35,26 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
     const hasError = useAppSelector(selectHasError);
     const errorMessage = useAppSelector(selectErrorMessage);
     const isMessagesLoading = useAppSelector(selectIsBookingLoading);
+    const isPromotionsLoading = useAppSelector(state => state.promotion.loading)
     const hasRun = useAppSelector(selectHasRun);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             if (!hasRun) {
-                dispatch(fetchStaysAsync());
-                dispatch(fetchPendingTransactions());
-                dispatch(fetchBookingsAsync({ page: 1, limit: 10 }));
-                dispatch(fetchStatistics());
-                dispatch(fetchUserChatsAsync());
+                await Promise.all([
+                    dispatch(fetchStaysAsync()),
+                dispatch(fetchPendingTransactions()),
+                dispatch(fetchBookingsAsync({ page: 1, limit: 10 })),
+                dispatch(fetchStatistics()),
+                dispatch(fetchUserChatsAsync()),
+                dispatch(fetchExchangeRates()),
+                dispatch(fetchPawaPayConfigs()),
+                dispatch(getOngoingFeatures()),
+                dispatch(getUpcomingAdverts()),
+                dispatch(getPastAdverts()),
+                dispatch(fetchWithdrawalAccounts()),
+                ])
             }
         };
 
@@ -48,8 +63,8 @@ export default function MainAppShell({ children }: { children: React.ReactNode }
             fetchData(); // Fetch data if the user is authenticated
         }
     }, [dispatch, hasRun]);
-    console.log(isLoading , isBookingLoading , isMessagesLoading)
-    if (isLoading || isBookingLoading || isMessagesLoading) {
+    console.log(isLoading , isBookingLoading , isMessagesLoading,isPromotionsLoading)
+    if (isLoading || isBookingLoading || isMessagesLoading || isPromotionsLoading) {
         // Show loading screen while data is being fetched
         return <div><LoadingScreen /></div>;
     }

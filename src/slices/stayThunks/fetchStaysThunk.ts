@@ -1,12 +1,4 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch, where
-} from "@firebase/firestore";
+import {collection, doc, getDocs, where} from "@firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {getCurrentUser} from "@/data/hotelsData";
 import {query} from "firebase/firestore";
@@ -67,7 +59,7 @@ export const fetchStaysAsync = createAsyncThunk(
                 occupancy,
             };
         } catch (error) {
-
+            console.log(error);
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
             } else {
@@ -80,7 +72,6 @@ export const fetchStaysAsync = createAsyncThunk(
 async function getRoomsFirebase(stayId: string): Promise<any[]> {
     try {
         const user = getCurrentUser();
-        const firestore = getFirestore();
         const userDocRef = doc(firestore, 'hosts', user.uid);
         const roomsRef = collection(userDocRef, 'stays', stayId, 'rooms');
 

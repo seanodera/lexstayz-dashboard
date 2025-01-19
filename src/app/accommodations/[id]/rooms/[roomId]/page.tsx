@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { selectCurrentStay, setCurrentStayFromId } from "@/slices/staySlice";
 import RoomDescription from "@/components/accomodations/RoomDescription";
 import Link from "next/link";
+import {Hotel} from "@/lib/types";
 
 export default function Page() {
     const pathname = usePathname();
@@ -29,7 +30,7 @@ export default function Page() {
                     <div>
                         <h3 className="text-gray-500 font-bold mb-1 text-lg md:text-xl">{stay.name}</h3>
                         <h1 className="font-bold capitalize my-0 text-xl md:text-2xl">
-                            {stay.rooms.find((value: any) => value.id === roomId)?.name}
+                            {(stay as Hotel).rooms.find((value: any) => value.id === roomId)?.name}
                         </h1>
                     </div>
                     <div className="mt-4 md:mt-0 flex gap-2">
@@ -45,7 +46,7 @@ export default function Page() {
                         </Link>
                     </div>
                 </div>
-                <RoomDescription room={stay.rooms.find((value: any) => value.id === roomId.toString())} />
+                <RoomDescription room={(stay as Hotel).rooms.find((value: any) => value.id === roomId.toString())} />
             </div>
         );
     }

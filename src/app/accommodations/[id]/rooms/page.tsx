@@ -8,6 +8,7 @@ import {useAppDispatch, useAppSelector} from "@/hooks/hooks";
 import {selectCurrentStay, setCurrentStayFromId} from "@/slices/staySlice";
 import RoomComponent from "@/components/accomodations/roomComponent";
 import Link from "next/link";
+import {Hotel} from "@/lib/types";
 
 export default function Page() {
     const {id} = useParams();
@@ -34,7 +35,7 @@ export default function Page() {
             </div>
         </div>
         <div className={'grid grid-cols-3 gap-8'}>
-            {stay.rooms?.map((item: any, index: number) => <Card key={index} className={'rounded-2xl'}><RoomComponent
+            {(stay as Hotel).rooms?.map((item: any, index: number) => <Card key={index} className={'rounded-2xl'}><RoomComponent
                 room={item} stayId={stay.id}/></Card>)}
         </div>
     </div>

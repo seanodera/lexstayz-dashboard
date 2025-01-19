@@ -90,7 +90,7 @@ export const startChatAsync = createAsyncThunk('messaging/startChat',
                     host: {
                         role: 'host',
                         lastOpen: now,
-                        name: (authentication.user.accountType === 'Individual' ? `${authentication.user.firstName}  ${authentication.user.lastName}` : authentication.user.companyName),
+                        name: (authentication.user?.accountType === 'Individual' ? `${authentication.user.firstName}  ${authentication.user.lastName}` : authentication.user?.companyName),
                     },
                     user: {
                         role: 'user',

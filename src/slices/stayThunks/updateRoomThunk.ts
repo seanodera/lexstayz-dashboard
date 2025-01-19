@@ -1,15 +1,6 @@
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getFirestore,
-    writeBatch
-} from "@firebase/firestore";
-import { auth, firestore, storage } from "@/lib/firebase";
+import {collection, doc, updateDoc} from "@firebase/firestore";
+import {firestore} from "@/lib/firebase";
 import {createFile, extractFirebaseStoragePath} from "@/lib/utils";
-import { getDoc } from "firebase/firestore";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {deleteImage, getCurrentUser, uploadImage} from "@/data/hotelsData";
 
@@ -24,9 +15,7 @@ export const updateRoomAsync = createAsyncThunk(
         images?: string[]
     }, { rejectWithValue }) => {
         try {
-            console.log('Here', 'room: ', room, 'prev: ', previousRoom, 'stay: ', stayId, 'room: ', roomId, 'poster: ', poster);
             const user = getCurrentUser();
-            const firestore = getFirestore();
             const userDocRef = doc(firestore, 'hosts', user.uid);
             const staysRef = collection(userDocRef, 'stays');
             const stayRef = doc(staysRef, stayId);
