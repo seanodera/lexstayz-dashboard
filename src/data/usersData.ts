@@ -6,7 +6,12 @@ import {updateDoc} from "@firebase/firestore";
 
 export async function createUser(user: any, id: string) {
     const userDoc = doc(firestore, 'hosts', id);
-     await setDoc(userDoc, user)
+     await setDoc(userDoc, {...user, balance: {
+         available: 0,
+             pending: 0,
+             prevAvailable: 0,
+             prevPending: 0,
+         }})
     return user;
 }
 
