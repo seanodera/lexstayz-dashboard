@@ -40,7 +40,10 @@ export const updateBookingStatusAsync = createAsyncThunk(
                 const cancellation = stayData.cancellation;
                 if (cancellation.cancellation === 'Non-Refundable'){
                     paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate,);
-                    batch.delete(hostTransaction);
+                    if (transactionDoc.exists()) {
+                        batch.delete(hostTransaction);
+                    }
+
                 } else if (cancellation.cancellation === 'Other'){
                     let date;
                     let timeToCheck;
@@ -62,10 +65,10 @@ export const updateBookingStatusAsync = createAsyncThunk(
                     if (isAfter(serverDate,timeToCheck)){
                         const amount = (booking.grandTotal - booking.fees ) * booking.paymentRate * cancellation.rate;
                         paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate, amount)
-                        batch.update(hostTransaction, {
+                        batch.set(hostTransaction, {
                             amount: amount,
                             availableDate: serverDate.toISOString(),
-                        });
+                        }, {merge: true});
                         cancellationAmount = amount;
                     }
                 }
@@ -86,7 +89,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
                     paymentData,
                     date: booking.createdAt,
                     availableDate: addDays(new Date(booking.checkOutDate), 3).toISOString(),
-                });
+                }, {merge: true});
             }
 
            if (booking.status !== status && !(booking.status === 'Pending' && status === 'Confirmed')){

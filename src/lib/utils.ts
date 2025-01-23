@@ -178,9 +178,10 @@ export const getExchangeRate = async (fromCurrency: string, toCurrency: string) 
 
 export async function getServerTime() {
     try {
-        const response = await fetch('http://worldclockapi.com/api/json/est/now');
+        const handler = process.env.NEXT_PUBLIC_HANDLER
+        const response = await fetch(`${handler}/api/utils/serverTime`);
         const data = await response.json();
-        return new Date(data.currentDateTime);
+        return new Date(data.isoDateTime);
     } catch (error) {
         //throw Error('Error fetching server time');
         return new Date();
