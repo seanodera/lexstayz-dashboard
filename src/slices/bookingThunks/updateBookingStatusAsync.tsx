@@ -29,48 +29,56 @@ export const updateBookingStatusAsync = createAsyncThunk(
 
             let paymentData = booking.paymentData;
             let cancellationAmount: number | undefined ;
+            console.log(status)
             if (["Rejected", "Canceled"].includes(status)) {
+                if (booking.status === "Pending" && booking.isConfirmed) {
+                    await refundBooking(booking);
+                } else
+                {
+                    const staySnap = await getDoc(stayRef);
+                    if (!staySnap.exists()) throw new Error("Accommodation document does not exist!");
 
-                const staySnap = await getDoc(stayRef);
-                if (!staySnap.exists()) throw new Error("Accommodation document does not exist!");
-
-                const stayData = staySnap.data() as Stay;
-                const checkIn = new Date(booking.checkInDate);
-                const checkOut = new Date(booking.checkOutDate);
-                const cancellation = stayData.cancellation;
-                if (cancellation.cancellation === 'Non-Refundable'){
-                    paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate,);
-                    batch.delete(hostTransaction);
-                } else if (cancellation.cancellation === 'Other'){
-                    let date;
-                    let timeToCheck;
-                    if (cancellation.preDate){
-                        date = checkIn;
-                        if (cancellation.timeSpace === 'Days'){
-                            timeToCheck = subDays(date,cancellation.time);
-                        } else  {
-                            timeToCheck = subHours(date, cancellation.time);
+                    const stayData = staySnap.data() as Stay;
+                    const checkIn = new Date(booking.checkInDate);
+                    const checkOut = new Date(booking.checkOutDate);
+                    const cancellation = stayData.cancellation;
+                    if (cancellation.cancellation === 'Non-Refundable') {
+                        paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate,);
+                        if (transactionDoc.exists()) {
+                            batch.delete(hostTransaction);
                         }
-                    } else {
-                        date =  new Date(booking.createdAt);
-                        if (cancellation.timeSpace === 'Days'){
-                            timeToCheck = addDays(date,cancellation.time);
-                        } else  {
-                            timeToCheck = addHours(date, cancellation.time);
+
+                    } else if (cancellation.cancellation === 'Other') {
+                        let date;
+                        let timeToCheck;
+                        if (cancellation.preDate) {
+                            date = checkIn;
+                            if (cancellation.timeSpace === 'Days') {
+                                timeToCheck = subDays(date, cancellation.time);
+                            } else {
+                                timeToCheck = subHours(date, cancellation.time);
+                            }
+                        } else {
+                            date = new Date(booking.createdAt);
+                            if (cancellation.timeSpace === 'Days') {
+                                timeToCheck = addDays(date, cancellation.time);
+                            } else {
+                                timeToCheck = addHours(date, cancellation.time);
+                            }
+                        }
+                        if (isAfter(serverDate, timeToCheck)) {
+                            const amount = (booking.grandTotal - booking.fees) * booking.paymentRate * cancellation.rate;
+                            paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate, amount)
+                            batch.set(hostTransaction, {
+                                amount: amount,
+                                availableDate: serverDate.toISOString(),
+                            }, {merge: true});
+                            cancellationAmount = amount;
                         }
                     }
-                    if (isAfter(serverDate,timeToCheck)){
-                        const amount = (booking.grandTotal - booking.fees ) * booking.paymentRate * cancellation.rate;
-                        paymentData = await handleCancellationOrRejection(booking, paymentData, serverDate, amount)
-                        batch.update(hostTransaction, {
-                            amount: amount,
-                            availableDate: serverDate.toISOString(),
-                        });
-                        cancellationAmount = amount;
+                    if (stayData) {
+                        updateStayDataForCancellation(stayData, booking, checkIn, checkOut, batch, stayRef);
                     }
-                }
-                if (stayData) {
-                    updateStayDataForCancellation(stayData, booking, checkIn, checkOut, batch, stayRef);
                 }
             }
 
@@ -86,7 +94,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
                     paymentData,
                     date: booking.createdAt,
                     availableDate: addDays(new Date(booking.checkOutDate), 3).toISOString(),
-                });
+                }, {merge: true});
             }
 
            if (booking.status !== status && !(booking.status === 'Pending' && status === 'Confirmed')){
