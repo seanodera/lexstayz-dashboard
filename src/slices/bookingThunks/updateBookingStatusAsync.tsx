@@ -7,9 +7,9 @@ import { RootState } from "@/data/store";
 import {addDays, addHours, isAfter, isSameDay, subDays, subHours} from "date-fns";
 import { getServerTime } from "@/lib/utils";
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
-import {Balance, Host, Stay} from "@/lib/types";
+import {Balance, Booking, Host, Stay} from "@/lib/types";
 
-export const updateBookingStatusAsync = createAsyncThunk(
+export const updateBookingStatusAsyncOld = createAsyncThunk(
     "booking/updateStatus",
     async (
         { status, booking }: { status: "Pending" | "Confirmed" | "Canceled" | "Rejected" | "Completed"; booking: any },
@@ -101,7 +101,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
                // Update host's balance
                await runTransaction(firestore,async (transaction) => {
                    if(["Canceled", "Rejected"].includes(status)){
-                       await updateHostBalance(transaction, hostRef, booking, status, cancellationAmount);
+                       await updateHostBalance(transaction, hostRef, booking, status);
                    }
 
                });
@@ -125,7 +125,7 @@ export const updateBookingStatusAsync = createAsyncThunk(
 );
 
 // Add the provided function to update the host's balance
-async function updateHostBalance(transaction: Transaction, hostRef: any, booking: any, status: string, amount?: number) {
+export async function updateHostBalance(transaction: Transaction, hostRef: any, booking: Booking, status: string) {
     const hostSnap = await transaction.get(hostRef);
     const hostData = hostSnap.data() as Host;
 
@@ -138,22 +138,25 @@ async function updateHostBalance(transaction: Transaction, hostRef: any, booking
         prevPending: 0,
     };
 
-    const updatedBalance = { ...currentBalance };
+    const updatedBalance = {...currentBalance};
 
-    if (status === "Confirmed") {
+    if (booking.status === 'Pending'  && status === 'Confirmed') {
         updatedBalance.pending += booking.totalPrice;
-    } else if (["Canceled", "Rejected"].includes(status)) {
+        updatedBalance.prevPending = currentBalance.pending;
+        updatedBalance.prevAvailable = currentBalance.available;
+
+        transaction.update(hostRef, {balance: updatedBalance});
+    } else if (booking.status === 'Confirmed' && (status === 'Canceled' || status === 'Rejected')) {
         updatedBalance.pending -= booking.totalPrice;
-        if (amount){
-            updatedBalance.available += amount;
-        }
+        updatedBalance.prevPending = currentBalance.pending;
+        updatedBalance.prevAvailable = currentBalance.available;
+        transaction.update(hostRef, {balance: updatedBalance});
     }
 
-    updatedBalance.prevPending = currentBalance.pending;
-    updatedBalance.prevAvailable = currentBalance.available;
 
-    transaction.update(hostRef, { balance: updatedBalance });
 }
+
+
 
 // Other utility functions remain unchanged
 async function handleCancellationOrRejection(booking: any, paymentData: any, serverDate: Date,amount?: number) {
