@@ -11,11 +11,12 @@ import {
 import {getCurrentUser} from "@/data/hotelsData";
 import {firestore} from "@/lib/firebase";
 
-import {updateBookingStatusAsync} from "@/slices/bookingThunks/updateBookingStatusAsync";
+
 import fetchStatistics from "@/slices/bookingThunks/fetchStatistics";
 import {RootState} from "@/data/store";
 import {doc, where,} from "@firebase/firestore";
 import {Stay} from "@/lib/types";
+import { updateBookingStatusAsync } from "./bookingThunks/bookingUpdateAsync";
 
 // Adjust the import according to your project structure
 

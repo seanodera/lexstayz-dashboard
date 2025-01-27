@@ -26,6 +26,7 @@ export interface Stay {
     };
     pets: string;
     minAge: number;
+    bookedDates?: string[];
 }
 
 export interface Home extends Stay {
@@ -42,7 +43,6 @@ export interface Home extends Stay {
 export interface Hotel extends Stay {
     type: 'Hotel';
     rooms: Room[];
-    fullyBookedDates?: string[];
 }
 
 
@@ -190,3 +190,59 @@ export interface PawaPayCountryData {
     correspondents: Correspondent[];
 }
 
+
+export interface Booking {
+    acceptedAt: string;
+    accommodationId: string;
+    accountId: string;
+    checkInDate: string;
+    checkOutDate: string;
+    createdAt: string;
+    currency: string;
+    fees: number;
+    grandTotal: number;
+    hostId: string;
+    id: string;
+    isConfirmed: boolean;
+    numGuests: number;
+    paymentCurrency: string;
+    paymentData: PaymentData;
+    paymentMethod: string;
+    paymentRate: number;
+    specialRequest: string;
+    status: string;
+    subtotal: number;
+    totalPrice: number;
+    usedRate: number;
+    user: BookingUser;
+    rooms?: BookingRoom[];
+}
+
+export interface BookingRoom {
+    roomId: string;
+    numRooms: number;
+    name: string;
+    price: number
+}
+
+interface PaymentData {
+    data: {
+        paidAt: string;
+        plan: string | null;
+        created_at: string;
+        paid_at: string;
+        createdAt: string;
+    }
+    // Add other properties that might be inside the paymentData object
+    message: string;
+    status: boolean;
+    refunded: boolean;
+}
+
+export interface BookingUser {
+    country: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+}
