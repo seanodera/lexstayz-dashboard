@@ -14,7 +14,6 @@ import {useAppDispatch} from "@/hooks/hooks";
 import {UploadOutlined} from "@ant-design/icons";
 import {hotelFacilities} from "@/data/hotelsDataLocal";
 import {getAmenityIcon} from "@/components/utilities/amenityIcon";
-import {updateStayFirebase} from "@/data/hotelsData";
 
 export default function ListingEditComponent({stay, partial}: { stay?: any, partial?: any }) {
     const [name, setName] = useState<string>('');
@@ -30,7 +29,12 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
     const [bedrooms, setBedrooms] = useState(0)
     const [bathrooms, setBathrooms] = useState(0)
     const [beds, setBeds] = useState(0)
+
     const [price, setPrice] = useState(0)
+    const [weeklyPrice, setWeeklyPrice] = useState<number>()
+    const [monthlyPrice, setMonthlyPrice] = useState<number>()
+    const [yearlyPrice, setYearlyPrice] = useState<number>()
+
     const [maxGuests, setMaxGuests] = useState(1)
 
     const router = useRouter();
@@ -93,12 +97,20 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
             setTimeSpace(stay.cancellation?.timeSpace || 'Days');
             setPreDate(stay.cancellation?.preDate ?? true); // Using ?? to ensure boolean handling
 
-            if (stay.type === 'Home'){
+            if (stay.type === 'Home') {
                 setPrice(stay.price || 0);
                 setBedrooms(stay.bedrooms || 0);
                 setBathrooms(stay.bathrooms || 0);
                 setMaxGuests(stay.maxGuests || 0);
                 setBeds(stay.beds || 0);
+
+                if (stay.pricing){
+                    const pricing = stay.pricing;
+                    setWeeklyPrice(pricing.weekly);
+                    setMonthlyPrice(pricing.monthly);
+                    setYearlyPrice(pricing.yearly);
+                }
+
             }
         } else if (partial) {
             setName(partial.name || '');
@@ -108,11 +120,29 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
 
 
     async function SaveStay() {
-        const homeSpecific = (type === 'Home')? {
+        let update: {
+            base: number;
+            weekly?: number;
+            yearly?: number;
+            monthly?: number;
+        } = {
+            base: price,
+        }
+        if (weeklyPrice) {
+            update.weekly = weeklyPrice
+        }
+        if (monthlyPrice) {
+            update.monthly = monthlyPrice
+        }
+        if (yearlyPrice) {
+            update.yearly = yearlyPrice
+        }
+        const homeSpecific = (type === 'Home') ? {
             bedrooms: bedrooms,
             bathrooms: bathrooms,
             beds: beds,
             price: price,
+            pricing: update,
             maxGuests: maxGuests
         } : {}
         const newStay = {
@@ -156,7 +186,12 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                 router.push('/accommodations');
             });
         } else if (stay) {
-            dispatch(updateStayAsync({stay, newStay: {...newStay, location: {...stay.location, ...newStay.location}}, poster, images})).then((value) => {
+            dispatch(updateStayAsync({
+                stay,
+                newStay: {...newStay, location: {...stay.location, ...newStay.location}},
+                poster,
+                images
+            })).then(() => {
                 router.push('/accommodations');
             })
         }
@@ -205,26 +240,46 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                             <Fieldset>
                                 <Field>
                                     <Label className={'text-gray-500 font-bold mb-0'}>Price</Label>
-                                    <Input className={'w-full'} type={'number'} value={price} min={1} onChange={(e) => setPrice(parseInt(e.target.value))}/>
+                                    <Input className={'w-full'} type={'number'} value={price} min={1}
+                                           onChange={(e) => setPrice(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Weekly Price</Label>
+                                    <Input className={'w-full'} type={'number'} value={weeklyPrice}
+                                           onChange={(e) => setWeeklyPrice(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Monthly Price</Label>
+                                    <Input className={'w-full'} type={'number'} value={monthlyPrice}
+                                           onChange={(e) => setMonthlyPrice(parseInt(e.target.value))}/>
+                                </Field>
+                                <Field>
+                                    <Label className={'text-gray-500 font-bold mb-0'}>Yearly Price</Label>
+                                    <Input className={'w-full'} type={'number'} value={yearlyPrice}
+                                           onChange={(e) => setYearlyPrice(parseInt(e.target.value))}/>
                                 </Field>
                                 <div className={'grid grid-cols-2 gap-3'}>
-                                <Field>
-                                    <Label className={'text-gray-500 font-bold mb-0'}>Max Guests</Label>
-                                    <Input className={'w-full'} type={'number'} value={maxGuests} min={1} onChange={(e) => setMaxGuests(parseInt(e.target.value))}/>
-                                </Field>
-                                <Field>
-                                    <Label className={'text-gray-500 font-bold mb-0'}>Bedrooms</Label>
-                                    <Input className={'w-full'} type={'number'} value={bedrooms} min={1} onChange={(e) => setBedrooms(parseInt(e.target.value))}/>
-                                </Field>
-                                <Field>
-                                    <Label className={'text-gray-500 font-bold mb-0'}>Beds</Label>
-                                    <Input className={'w-full'} type={'number'} value={beds} min={1} onChange={(e) => setBeds(parseInt(e.target.value))}/>
-                                </Field>
-                                <Field>
-                                    <Label className={'text-gray-500 font-bold mb-0'}>Baths</Label>
-                                    <Input className={'w-full'} type={'number'} value={bathrooms} min={1} onChange={(e) => setBathrooms(parseInt(e.target.value))}/>
-                                </Field>
-                            </div>
+                                    <Field>
+                                        <Label className={'text-gray-500 font-bold mb-0'}>Max Guests</Label>
+                                        <Input className={'w-full'} type={'number'} value={maxGuests} min={1}
+                                               onChange={(e) => setMaxGuests(parseInt(e.target.value))}/>
+                                    </Field>
+                                    <Field>
+                                        <Label className={'text-gray-500 font-bold mb-0'}>Bedrooms</Label>
+                                        <Input className={'w-full'} type={'number'} value={bedrooms} min={1}
+                                               onChange={(e) => setBedrooms(parseInt(e.target.value))}/>
+                                    </Field>
+                                    <Field>
+                                        <Label className={'text-gray-500 font-bold mb-0'}>Beds</Label>
+                                        <Input className={'w-full'} type={'number'} value={beds} min={1}
+                                               onChange={(e) => setBeds(parseInt(e.target.value))}/>
+                                    </Field>
+                                    <Field>
+                                        <Label className={'text-gray-500 font-bold mb-0'}>Baths</Label>
+                                        <Input className={'w-full'} type={'number'} value={bathrooms} min={1}
+                                               onChange={(e) => setBathrooms(parseInt(e.target.value))}/>
+                                    </Field>
+                                </div>
                             </Fieldset>
                         </div>}
                         {/*<h3 className={'text-nowrap'}>Stay Currency</h3>*/}
@@ -374,7 +429,7 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                         {value[ name ].map((item: string, index: number) => {
                             const IconComponent = getAmenityIcon(item);
 
-                            function handleChange(e: any){
+                            function handleChange(e: any) {
                                 if (e.target.checked) {
                                     if (!facilities.includes(item)) {
                                         setFacilities(facilities.concat([item]));
@@ -386,7 +441,10 @@ export default function ListingEditComponent({stay, partial}: { stay?: any, part
                                 }
                                 console.log(facilities)
                             }
-                            return <Checkbox key={index} onChange={handleChange} checked={facilities.includes(item)}><span className={'text-primary'}><IconComponent/></span> {item}</Checkbox>;
+
+                            return <Checkbox key={index} onChange={handleChange}
+                                             checked={facilities.includes(item)}><span
+                                className={'text-primary'}><IconComponent/></span> {item}</Checkbox>;
                         })}
                     </div>
                 })}
