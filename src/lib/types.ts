@@ -35,6 +35,12 @@ export interface Home extends Stay {
     bathrooms: number;
     beds: number;
     price: number;
+    pricing: {
+        base: number;
+        weekly?: number;
+        yearly?: number;
+        monthly?: number;
+    }
     bedrooms: number;
     homeType: string;
     bookedDates?: string[];
@@ -61,7 +67,13 @@ export interface Room {
     price: number;
     images: string[];
     bookedDates?: { [ key: string ]: number;};
-    fullDates?: string[]
+    fullDates?: string[];
+    pricing: {
+        base: number;
+        weekly?: number;
+        yearly?: number;
+        monthly?: number;
+    }
 }
 
 export interface Location

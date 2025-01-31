@@ -30,6 +30,7 @@ import {
     updateRoomAsync
 } from "@/slices/staySlice";
 import {useRouter} from "next/navigation";
+import {Field, Label} from "@headlessui/react";
 
 const {TextArea} = Input;
 
@@ -44,7 +45,12 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
     const [beds, setBeds] = useState<Array<any>>([]);
     const [description, setDescription] = useState('');
     const [amenities, setAmenities] = useState<Array<string>>([]);
-    const [price, setPrice] = useState<number | null>(0);
+
+    const [price, setPrice] = useState<number>(0);
+    const [weeklyPrice, setWeeklyPrice] = useState<number | null>()
+    const [monthlyPrice, setMonthlyPrice] = useState<number | null>()
+    const [yearlyPrice, setYearlyPrice] = useState<number | null>()
+
     const [available, setAvailable] = useState<number | null>(10);
     const router = useRouter();
 
@@ -59,6 +65,12 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
             setAmenities(room.amenities);
             setPrice(room.price);
             setAvailable(room.available);
+            if (room.pricing){
+                const pricing = room.pricing;
+                setWeeklyPrice(pricing.weekly);
+                setMonthlyPrice(pricing.monthly);
+                setYearlyPrice(pricing.yearly);
+            }
         }
     }, [room]);
 
@@ -71,6 +83,23 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
     };
 
     const handleSubmit = async () => {
+        let pricing: {
+            base: number;
+            weekly?: number;
+            yearly?: number;
+            monthly?: number;
+        } = {
+            base: price,
+        }
+        if (weeklyPrice) {
+            pricing.weekly = weeklyPrice
+        }
+        if (monthlyPrice) {
+            pricing.monthly = monthlyPrice
+        }
+        if (yearlyPrice) {
+            pricing.yearly = yearlyPrice
+        }
         const roomData = {
             name,
             maxGuests,
@@ -78,34 +107,36 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
             description,
             amenities,
             price,
-            available
+            available,
+            pricing: pricing,
         };
-        console.log(stayId, 'Room Edit')
-        if (room){
 
 
-            await dispatch(updateRoomAsync({room: roomData, previousRoom: room, stayId,roomId: room.id, poster, images})).then((value:any) => {
+        if (room) {
+
+
+            await dispatch(updateRoomAsync({
+                room: roomData,
+                previousRoom: room,
+                stayId,
+                roomId: room.id,
+                poster,
+                images
+            })).then((value: any) => {
                 console.log(value)
                 router.push(`/accommodations/${stayId}/${room.id}`);
             })
 
         } else {
             try {
-                console.log('here')
 
-                console.log(roomData);
-
-                // Add new room
-                console.log(stayId);
-
-                await dispatch(addRoomAsync({room: roomData, stayId, poster, images})).then((value) => {
+                await dispatch(addRoomAsync({room: roomData, stayId, poster, images})).then(() => {
 
                     router.push(`/accommodations/${stayId}`)
                 });
 
 
                 //dispatch(fetchStaysAsync());
-                console.log(stayId)
 
             } catch (error) {
                 console.log(error);
@@ -145,7 +176,8 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                 <Col span={19}>
                     <div className={'flex justify-between items-center mb-1'}><h3 className={'font-bold'}>Detailed Room
                         Images</h3>
-                        <Upload disabled={images.length >= 4} multiple={false} className={'mt-4'} beforeUpload={(file) => handleChangeDetails(file)}
+                        <Upload disabled={images.length >= 4} multiple={false} className={'mt-4'}
+                                beforeUpload={(file) => handleChangeDetails(file)}
                                 showUploadList={false}>
                             <Button icon={<UploadOutlined/>}>
                                 Add Image
@@ -177,9 +209,28 @@ export default function RoomEditComponent({room, stayId}: { room?: any, stayId: 
                     <Form className={'w-full'} layout={'vertical'} labelAlign={'left'}
                           rootClassName={'font-semibold text-lg w-full'}>
                         <Form.Item label={'Nightly Rate'}>
-                            <InputNumber prefix={currentStay.currency? currentStay.currency : 'USD'} min={0} value={price}
-                                         onChange={(value: number | null) => setPrice(value)}/>
+                            <InputNumber prefix={currentStay.currency ? currentStay.currency : 'USD'} min={0}
+                                         value={price}
+                                         onChange={(value) => setPrice(value || 0)}/>
                         </Form.Item>
+                        <Field>
+                            <Label className={'text-gray-500 font-bold mb-0'}>Weekly Price</Label>
+                            <InputNumber prefix={currentStay.currency ? currentStay.currency : 'USD'} type={'number'}
+                                         value={weeklyPrice}
+                                         onChange={(e) => setWeeklyPrice(e)}/>
+                        </Field>
+                        <Field>
+                            <Label className={'text-gray-500 font-bold mb-0'}>Monthly Price</Label>
+                            <InputNumber prefix={currentStay.currency ? currentStay.currency : 'USD'} type={'number'}
+                                         value={monthlyPrice}
+                                         onChange={(e) => setMonthlyPrice(e)}/>
+                        </Field>
+                        <Field>
+                            <Label className={'text-gray-500 font-bold mb-0'}>Yearly Price</Label>
+                            <InputNumber prefix={currentStay.currency ? currentStay.currency : 'USD'} type={'number'}
+                                         value={yearlyPrice}
+                                         onChange={(e) => setYearlyPrice(e)}/>
+                        </Field>
                         <Form.Item label={'Maximum Guests'}>
                             <InputNumber min={0} value={maxGuests}
                                          onChange={(value: number | null) => setMaxGuests(value)}/>
