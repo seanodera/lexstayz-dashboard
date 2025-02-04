@@ -10,7 +10,7 @@ export default function LocationForm() {
     const stay = useAppSelector(selectPartialStay);
     const location = stay.location;
     const dispatch = useAppDispatch();
-
+    console.log(location);
     if (!location.street) {
         return null; // Hide the form if no location is selected
     }

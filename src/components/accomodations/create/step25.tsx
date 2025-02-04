@@ -52,7 +52,7 @@ export default function CreateStep25() {
                ...update,
            },
        }))
-    },[dispatch, monthlyPrice, price, stay.pricing, weeklyPrice, yearlyPrice])
+    },[dispatch, monthlyPrice, price, weeklyPrice, yearlyPrice])
 
     return <Card className={'flex justify-center border-0'}>
         <h2>House Details</h2>
@@ -61,13 +61,13 @@ export default function CreateStep25() {
                 <InputNumber prefix={stay.currency} value={stay.price} onChange={(value) => setPrice(value || 0)} min={0} step={1}/>
             </Form.Item>
             <Form.Item label={'Weekly Price'} className={'font-medium'}>
-                <InputNumber prefix={stay.currency} value={stay.pricing.weekly} onChange={(value) => setWeeklyPrice(value || 0)} min={0} step={1}/>
+                <InputNumber prefix={stay.currency} value={stay.pricing?.weekly} onChange={(value) => setWeeklyPrice(value || 0)} min={0} step={1}/>
             </Form.Item>
             <Form.Item label={'Monthly Price'} className={'font-medium'}>
-                <InputNumber prefix={stay.currency} value={stay.pricing.monthly} onChange={(value) => setMonthlyPrice(value || 0)} min={0} step={1}/>
+                <InputNumber prefix={stay.currency} value={stay.pricing?.monthly} onChange={(value) => setMonthlyPrice(value || 0)} min={0} step={1}/>
             </Form.Item>
             <Form.Item label={'Yearly Price'} className={'font-medium'}>
-                <InputNumber prefix={stay.currency} value={stay.pricing.yearly} onChange={(value) => setYearlyPrice(value || 0)} min={0} step={1}/>
+                <InputNumber prefix={stay.currency} value={stay.pricing?.yearly} onChange={(value) => setYearlyPrice(value || 0)} min={0} step={1}/>
             </Form.Item>
 
             <Form.Item label={'Guests'} className={'font-medium'}>
