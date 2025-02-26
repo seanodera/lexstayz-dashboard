@@ -45,6 +45,7 @@ export default function ContextProvider({ children }: { children: React.ReactNod
                     if (!currentUser) {
                         // If Firebase user exists but no user details, fetch them
                         dispatch(getUserDetailsAsync(user.uid)).then((value) => {
+                            console.log(value)
                             if (value.meta.requestStatus === 'fulfilled' && !value.payload) {
                                 router.push("/user-information"); // Redirect if user details are missing
                             }

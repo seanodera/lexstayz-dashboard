@@ -1,7 +1,7 @@
 'use client'
 import {Field, Fieldset, Input, Label, Select} from "@headlessui/react";
 import Link from "next/link";
-import {Avatar, Card} from "antd";
+import {Avatar, Button, Card} from "antd";
 import {useState} from "react";
 import {useAppDispatch} from "@/hooks/hooks";
 import {useRouter} from "next/navigation";
@@ -20,9 +20,11 @@ export default function RegisterComponent() {
     const [accountType, setAccountType] = useState('Individual');
     const [companyName, setCompanyName] = useState('');
     const [phone, setPhone] = useState('');
+    const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch()
     const router = useRouter();
     async function handleSignup(e: any) {
+        setLoading(true);
         e.preventDefault();
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
         let details = {};
@@ -47,6 +49,7 @@ export default function RegisterComponent() {
             }
         }
         await createUser(details, userCredentials.user.uid)
+        setLoading(false);
         router.push('/login');
     }
 
@@ -123,15 +126,15 @@ export default function RegisterComponent() {
                        onChange={(e) => setConfirmPassword(e.target.value)}/>
             </Field>
             <Field>
-                <button
+                <Button htmlType={'submit'} type={'primary'} loading={loading} disabled={loading}
                     className={'flex w-full justify-center border-0 rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'}
-                    type="submit" onClick={(e) => handleSignup(e)}>Create an account
-                </button>
+                     onClick={(e) => handleSignup(e)}>Create an account
+                </Button>
             </Field>
         </Fieldset>
         <p className="mt-10 text-center text-sm text-gray-500">
             Already a member?{' '}
-            <Link href="/login" className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
+            <Link href={loading? '#' :"/login"} className="font-semibold leading-6 text-primary-600 hover:text-primary-500">
                 sign in to your account
             </Link>
         </p>

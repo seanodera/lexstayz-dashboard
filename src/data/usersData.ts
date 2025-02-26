@@ -30,8 +30,6 @@ export async function getUserDetails(id: string) {
                     prevPending: 0
                 }
             }
-        } else {
-            throw Error("User not found.");
         }
 
         return user;

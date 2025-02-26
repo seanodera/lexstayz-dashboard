@@ -1,7 +1,7 @@
 'use client'
 import {Field, Fieldset, Input, Label} from "@headlessui/react";
 import Link from "next/link";
-import {Avatar, Card, message} from "antd";
+import {Avatar, Button, Card, message} from "antd";
 import {useState} from "react";
 import {useAppDispatch} from "@/hooks/hooks";
 import {useRouter} from "next/navigation";
@@ -14,14 +14,15 @@ export default function LoginComponent() {
     const [password, setPassword] = useState('');
     const dispatch = useAppDispatch();
     const router = useRouter();
-
+const [loading, setLoading] = useState(false);
     const handleLogin = () => {
+        setLoading(true);
         dispatch(signInUserAsync({email:email, password:password}))
             .then((actionResult) => {
-
+                setLoading(false);
                 router.push('/')
             }).catch((error:any) => {
-
+                setLoading(false);
             message.error(`Error logging in: ${error.message}`);
         });
     };
@@ -63,16 +64,16 @@ export default function LoginComponent() {
                         placeholder="Enter password" required value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </Field>
                 <Field>
-                    <button onClick={() => handleLogin()}
+                    <Button htmlType={'submit'} onClick={() => handleLogin()} loading={loading} disabled={loading}
                         className={'flex w-full justify-center border-0 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-primary-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'}
-                        type="submit">Submit
-                    </button>
+                        type={'primary'}>Submit
+                    </Button>
                 </Field>
             </Fieldset>
         </form>
         <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{' '}
-            <Link href="/register" className="font-semibold leading-6 text-primary-600 hover:text-primary">
+            <Link href={loading?'#' :"/register"} className="font-semibold leading-6 text-primary-600 hover:text-primary">
                 create an account
             </Link>
         </p>

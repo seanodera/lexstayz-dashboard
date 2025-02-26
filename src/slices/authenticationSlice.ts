@@ -5,19 +5,17 @@ import {auth, firestore} from "@/lib/firebase";
 import {doc} from "firebase/firestore";
 import {getCurrentUser} from "@/data/hotelsData";
 import {updateDoc} from "@firebase/firestore";
-import {redirect} from "next/navigation";
 import {Host} from "@/lib/types";
 import {RootState} from "@/data/store";
-
 
 
 export const getUserDetailsAsync = createAsyncThunk('authentication/user',
     async (id: string) => {
         try {
-            const userDetails = await getUserDetails(id)
-            return userDetails;
+            return await getUserDetails(id);
 
         } catch (error) {
+
             console.error("Failed to fetch user details", error);
             throw error;
         }
